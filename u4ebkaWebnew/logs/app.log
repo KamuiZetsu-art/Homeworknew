@@ -1,0 +1,2148 @@
+[2026-09-21 10:10:09] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 10:10:14] [INFO] [__main__] ============================================================
+[2026-09-21 10:10:14] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 10:10:14] [INFO] [__main__] ============================================================
+[2026-09-21 10:10:14] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 10:10:14] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_101014.db
+[2026-09-21 10:10:14] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 10:10:14] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 10:10:14] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 10:10:14] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_101014.db
+[2026-09-21 10:10:25] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 10:10:47] [INFO] [database] 🔐 Пароль пользователя qwerty перехеширован в bcrypt
+[2026-09-21 10:10:47] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-21 10:10:57] [ERROR] [app] Exception on /diary [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 213, in diary_page
+    return _render_diary(user, user)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 189, in _render_diary
+    diary_records = db.get_full_diary(student['id'], date_from or None, date_to or None)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: 'Database' object has no attribute 'get_full_diary'
+[2026-09-21 10:11:00] [ERROR] [app] Exception on /diary [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 213, in diary_page
+    return _render_diary(user, user)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 189, in _render_diary
+    diary_records = db.get_full_diary(student['id'], date_from or None, date_to or None)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: 'Database' object has no attribute 'get_full_diary'
+[2026-09-21 10:11:05] [ERROR] [app] Exception on /diary [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 213, in diary_page
+    return _render_diary(user, user)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 189, in _render_diary
+    diary_records = db.get_full_diary(student['id'], date_from or None, date_to or None)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: 'Database' object has no attribute 'get_full_diary'
+[2026-09-21 14:04:04] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 14:04:07] [INFO] [__main__] ============================================================
+[2026-09-21 14:04:07] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 14:04:07] [INFO] [__main__] ============================================================
+[2026-09-21 14:04:07] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 14:04:08] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_140407.db
+[2026-09-21 14:04:08] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 14:04:08] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 14:04:08] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 14:04:08] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_140408.db
+[2026-09-21 14:04:10] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 14:04:13] [ERROR] [app] Exception on /diary [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 213, in diary_page
+    return _render_diary(user, user)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 189, in _render_diary
+    diary_records = db.get_full_diary(student['id'], date_from or None, date_to or None)
+                    ^^^^^^^^^^^^^^^^^
+AttributeError: 'Database' object has no attribute 'get_full_diary'
+[2026-09-21 14:08:23] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 14:08:26] [INFO] [__main__] ============================================================
+[2026-09-21 14:08:26] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 14:08:26] [INFO] [__main__] ============================================================
+[2026-09-21 14:08:26] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 14:08:26] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_140826.db
+[2026-09-21 14:08:27] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 14:08:27] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 14:08:27] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 14:08:27] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_140827.db
+[2026-09-21 14:08:29] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 14:08:52] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-21 14:11:40] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-21 14:11:46] [INFO] [database] 🔐 Пароль пользователя Novikova перехеширован в bcrypt
+[2026-09-21 14:11:46] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-21 14:12:22] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-21 14:12:30] [INFO] [database] 🔐 Пароль пользователя admin перехеширован в bcrypt
+[2026-09-21 14:12:30] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-21 14:12:51] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-21 14:12:57] [WARNING] [__main__] ❌ Неудачная попытка входа: Novikova
+[2026-09-21 14:13:07] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-21 14:13:30] [INFO] [__main__] 💾 Журнал сохранён: 1 оценок, 9 отметок посещаемости
+[2026-09-21 14:14:25] [INFO] [__main__] 💾 Журнал сохранён: 1 оценок, 9 отметок посещаемости
+[2026-09-21 14:14:43] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-21 14:14:53] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-21 14:18:13] [INFO] [__main__] ➕ Создан пользователь: u44ast (editor)
+[2026-09-21 14:18:27] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-21 14:18:41] [INFO] [__main__] 🔓 Успешный вход: u44ast
+[2026-09-21 14:56:07] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 14:56:10] [INFO] [__main__] ============================================================
+[2026-09-21 14:56:10] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 14:56:10] [INFO] [__main__] ============================================================
+[2026-09-21 14:56:10] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 14:56:11] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_145610.db
+[2026-09-21 14:56:11] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 14:56:11] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 14:56:11] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 14:56:11] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_145611.db
+[2026-09-21 14:56:15] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 14:58:10] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 14:58:14] [INFO] [__main__] ============================================================
+[2026-09-21 14:58:14] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 14:58:14] [INFO] [__main__] ============================================================
+[2026-09-21 14:58:14] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 14:58:14] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_145814.db
+[2026-09-21 14:58:15] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 14:58:15] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 14:58:15] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 14:58:15] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_145815.db
+[2026-09-21 14:58:23] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 14:58:31] [INFO] [__main__] 🔒 Выход: u44ast
+[2026-09-21 14:58:38] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-21 15:00:32] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:00:34] [INFO] [__main__] ============================================================
+[2026-09-21 15:00:34] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:00:34] [INFO] [__main__] ============================================================
+[2026-09-21 15:00:34] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:00:35] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_150034.db
+[2026-09-21 15:00:35] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_101014.db
+[2026-09-21 15:00:35] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:00:35] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:00:35] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:00:35] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_150035.db
+[2026-09-21 15:00:35] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_101014.db
+[2026-09-21 15:00:37] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:02:27] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:02:29] [INFO] [__main__] ============================================================
+[2026-09-21 15:02:29] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:02:29] [INFO] [__main__] ============================================================
+[2026-09-21 15:02:29] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:02:29] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_150229.db
+[2026-09-21 15:02:29] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_140407.db
+[2026-09-21 15:02:29] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:02:30] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:02:30] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:02:30] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_150230.db
+[2026-09-21 15:02:30] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_140408.db
+[2026-09-21 15:02:32] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:02:36] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-21 15:02:43] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-21 15:07:42] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:07:44] [INFO] [__main__] ============================================================
+[2026-09-21 15:07:44] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:07:44] [INFO] [__main__] ============================================================
+[2026-09-21 15:07:44] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:07:44] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_150744.db
+[2026-09-21 15:07:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_140826.db
+[2026-09-21 15:07:44] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:07:44] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:07:45] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:07:45] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_150744.db
+[2026-09-21 15:07:45] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_140827.db
+[2026-09-21 15:07:54] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:08:23] [WARNING] [waitress.queue] Task queue depth is 1
+[2026-09-21 15:10:55] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:10:57] [INFO] [__main__] ============================================================
+[2026-09-21 15:10:57] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:10:57] [INFO] [__main__] ============================================================
+[2026-09-21 15:10:57] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:10:58] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_151057.db
+[2026-09-21 15:10:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_145610.db
+[2026-09-21 15:10:58] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:10:58] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:10:58] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:10:58] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_151058.db
+[2026-09-21 15:10:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_145611.db
+[2026-09-21 15:11:02] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:11:50] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-21 15:20:11] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:20:13] [INFO] [__main__] ============================================================
+[2026-09-21 15:20:13] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:20:13] [INFO] [__main__] ============================================================
+[2026-09-21 15:20:13] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:20:13] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_152013.db
+[2026-09-21 15:20:13] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_145814.db
+[2026-09-21 15:20:14] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:20:14] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:20:14] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:20:14] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_152014.db
+[2026-09-21 15:20:14] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_145815.db
+[2026-09-21 15:20:18] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:20:42] [WARNING] [__main__] ❌ Неудачная попытка входа: qwerty
+[2026-09-21 15:20:50] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-21 15:24:00] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:24:02] [INFO] [__main__] ============================================================
+[2026-09-21 15:24:02] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:24:02] [INFO] [__main__] ============================================================
+[2026-09-21 15:24:02] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:24:03] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_152402.db
+[2026-09-21 15:24:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_150034.db
+[2026-09-21 15:24:03] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:24:03] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:24:03] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:24:03] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_152403.db
+[2026-09-21 15:24:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_150035.db
+[2026-09-21 15:24:30] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:24:47] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-21 15:25:02] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-21 15:25:30] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-21 15:28:35] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:28:37] [INFO] [__main__] ============================================================
+[2026-09-21 15:28:37] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:28:37] [INFO] [__main__] ============================================================
+[2026-09-21 15:28:37] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:28:37] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_152837.db
+[2026-09-21 15:28:37] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_150229.db
+[2026-09-21 15:28:37] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:28:37] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:28:37] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:28:37] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_152837.db
+[2026-09-21 15:28:37] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_150230.db
+[2026-09-21 15:28:41] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:33:28] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:33:30] [INFO] [__main__] ============================================================
+[2026-09-21 15:33:30] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:33:30] [INFO] [__main__] ============================================================
+[2026-09-21 15:33:30] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:33:30] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_153330.db
+[2026-09-21 15:33:30] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_150744.db
+[2026-09-21 15:33:30] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:33:30] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:33:31] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:33:31] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_153330.db
+[2026-09-21 15:33:31] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_150744.db
+[2026-09-21 15:33:34] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:33:59] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-21 15:46:30] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:46:34] [INFO] [__main__] ============================================================
+[2026-09-21 15:46:34] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:46:34] [INFO] [__main__] ============================================================
+[2026-09-21 15:46:34] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:46:34] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_154634.db
+[2026-09-21 15:46:34] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_151057.db
+[2026-09-21 15:46:34] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:46:36] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:46:36] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:46:36] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_154636.db
+[2026-09-21 15:46:36] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_151058.db
+[2026-09-21 15:46:46] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:50:04] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 15:50:06] [INFO] [__main__] ============================================================
+[2026-09-21 15:50:06] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 15:50:06] [INFO] [__main__] ============================================================
+[2026-09-21 15:50:06] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 15:50:07] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_155006.db
+[2026-09-21 15:50:07] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_152013.db
+[2026-09-21 15:50:07] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 15:50:07] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 15:50:07] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 15:50:08] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_155007.db
+[2026-09-21 15:50:08] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_152014.db
+[2026-09-21 15:50:10] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 15:50:23] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-21 15:50:33] [WARNING] [__main__] ❌ Неудачная попытка входа: admin
+[2026-09-21 15:50:39] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-21 15:51:58] [INFO] [database] 🗑 Удалена пара: id=513
+[2026-09-21 15:52:58] [INFO] [database] ➕ Добавлена пара: id=845, группа=24, Понедельник, пара 5
+[2026-09-21 16:27:46] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 16:27:50] [INFO] [__main__] ============================================================
+[2026-09-21 16:27:50] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 16:27:50] [INFO] [__main__] ============================================================
+[2026-09-21 16:27:50] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 16:27:50] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_162750.db
+[2026-09-21 16:27:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_152402.db
+[2026-09-21 16:27:50] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 16:27:51] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 16:27:51] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 16:27:51] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_162751.db
+[2026-09-21 16:27:51] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_152403.db
+[2026-09-21 16:27:52] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-21 16:28:25] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 195, in top-level template code
+    {% block scripts %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 38, in block 'scripts'
+    let calendarData = {{ calendar_data|tojson }};
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\filters.py", line 1721, in do_tojson
+    return htmlsafe_json_dumps(value, dumps=dumps, **kwargs)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\utils.py", line 669, in htmlsafe_json_dumps
+    dumps(obj, **kwargs)
+    ~~~~~^^^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\json\provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\bald\AppData\Local\Python\pythoncore-3.14-64\Lib\json\__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Users\bald\AppData\Local\Python\pythoncore-3.14-64\Lib\json\encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Users\bald\AppData\Local\Python\pythoncore-3.14-64\Lib\json\encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\json\provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type Undefined is not JSON serializable
+[2026-09-21 16:28:30] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 195, in top-level template code
+    {% block scripts %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 38, in block 'scripts'
+    let calendarData = {{ calendar_data|tojson }};
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\filters.py", line 1721, in do_tojson
+    return htmlsafe_json_dumps(value, dumps=dumps, **kwargs)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\utils.py", line 669, in htmlsafe_json_dumps
+    dumps(obj, **kwargs)
+    ~~~~~^^^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\json\provider.py", line 179, in dumps
+    return json.dumps(obj, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\bald\AppData\Local\Python\pythoncore-3.14-64\Lib\json\__init__.py", line 242, in dumps
+    **kw).encode(obj)
+          ~~~~~~^^^^^
+  File "C:\Users\bald\AppData\Local\Python\pythoncore-3.14-64\Lib\json\encoder.py", line 202, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "C:\Users\bald\AppData\Local\Python\pythoncore-3.14-64\Lib\json\encoder.py", line 263, in iterencode
+    return _iterencode(o, 0)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\json\provider.py", line 121, in _default
+    raise TypeError(f"Object of type {type(o).__name__} is not JSON serializable")
+TypeError: Object of type Undefined is not JSON serializable
+[2026-09-21 16:30:23] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-21 16:30:25] [INFO] [__main__] ============================================================
+[2026-09-21 16:30:25] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-21 16:30:25] [INFO] [__main__] ============================================================
+[2026-09-21 16:30:25] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-21 16:30:25] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260921_163025.db
+[2026-09-21 16:30:25] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_152837.db
+[2026-09-21 16:30:25] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-21 16:30:26] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-21 16:30:26] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-21 16:30:26] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260921_163026.db
+[2026-09-21 16:30:26] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_152837.db
+[2026-09-21 16:30:29] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 08:44:31] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 08:44:35] [INFO] [__main__] ============================================================
+[2026-09-22 08:44:35] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 08:44:35] [INFO] [__main__] ============================================================
+[2026-09-22 08:44:35] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 08:44:35] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_084435.db
+[2026-09-22 08:44:35] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_153330.db
+[2026-09-22 08:44:36] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 08:44:36] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 08:44:36] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 08:44:36] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_084436.db
+[2026-09-22 08:44:36] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_153330.db
+[2026-09-22 08:44:39] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 14:38:04] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 14:38:08] [INFO] [__main__] ============================================================
+[2026-09-22 14:38:08] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 14:38:08] [INFO] [__main__] ============================================================
+[2026-09-22 14:38:08] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 14:38:08] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_143808.db
+[2026-09-22 14:38:08] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_154634.db
+[2026-09-22 14:38:09] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 14:38:09] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 14:38:09] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 14:38:09] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_143809.db
+[2026-09-22 14:38:09] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_154636.db
+[2026-09-22 14:38:47] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:11:30] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:11:33] [INFO] [__main__] ============================================================
+[2026-09-22 15:11:33] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:11:33] [INFO] [__main__] ============================================================
+[2026-09-22 15:11:33] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:11:33] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_151133.db
+[2026-09-22 15:11:33] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_155006.db
+[2026-09-22 15:11:33] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:11:33] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:11:33] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:11:34] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_151133.db
+[2026-09-22 15:11:34] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_155007.db
+[2026-09-22 15:11:35] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:11:36] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 217, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:11:39] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 217, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:11:49] [ERROR] [app] Exception on /editor [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 173, in editor_page
+    return render_template('editor.html',
+                           user=user, active_page='editor',
+    ...<6 lines>...
+                           subjects=db.get_all_subjects(),
+                           rooms=db.get_all_rooms())
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\editor.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 217, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:14:19] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:14:21] [INFO] [__main__] ============================================================
+[2026-09-22 15:14:21] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:14:21] [INFO] [__main__] ============================================================
+[2026-09-22 15:14:21] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:14:21] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_151421.db
+[2026-09-22 15:14:21] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_162750.db
+[2026-09-22 15:14:21] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:14:22] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:14:22] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:14:22] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_151422.db
+[2026-09-22 15:14:22] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_162751.db
+[2026-09-22 15:14:25] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:14:26] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 184, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:14:28] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 184, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:15:19] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:15:21] [INFO] [__main__] ============================================================
+[2026-09-22 15:15:21] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:15:21] [INFO] [__main__] ============================================================
+[2026-09-22 15:15:21] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:15:21] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_151521.db
+[2026-09-22 15:15:21] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260921_163025.db
+[2026-09-22 15:15:22] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:15:22] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:15:22] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:15:22] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_151522.db
+[2026-09-22 15:15:22] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260921_163026.db
+[2026-09-22 15:15:24] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:19:51] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:19:53] [INFO] [__main__] ============================================================
+[2026-09-22 15:19:53] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:19:53] [INFO] [__main__] ============================================================
+[2026-09-22 15:19:53] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:19:53] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_151953.db
+[2026-09-22 15:19:53] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_084435.db
+[2026-09-22 15:19:53] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:19:53] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:19:54] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:19:54] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_151953.db
+[2026-09-22 15:19:54] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_084436.db
+[2026-09-22 15:19:55] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:19:56] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 185, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:21:54] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:21:56] [INFO] [__main__] ============================================================
+[2026-09-22 15:21:56] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:21:56] [INFO] [__main__] ============================================================
+[2026-09-22 15:21:56] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:21:56] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_152156.db
+[2026-09-22 15:21:56] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_143808.db
+[2026-09-22 15:21:57] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:21:57] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:21:57] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:21:57] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_152157.db
+[2026-09-22 15:21:57] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_143809.db
+[2026-09-22 15:21:58] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:22:00] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\templates\base.html", line 182, in template
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'content' defined twice
+[2026-09-22 15:23:35] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:23:37] [INFO] [__main__] ============================================================
+[2026-09-22 15:23:37] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:23:37] [INFO] [__main__] ============================================================
+[2026-09-22 15:23:37] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:23:37] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_152337.db
+[2026-09-22 15:23:37] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_151133.db
+[2026-09-22 15:23:37] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:23:37] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:23:37] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:23:38] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_152337.db
+[2026-09-22 15:23:38] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_151133.db
+[2026-09-22 15:23:39] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:27:21] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-22 15:27:32] [INFO] [__main__] 🔓 Успешный вход: u44ast
+[2026-09-22 15:29:55] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:29:57] [INFO] [__main__] ============================================================
+[2026-09-22 15:29:57] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:29:57] [INFO] [__main__] ============================================================
+[2026-09-22 15:29:57] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:29:57] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_152957.db
+[2026-09-22 15:29:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_151421.db
+[2026-09-22 15:29:58] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:29:58] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:29:58] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:29:58] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_152958.db
+[2026-09-22 15:29:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_151422.db
+[2026-09-22 15:30:00] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:31:39] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:31:41] [INFO] [__main__] ============================================================
+[2026-09-22 15:31:41] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:31:41] [INFO] [__main__] ============================================================
+[2026-09-22 15:31:41] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:31:41] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_153141.db
+[2026-09-22 15:31:41] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_151521.db
+[2026-09-22 15:31:42] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:31:42] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:31:42] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:31:42] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_153142.db
+[2026-09-22 15:31:42] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_151522.db
+[2026-09-22 15:31:43] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:36:44] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:36:47] [INFO] [__main__] ============================================================
+[2026-09-22 15:36:47] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:36:47] [INFO] [__main__] ============================================================
+[2026-09-22 15:36:47] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:36:47] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_153647.db
+[2026-09-22 15:36:47] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_151953.db
+[2026-09-22 15:36:48] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:36:48] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:36:48] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:36:48] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_153648.db
+[2026-09-22 15:36:48] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_151953.db
+[2026-09-22 15:36:50] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:46:38] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:46:39] [INFO] [__main__] ============================================================
+[2026-09-22 15:46:39] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:46:39] [INFO] [__main__] ============================================================
+[2026-09-22 15:46:39] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:46:40] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_154639.db
+[2026-09-22 15:46:40] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_152156.db
+[2026-09-22 15:46:40] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:46:40] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:46:40] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:46:40] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_154640.db
+[2026-09-22 15:46:40] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_152157.db
+[2026-09-22 15:46:42] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:46:55] [ERROR] [app] Exception on /performance [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 516, in performance_page
+    performance = db.get_group_performance(selected_group,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Database' object has no attribute 'get_group_performance'
+[2026-09-22 15:48:24] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:48:26] [INFO] [__main__] ============================================================
+[2026-09-22 15:48:26] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:48:26] [INFO] [__main__] ============================================================
+[2026-09-22 15:48:26] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:48:26] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_154826.db
+[2026-09-22 15:48:26] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_152337.db
+[2026-09-22 15:48:26] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:48:26] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:48:26] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:48:27] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_154826.db
+[2026-09-22 15:48:27] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_152337.db
+[2026-09-22 15:48:28] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:50:14] [ERROR] [app] Exception on /performance [GET]
+Traceback (most recent call last):
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWeb\app.py", line 516, in performance_page
+    performance = db.get_group_performance(selected_group,
+                  ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Database' object has no attribute 'get_group_performance'
+[2026-09-22 15:50:23] [INFO] [__main__] 🔒 Выход: u44ast
+[2026-09-22 15:50:41] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-22 15:54:17] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:54:19] [INFO] [__main__] ============================================================
+[2026-09-22 15:54:19] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:54:19] [INFO] [__main__] ============================================================
+[2026-09-22 15:54:19] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:54:19] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_155419.db
+[2026-09-22 15:54:19] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_152957.db
+[2026-09-22 15:54:19] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:54:19] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:54:20] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:54:20] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_155419.db
+[2026-09-22 15:54:20] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_152958.db
+[2026-09-22 15:55:08] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 15:57:12] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:57:14] [INFO] [__main__] ============================================================
+[2026-09-22 15:57:14] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:57:14] [INFO] [__main__] ============================================================
+[2026-09-22 15:57:14] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:57:14] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_155714.db
+[2026-09-22 15:57:14] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_153141.db
+[2026-09-22 15:57:14] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:57:14] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:57:14] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:57:15] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_155714.db
+[2026-09-22 15:57:15] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_153142.db
+[2026-09-22 15:58:30] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 15:58:31] [INFO] [__main__] ============================================================
+[2026-09-22 15:58:31] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 15:58:31] [INFO] [__main__] ============================================================
+[2026-09-22 15:58:31] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 15:58:32] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_155831.db
+[2026-09-22 15:58:32] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_153647.db
+[2026-09-22 15:58:32] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 15:58:32] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 15:58:32] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 15:58:32] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_155832.db
+[2026-09-22 15:58:32] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_153648.db
+[2026-09-22 15:58:34] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 16:01:21] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 16:01:23] [INFO] [__main__] ============================================================
+[2026-09-22 16:01:23] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 16:01:23] [INFO] [__main__] ============================================================
+[2026-09-22 16:01:23] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 16:01:23] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_160123.db
+[2026-09-22 16:01:23] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_154639.db
+[2026-09-22 16:01:24] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 16:01:24] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 16:01:24] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 16:01:24] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_160124.db
+[2026-09-22 16:01:24] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_154640.db
+[2026-09-22 16:01:26] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 22:36:03] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 22:36:04] [INFO] [__main__] ============================================================
+[2026-09-22 22:36:04] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 22:36:04] [INFO] [__main__] ============================================================
+[2026-09-22 22:36:04] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 22:36:04] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_223604.db
+[2026-09-22 22:36:04] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_154826.db
+[2026-09-22 22:36:04] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 22:36:04] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 22:36:04] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 22:36:04] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_223604.db
+[2026-09-22 22:36:04] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_154826.db
+[2026-09-22 22:36:06] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 22:43:17] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 22:43:17] [INFO] [__main__] ============================================================
+[2026-09-22 22:43:17] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 22:43:17] [INFO] [__main__] ============================================================
+[2026-09-22 22:43:17] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 22:43:17] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_224317.db
+[2026-09-22 22:43:17] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_155419.db
+[2026-09-22 22:43:17] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 22:43:18] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 22:43:18] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 22:43:18] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_224318.db
+[2026-09-22 22:43:18] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_155419.db
+[2026-09-22 22:43:20] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:02:43] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 23:02:43] [INFO] [__main__] ============================================================
+[2026-09-22 23:02:43] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 23:02:43] [INFO] [__main__] ============================================================
+[2026-09-22 23:02:43] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 23:02:43] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_230243.db
+[2026-09-22 23:02:43] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_155714.db
+[2026-09-22 23:02:43] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 23:02:43] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 23:02:43] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 23:02:43] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_230243.db
+[2026-09-22 23:02:43] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_155714.db
+[2026-09-22 23:02:46] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:03:05] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-22 23:10:19] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 23:10:19] [INFO] [__main__] ============================================================
+[2026-09-22 23:10:19] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 23:10:19] [INFO] [__main__] ============================================================
+[2026-09-22 23:10:19] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 23:10:19] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_231019.db
+[2026-09-22 23:10:19] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_155831.db
+[2026-09-22 23:10:19] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 23:10:19] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 23:10:19] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 23:10:19] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_231019.db
+[2026-09-22 23:10:19] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_155832.db
+[2026-09-22 23:10:21] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:15:11] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 23:15:11] [INFO] [__main__] ============================================================
+[2026-09-22 23:15:11] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 23:15:11] [INFO] [__main__] ============================================================
+[2026-09-22 23:15:11] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 23:15:11] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_231511.db
+[2026-09-22 23:15:11] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_160123.db
+[2026-09-22 23:15:11] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 23:15:11] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 23:15:12] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 23:15:12] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_231511.db
+[2026-09-22 23:15:12] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_160124.db
+[2026-09-22 23:15:13] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:16:14] [ERROR] [app] Exception on /stats [GET]
+Traceback (most recent call last):
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\app.py", line 819, in stats_page
+    return render_template('stats.html',
+                           user=user, active_page='stats',
+                           overall=db.get_overall_stats(),
+                           teacher_stats=db.get_teacher_stats(),
+                           group_stats=db.get_group_stats())
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\stats.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "C:\проект\u4ebkaWeb\templates\base.html", line 210, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\templates\stats.html", line 28, in block 'content'
+    <div class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.total_students or 0 }}</div>
+    ^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'stats' is undefined
+[2026-09-22 23:20:45] [ERROR] [app] Exception on /stats [GET]
+Traceback (most recent call last):
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\app.py", line 819, in stats_page
+    return render_template('stats.html',
+                           user=user, active_page='stats',
+                           overall=db.get_overall_stats(),
+                           teacher_stats=db.get_teacher_stats(),
+                           group_stats=db.get_group_stats())
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\stats.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "C:\проект\u4ebkaWeb\templates\base.html", line 210, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\templates\stats.html", line 28, in block 'content'
+    <div class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.total_students or 0 }}</div>
+    ^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 490, in getattr
+    return getattr(obj, attribute)
+jinja2.exceptions.UndefinedError: 'stats' is undefined
+[2026-09-22 23:23:02] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-22 23:23:14] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-22 23:23:48] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-22 23:24:07] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-22 23:24:59] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-22 23:25:15] [WARNING] [__main__] ❌ Неудачная попытка входа: U44ast
+[2026-09-22 23:25:34] [WARNING] [__main__] ❌ Неудачная попытка входа: U44ast
+[2026-09-22 23:46:49] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 23:46:50] [INFO] [__main__] ============================================================
+[2026-09-22 23:46:50] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 23:46:50] [INFO] [__main__] ============================================================
+[2026-09-22 23:46:50] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 23:46:50] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_234650.db
+[2026-09-22 23:46:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_223604.db
+[2026-09-22 23:46:50] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 23:46:50] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 23:46:50] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 23:46:50] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_234650.db
+[2026-09-22 23:46:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_223604.db
+[2026-09-22 23:46:52] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:46:54] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\base.html", line 202, in template
+    {{ (user.full_name or user.username)[:1]|upper }}
+    ^
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
+[2026-09-22 23:46:58] [ERROR] [app] Exception on /login [GET]
+Traceback (most recent call last):
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\app.py", line 104, in login
+    return render_template('login.html')
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\login.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\base.html", line 202, in template
+    {{ (user.full_name or user.username)[:1]|upper }}
+    ^
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
+[2026-09-22 23:48:47] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 23:48:47] [INFO] [__main__] ============================================================
+[2026-09-22 23:48:47] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 23:48:47] [INFO] [__main__] ============================================================
+[2026-09-22 23:48:47] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 23:48:47] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_234847.db
+[2026-09-22 23:48:47] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_224317.db
+[2026-09-22 23:48:47] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 23:48:47] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 23:48:47] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 23:48:47] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_234847.db
+[2026-09-22 23:48:47] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_224318.db
+[2026-09-22 23:48:49] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:48:52] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:48:54] [ERROR] [app] Exception on / [GET]
+Traceback (most recent call last):
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\проект\u4ebkaWeb\app.py", line 136, in index
+    return render_template('schedule.html',
+                           user=user, active_page='schedule', schedule=schedule,
+    ...<6 lines>...
+                           selected_group=selected_group,
+                           view_mode=view_mode)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 151, in render_template
+    return _render(app, template, context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\flask\templating.py", line 132, in _render
+    rv = template.render(context)
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\schedule.html", line 1, in top-level template code
+    {% extends "base.html" %}
+  File "C:\проект\u4ebkaWeb\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "C:\проект\u4ebkaWeb\templates\base.html", line 202, in template
+    {{ (user.full_name or user.username)[:1]|upper }}
+    ^
+jinja2.exceptions.TemplateSyntaxError: Unexpected end of template. Jinja was looking for the following tags: 'elif' or 'else' or 'endif'. The innermost block that needs to be closed is 'if'.
+[2026-09-22 23:51:14] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-22 23:51:14] [INFO] [__main__] ============================================================
+[2026-09-22 23:51:14] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-22 23:51:14] [INFO] [__main__] ============================================================
+[2026-09-22 23:51:14] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-22 23:51:14] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260922_235114.db
+[2026-09-22 23:51:14] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_230243.db
+[2026-09-22 23:51:14] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-22 23:51:14] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-22 23:51:14] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-22 23:51:14] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260922_235114.db
+[2026-09-22 23:51:14] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_230243.db
+[2026-09-22 23:51:16] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-22 23:52:25] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-23 00:09:39] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 00:09:40] [INFO] [__main__] ============================================================
+[2026-09-23 00:09:40] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 00:09:40] [INFO] [__main__] ============================================================
+[2026-09-23 00:09:40] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 00:09:40] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_000940.db
+[2026-09-23 00:09:40] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_231019.db
+[2026-09-23 00:09:40] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 00:09:40] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 00:09:40] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 00:09:54] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 00:10:57] [INFO] [database] ➕ Добавлена пара: id=846
+[2026-09-23 09:39:23] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 09:39:34] [INFO] [__main__] ============================================================
+[2026-09-23 09:39:34] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 09:39:34] [INFO] [__main__] ============================================================
+[2026-09-23 09:39:34] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 09:39:35] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_093934.db
+[2026-09-23 09:39:35] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_231019.db
+[2026-09-23 09:39:36] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 09:39:36] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 09:39:36] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 09:39:36] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_093936.db
+[2026-09-23 09:39:36] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_231511.db
+[2026-09-23 09:39:40] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 09:56:43] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 09:57:01] [INFO] [__main__] ============================================================
+[2026-09-23 09:57:01] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 09:57:01] [INFO] [__main__] ============================================================
+[2026-09-23 09:57:01] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 09:57:03] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_095701.db
+[2026-09-23 09:57:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_231511.db
+[2026-09-23 09:57:04] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 09:57:05] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 09:57:06] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 09:57:06] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_095705.db
+[2026-09-23 09:57:06] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_234650.db
+[2026-09-23 09:58:19] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 09:58:28] [INFO] [__main__] ============================================================
+[2026-09-23 09:58:28] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 09:58:28] [INFO] [__main__] ============================================================
+[2026-09-23 09:58:28] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 09:58:29] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_095828.db
+[2026-09-23 09:58:29] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_234650.db
+[2026-09-23 09:58:30] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 09:58:31] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 09:58:31] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 09:58:32] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_095831.db
+[2026-09-23 09:58:33] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_234847.db
+[2026-09-23 09:58:41] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 09:58:58] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-23 09:59:11] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-23 10:00:12] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-23 10:00:23] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-23 10:02:35] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-23 10:02:47] [WARNING] [__main__] ❌ Неудачная попытка входа: UI
+[2026-09-23 10:02:58] [INFO] [__main__] 🔓 Успешный вход: u44ast
+[2026-09-23 10:04:12] [ERROR] [database] Ошибка создания override: NOT NULL constraint failed: schedule_overrides.lesson_id
+[2026-09-23 10:13:38] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 10:13:57] [INFO] [__main__] ============================================================
+[2026-09-23 10:13:57] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 10:13:57] [INFO] [__main__] ============================================================
+[2026-09-23 10:13:57] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 10:13:58] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_101357.db
+[2026-09-23 10:13:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_234847.db
+[2026-09-23 10:13:59] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 10:13:59] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 10:13:59] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 10:13:59] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_101359.db
+[2026-09-23 10:13:59] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260922_235114.db
+[2026-09-23 10:14:21] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 10:15:01] [INFO] [__main__] 🔒 Выход: u44ast
+[2026-09-23 10:15:10] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-23 10:38:38] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 10:38:57] [INFO] [__main__] ============================================================
+[2026-09-23 10:38:57] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 10:38:57] [INFO] [__main__] ============================================================
+[2026-09-23 10:38:57] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 10:38:58] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_103857.db
+[2026-09-23 10:38:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260922_235114.db
+[2026-09-23 10:38:58] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 10:38:58] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 10:38:58] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 10:38:59] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_103858.db
+[2026-09-23 10:38:59] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_000940.db
+[2026-09-23 10:39:07] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 10:40:24] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-23 10:40:39] [INFO] [__main__] 🔓 Успешный вход: u44ast
+[2026-09-23 10:42:18] [INFO] [__main__] 🔒 Выход: u44ast
+[2026-09-23 10:42:27] [WARNING] [__main__] ❌ Неудачная попытка входа: qwerty
+[2026-09-23 10:42:34] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-23 10:43:49] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-23 10:44:03] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-23 11:11:58] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 11:12:35] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 11:12:47] [INFO] [__main__] ============================================================
+[2026-09-23 11:12:47] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 11:12:47] [INFO] [__main__] ============================================================
+[2026-09-23 11:12:47] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 11:12:47] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_111247.db
+[2026-09-23 11:12:47] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_093934.db
+[2026-09-23 11:12:48] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 11:12:48] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 11:12:48] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 11:12:48] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_111248.db
+[2026-09-23 11:12:48] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_093936.db
+[2026-09-23 11:12:53] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 11:23:48] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 11:23:55] [INFO] [__main__] ============================================================
+[2026-09-23 11:23:55] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 11:23:55] [INFO] [__main__] ============================================================
+[2026-09-23 11:23:55] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 11:23:55] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_112355.db
+[2026-09-23 11:23:55] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_095701.db
+[2026-09-23 11:23:56] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 11:23:56] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 11:23:56] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 11:23:56] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_112356.db
+[2026-09-23 11:23:56] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_095705.db
+[2026-09-23 11:24:20] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 11:24:31] [INFO] [database] 🗑 Удалён кабинет id=57
+[2026-09-23 11:25:19] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-23 11:25:33] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-23 11:25:40] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-23 11:26:55] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-23 11:27:05] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-23 11:27:47] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-23 11:27:56] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-23 11:41:36] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 11:41:45] [INFO] [__main__] ============================================================
+[2026-09-23 11:41:45] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 11:41:45] [INFO] [__main__] ============================================================
+[2026-09-23 11:41:45] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 11:41:47] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_114145.db
+[2026-09-23 11:41:47] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_095828.db
+[2026-09-23 11:41:47] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 11:41:47] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 11:41:47] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 11:41:48] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_114147.db
+[2026-09-23 11:41:48] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_095831.db
+[2026-09-23 11:42:09] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 11:42:42] [INFO] [__main__] 💾 Журнал сохранён: 1 оценок, 9 отметок
+[2026-09-23 11:42:44] [INFO] [__main__] 💾 Журнал сохранён: 1 оценок, 9 отметок
+[2026-09-23 11:43:09] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-23 13:40:17] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-23 13:40:18] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-23 16:46:43] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 16:46:54] [INFO] [__main__] ============================================================
+[2026-09-23 16:46:54] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 16:46:54] [INFO] [__main__] ============================================================
+[2026-09-23 16:46:54] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 16:46:55] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_164654.db
+[2026-09-23 16:46:55] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_101357.db
+[2026-09-23 16:46:55] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 16:46:56] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 16:46:56] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 16:46:56] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_164656.db
+[2026-09-23 16:46:56] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_101359.db
+[2026-09-23 16:47:40] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 16:47:51] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-23 17:24:59] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 17:25:10] [INFO] [__main__] ============================================================
+[2026-09-23 17:25:10] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 17:25:10] [INFO] [__main__] ============================================================
+[2026-09-23 17:25:10] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 17:25:10] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_172510.db
+[2026-09-23 17:25:10] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_103857.db
+[2026-09-23 17:25:11] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 17:25:11] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 17:25:11] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 17:25:11] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_172511.db
+[2026-09-23 17:25:11] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_103858.db
+[2026-09-23 17:25:15] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-23 17:30:38] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-23 17:30:44] [INFO] [__main__] ============================================================
+[2026-09-23 17:30:44] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-23 17:30:44] [INFO] [__main__] ============================================================
+[2026-09-23 17:30:44] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-23 17:30:44] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260923_173044.db
+[2026-09-23 17:30:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_111247.db
+[2026-09-23 17:30:45] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-23 17:30:45] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-23 17:30:45] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-23 17:30:45] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260923_173045.db
+[2026-09-23 17:30:46] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_111248.db
+[2026-09-23 17:30:48] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-24 09:16:10] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-24 09:16:17] [INFO] [__main__] ============================================================
+[2026-09-24 09:16:17] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-24 09:16:17] [INFO] [__main__] ============================================================
+[2026-09-24 09:16:17] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-24 09:16:17] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260924_091617.db
+[2026-09-24 09:16:17] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_112355.db
+[2026-09-24 09:16:18] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-24 09:16:18] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-24 09:16:18] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-24 09:16:18] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260924_091618.db
+[2026-09-24 09:16:18] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_112356.db
+[2026-09-24 09:17:04] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-24 09:44:17] [INFO] [__main__] 🔒 Выход: admin
+[2026-09-24 09:44:26] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-24 09:44:52] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-24 09:45:29] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-24 09:45:29] [INFO] [__main__] 🔓 Успешный вход: qwerty
+[2026-09-24 09:47:33] [INFO] [__main__] 🔒 Выход: qwerty
+[2026-09-24 09:47:44] [INFO] [__main__] 🔓 Успешный вход: Novikova
+[2026-09-24 09:48:31] [INFO] [__main__] 🔒 Выход: Novikova
+[2026-09-24 09:48:40] [INFO] [__main__] 🔓 Успешный вход: u44ast
+[2026-09-24 15:14:24] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-24 15:14:29] [INFO] [__main__] ============================================================
+[2026-09-24 15:14:29] [INFO] [__main__] 🚀 ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-24 15:14:29] [INFO] [__main__] ============================================================
+[2026-09-24 15:14:29] [INFO] [__main__] 💾 Создание стартового бэкапа...
+[2026-09-24 15:14:29] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260924_151429.db
+[2026-09-24 15:14:29] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_114145.db
+[2026-09-24 15:14:30] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-24 15:14:30] [INFO] [__main__] ✅ Rate limiting включён (5 попыток/мин на /login)
+[2026-09-24 15:14:30] [INFO] [__main__] ✅ Flask-приложение создано
+[2026-09-24 15:14:30] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260924_151430.db
+[2026-09-24 15:14:30] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_114147.db
+[2026-09-24 15:14:32] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-24 15:15:20] [INFO] [__main__] 🔒 Выход: u44ast
+[2026-09-24 15:15:27] [INFO] [__main__] 🔓 Успешный вход: admin
+[2026-09-24 15:15:46] [INFO] [database] 📦 Создан архивный снимок: id=1, name=Осень 2026/2027
+[2026-09-24 15:46:32] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-24 15:46:36] [INFO] [__main__] ============================================================
+[2026-09-24 15:46:36] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-24 15:46:36] [INFO] [__main__] ============================================================
+[2026-09-24 15:46:36] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-24 15:46:37] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260924_154636.db
+[2026-09-24 15:46:37] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_164654.db
+[2026-09-24 15:46:37] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-24 15:46:37] [INFO] [__main__] Flask-приложение создано
+[2026-09-24 15:46:37] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260924_154637.db
+[2026-09-24 15:46:37] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_164656.db
+[2026-09-24 15:47:02] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-24 15:47:48] [INFO] [__main__] Выход: admin
+[2026-09-24 15:52:51] [INFO] [__main__] Успешный вход: admin
+[2026-09-25 03:46:37] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260925_034637.db
+[2026-09-25 03:46:38] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_172510.db
+[2026-09-25 10:07:21] [INFO] [__main__] Выход: qwerty
+[2026-09-25 10:07:36] [INFO] [__main__] Успешный вход: admin
+[2026-09-25 10:15:07] [INFO] [__main__] Выход: admin
+[2026-09-25 11:04:18] [INFO] [__main__] Успешный вход: u44ast
+[2026-09-28 10:15:29] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 10:15:43] [INFO] [__main__] ============================================================
+[2026-09-28 10:15:43] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 10:15:43] [INFO] [__main__] ============================================================
+[2026-09-28 10:15:43] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 10:15:43] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_101543.db
+[2026-09-28 10:15:43] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_172511.db
+[2026-09-28 10:15:44] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 10:15:44] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 10:15:44] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_101544.db
+[2026-09-28 10:15:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260923_173044.db
+[2026-09-28 10:15:49] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 10:22:01] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 10:22:07] [INFO] [__main__] ============================================================
+[2026-09-28 10:22:07] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 10:22:07] [INFO] [__main__] ============================================================
+[2026-09-28 10:22:07] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 10:22:07] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_102207.db
+[2026-09-28 10:22:07] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260923_173045.db
+[2026-09-28 10:22:08] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 10:22:08] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 10:22:08] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_102208.db
+[2026-09-28 10:22:08] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260924_091617.db
+[2026-09-28 10:22:10] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 10:32:22] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 10:32:29] [INFO] [__main__] ============================================================
+[2026-09-28 10:32:29] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 10:32:29] [INFO] [__main__] ============================================================
+[2026-09-28 10:32:29] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 10:32:29] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_103229.db
+[2026-09-28 10:32:29] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260924_091618.db
+[2026-09-28 10:32:30] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 10:32:30] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 10:32:30] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_103230.db
+[2026-09-28 10:32:30] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260924_151429.db
+[2026-09-28 10:32:36] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 10:43:05] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 10:43:12] [INFO] [__main__] ============================================================
+[2026-09-28 10:43:12] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 10:43:12] [INFO] [__main__] ============================================================
+[2026-09-28 10:43:12] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 10:43:12] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_104312.db
+[2026-09-28 10:43:12] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260924_151430.db
+[2026-09-28 10:43:13] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 10:43:13] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 10:43:13] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_104313.db
+[2026-09-28 10:43:13] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260924_154636.db
+[2026-09-28 10:43:47] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 10:45:45] [INFO] [__main__] Удалена строка плана: 33
+[2026-09-28 10:45:47] [INFO] [__main__] Удалена строка плана: 112
+[2026-09-28 10:45:51] [INFO] [__main__] Удалена строка плана: 12
+[2026-09-28 10:45:55] [INFO] [__main__] Удалена строка плана: 91
+[2026-09-28 10:45:58] [INFO] [__main__] Удалена строка плана: 113
+[2026-09-28 10:46:00] [INFO] [__main__] Удалена строка плана: 34
+[2026-09-28 10:46:04] [INFO] [__main__] Удалена строка плана: 14
+[2026-09-28 10:46:36] [INFO] [__main__] Удалена строка плана: 93
+[2026-09-28 10:59:19] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 10:59:25] [INFO] [__main__] ============================================================
+[2026-09-28 10:59:25] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 10:59:25] [INFO] [__main__] ============================================================
+[2026-09-28 10:59:25] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 10:59:25] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_105925.db
+[2026-09-28 10:59:26] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260924_154637.db
+[2026-09-28 10:59:26] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 10:59:54] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 10:59:58] [INFO] [__main__] ============================================================
+[2026-09-28 10:59:58] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 10:59:58] [INFO] [__main__] ============================================================
+[2026-09-28 10:59:58] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 10:59:58] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_105958.db
+[2026-09-28 10:59:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_101543.db
+[2026-09-28 10:59:58] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260925_034637.db
+[2026-09-28 10:59:59] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 11:03:27] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 11:03:30] [INFO] [__main__] ============================================================
+[2026-09-28 11:03:30] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 11:03:30] [INFO] [__main__] ============================================================
+[2026-09-28 11:03:30] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 11:03:30] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_110330.db
+[2026-09-28 11:03:30] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_102207.db
+[2026-09-28 11:03:30] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_101544.db
+[2026-09-28 11:03:30] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 11:14:51] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 11:14:59] [INFO] [__main__] ============================================================
+[2026-09-28 11:14:59] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 11:14:59] [INFO] [__main__] ============================================================
+[2026-09-28 11:14:59] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 11:15:00] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_111459.db
+[2026-09-28 11:15:00] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_103229.db
+[2026-09-28 11:15:00] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_102208.db
+[2026-09-28 11:15:00] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 11:15:00] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 11:15:01] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_111500.db
+[2026-09-28 11:15:01] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_103230.db
+[2026-09-28 11:15:04] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 11:15:31] [INFO] [__main__] Удалена строка плана: 1
+[2026-09-28 11:15:37] [INFO] [__main__] Удалена строка плана: 74
+[2026-09-28 11:16:14] [INFO] [__main__] Удалена строка плана: 153
+[2026-09-28 11:16:30] [INFO] [__main__] Удалена строка плана: 7
+[2026-09-28 11:16:34] [INFO] [__main__] Удалена строка плана: 86
+[2026-09-28 11:16:37] [INFO] [__main__] Удалена строка плана: 3
+[2026-09-28 11:16:40] [INFO] [__main__] Удалена строка плана: 82
+[2026-09-28 11:16:45] [INFO] [__main__] Удалена строка плана: 17
+[2026-09-28 11:16:49] [INFO] [__main__] Удалена строка плана: 96
+[2026-09-28 11:16:52] [INFO] [__main__] Удалена строка плана: 126
+[2026-09-28 11:22:33] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 11:22:37] [INFO] [__main__] ============================================================
+[2026-09-28 11:22:37] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 11:22:37] [INFO] [__main__] ============================================================
+[2026-09-28 11:22:37] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 11:22:37] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_112237.db
+[2026-09-28 11:22:38] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_104312.db
+[2026-09-28 11:22:38] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 11:22:38] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 11:22:39] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_112238.db
+[2026-09-28 11:22:40] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_104313.db
+[2026-09-28 11:22:41] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 11:23:55] [INFO] [__main__] Массовое удаление УП: 140 строк (группа=28, семестр=все, год=все)
+[2026-09-28 11:30:43] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 11:30:48] [INFO] [__main__] ============================================================
+[2026-09-28 11:30:48] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 11:30:48] [INFO] [__main__] ============================================================
+[2026-09-28 11:30:48] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 11:30:48] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_113048.db
+[2026-09-28 11:30:48] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_105925.db
+[2026-09-28 11:30:49] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 11:30:49] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 11:30:49] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_113049.db
+[2026-09-28 11:30:49] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_105926.db
+[2026-09-28 11:30:57] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 11:31:15] [ERROR] [app] Exception on /users/export [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 2146, in users_export
+    if key in ('student_password', 'parent_password', 'student_login', 'parent_login'):
+                    ^^^^
+NameError: name 'Font' is not defined
+[2026-09-28 11:33:17] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 11:33:25] [INFO] [__main__] ============================================================
+[2026-09-28 11:33:25] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 11:33:25] [INFO] [__main__] ============================================================
+[2026-09-28 11:33:25] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 11:33:25] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_113325.db
+[2026-09-28 11:33:26] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_105958.db
+[2026-09-28 11:33:26] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 11:33:26] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 11:33:26] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_113326.db
+[2026-09-28 11:33:27] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_105959.db
+[2026-09-28 11:33:41] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 12:03:05] [WARNING] [database_ortools] OR-Tools не установлен — используется жадный алгоритм
+[2026-09-28 12:03:05] [INFO] [database] Используется жадный алгоритм
+[2026-09-28 12:03:47] [INFO] [database] Используется жадный алгоритм
+[2026-09-28 12:15:16] [INFO] [__main__] Выход: u44ast
+[2026-09-28 12:15:26] [INFO] [__main__] Успешный вход: admin
+[2026-09-28 12:18:23] [INFO] [database] Используется жадный алгоритм
+[2026-09-28 13:02:31] [INFO] [__main__] Выход: admin
+[2026-09-28 13:08:23] [INFO] [__main__] Успешный вход: admin
+[2026-09-28 13:09:28] [INFO] [database] Используется жадный алгоритм
+[2026-09-28 13:10:05] [INFO] [__main__] Выход: admin
+[2026-09-28 13:10:50] [INFO] [__main__] Успешный вход: u44ast
+[2026-09-28 13:46:55] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 13:47:02] [INFO] [__main__] ============================================================
+[2026-09-28 13:47:02] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 13:47:02] [INFO] [__main__] ============================================================
+[2026-09-28 13:47:02] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 13:47:03] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_134702.db
+[2026-09-28 13:47:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_110330.db
+[2026-09-28 13:47:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_110330.db
+[2026-09-28 13:47:03] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 13:47:03] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 13:47:03] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_134703.db
+[2026-09-28 13:47:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_111459.db
+[2026-09-28 14:57:36] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 14:57:43] [INFO] [__main__] ============================================================
+[2026-09-28 14:57:43] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 14:57:43] [INFO] [__main__] ============================================================
+[2026-09-28 14:57:43] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 14:57:43] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_145743.db
+[2026-09-28 14:57:43] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_111500.db
+[2026-09-28 14:57:44] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 14:57:44] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 14:57:44] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_145744.db
+[2026-09-28 14:57:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_112237.db
+[2026-09-28 14:57:59] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 15:02:49] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 15:02:52] [INFO] [__main__] ============================================================
+[2026-09-28 15:02:52] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 15:02:52] [INFO] [__main__] ============================================================
+[2026-09-28 15:02:52] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 15:02:53] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_150252.db
+[2026-09-28 15:02:53] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_112238.db
+[2026-09-28 15:02:53] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 15:02:54] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 15:02:54] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_150254.db
+[2026-09-28 15:02:54] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_113048.db
+[2026-09-28 15:03:03] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 16:10:07] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 16:10:15] [INFO] [__main__] ============================================================
+[2026-09-28 16:10:15] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 16:10:15] [INFO] [__main__] ============================================================
+[2026-09-28 16:10:15] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 16:10:15] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_161015.db
+[2026-09-28 16:10:15] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_113049.db
+[2026-09-28 16:10:15] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 16:10:16] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 16:10:16] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_161016.db
+[2026-09-28 16:10:16] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_113325.db
+[2026-09-28 16:10:19] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 16:11:30] [ERROR] [app] Exception on /api/curriculum-v2/upload/apply [POST]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 1169, in api_curriculum_v2_upload_apply
+    course = (sem_num + 1) // 2
+              ~~~~~~~~^~~
+TypeError: can only concatenate str (not "int") to str
+[2026-09-28 16:11:33] [ERROR] [app] Exception on /api/curriculum-v2/upload/apply [POST]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 1169, in api_curriculum_v2_upload_apply
+    course = (sem_num + 1) // 2
+              ~~~~~~~~^~~
+TypeError: can only concatenate str (not "int") to str
+[2026-09-28 16:12:08] [ERROR] [app] Exception on /api/curriculum-v2/upload/apply [POST]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 1169, in api_curriculum_v2_upload_apply
+    course = (sem_num + 1) // 2
+              ~~~~~~~~^~~
+TypeError: can only concatenate str (not "int") to str
+[2026-09-28 16:15:16] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 16:15:20] [INFO] [__main__] ============================================================
+[2026-09-28 16:15:20] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 16:15:20] [INFO] [__main__] ============================================================
+[2026-09-28 16:15:20] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 16:15:20] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_161520.db
+[2026-09-28 16:15:20] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_113326.db
+[2026-09-28 16:15:20] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 16:15:20] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 16:15:21] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_161520.db
+[2026-09-28 16:15:21] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_v1_backup.db
+[2026-09-28 16:15:48] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 16:16:23] [INFO] [__main__] Импорт УП: группа ID=15, создано 50 записей
+[2026-09-28 16:21:05] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 16:21:08] [INFO] [__main__] ============================================================
+[2026-09-28 16:21:08] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 16:21:08] [INFO] [__main__] ============================================================
+[2026-09-28 16:21:08] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 16:21:09] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_162108.db
+[2026-09-28 16:21:09] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_134702.db
+[2026-09-28 16:21:09] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 16:21:09] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 16:21:09] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_162109.db
+[2026-09-28 16:21:09] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_134703.db
+[2026-09-28 16:21:26] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 16:22:06] [INFO] [__main__] Импорт УП: группа ID=15, создано 107 записей
+[2026-09-28 16:23:48] [INFO] [__main__] Импорт УП: группа ID=14, создано 121 записей
+[2026-09-28 16:24:23] [INFO] [__main__] Импорт УП: группа ID=13, создано 124 записей
+[2026-09-28 16:25:51] [INFO] [__main__] Импорт УП: группа ID=2, создано 98 записей
+[2026-09-28 16:26:25] [INFO] [__main__] Импорт УП: группа ID=104, создано 86 записей
+[2026-09-28 16:30:24] [INFO] [__main__] Импорт УП: группа ID=5, создано 101 записей
+[2026-09-28 16:31:01] [INFO] [__main__] Импорт УП: группа ID=6, создано 101 записей
+[2026-09-28 16:31:31] [INFO] [__main__] Импорт УП: группа ID=7, создано 95 записей
+[2026-09-28 16:32:31] [INFO] [__main__] Импорт УП: группа ID=36, создано 110 записей
+[2026-09-28 16:33:23] [INFO] [__main__] Импорт УП: группа ID=82, создано 108 записей
+[2026-09-28 16:34:31] [INFO] [__main__] Импорт УП: группа ID=81, создано 100 записей
+[2026-09-28 16:36:01] [INFO] [__main__] Импорт УП: группа ID=17, создано 127 записей
+[2026-09-28 16:36:50] [INFO] [__main__] Импорт УП: группа ID=18, создано 127 записей
+[2026-09-28 16:38:00] [INFO] [__main__] Импорт УП: группа ID=19, создано 114 записей
+[2026-09-28 16:38:51] [INFO] [__main__] Импорт УП: группа ID=78, создано 87 записей
+[2026-09-28 16:39:53] [INFO] [__main__] Импорт УП: группа ID=103, создано 89 записей
+[2026-09-28 16:40:43] [INFO] [__main__] Импорт УП: группа ID=77, создано 90 записей
+[2026-09-28 16:41:43] [INFO] [__main__] Импорт УП: группа ID=25, создано 121 записей
+[2026-09-28 16:42:28] [INFO] [__main__] Импорт УП: группа ID=26, создано 121 записей
+[2026-09-28 16:42:58] [INFO] [__main__] Импорт УП: группа ID=27, создано 111 записей
+[2026-09-28 16:43:40] [INFO] [__main__] Импорт УП: группа ID=9, создано 87 записей
+[2026-09-28 16:44:09] [INFO] [__main__] Импорт УП: группа ID=10, создано 87 записей
+[2026-09-28 16:44:38] [INFO] [__main__] Импорт УП: группа ID=11, создано 90 записей
+[2026-09-28 16:46:08] [INFO] [__main__] Импорт УП: группа ID=75, создано 90 записей
+[2026-09-28 16:46:44] [INFO] [__main__] Импорт УП: группа ID=76, создано 90 записей
+[2026-09-28 16:47:15] [INFO] [__main__] Импорт УП: группа ID=32, создано 90 записей
+[2026-09-28 16:48:02] [INFO] [__main__] Импорт УП: группа ID=80, создано 90 записей
+[2026-09-28 16:48:38] [INFO] [__main__] Импорт УП: группа ID=33, создано 90 записей
+[2026-09-28 16:49:12] [INFO] [__main__] Импорт УП: группа ID=79, создано 90 записей
+[2026-09-28 16:49:46] [INFO] [__main__] Импорт УП: группа ID=34, создано 90 записей
+[2026-09-28 16:50:30] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-28 16:50:37] [INFO] [__main__] ============================================================
+[2026-09-28 16:50:37] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-28 16:50:37] [INFO] [__main__] ============================================================
+[2026-09-28 16:50:37] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-28 16:50:38] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260928_165037.db
+[2026-09-28 16:50:38] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_145743.db
+[2026-09-28 16:50:38] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-28 16:50:38] [INFO] [__main__] Flask-приложение создано
+[2026-09-28 16:50:38] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260928_165038.db
+[2026-09-28 16:50:38] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_145744.db
+[2026-09-28 16:50:42] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-28 16:51:01] [INFO] [__main__] Импорт УП: группа ID=29, создано 90 записей
+[2026-09-28 16:51:31] [INFO] [__main__] Импорт УП: группа ID=30, создано 90 записей
+[2026-09-29 09:05:34] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 09:05:44] [INFO] [__main__] ============================================================
+[2026-09-29 09:05:44] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 09:05:44] [INFO] [__main__] ============================================================
+[2026-09-29 09:05:44] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 09:05:44] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_090544.db
+[2026-09-29 09:05:45] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_150252.db
+[2026-09-29 09:05:45] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 09:05:45] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 09:05:46] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_090545.db
+[2026-09-29 09:05:46] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_150254.db
+[2026-09-29 09:05:49] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 09:05:59] [INFO] [auto_generator_v2] 🎯 Генерация расписания: 2026/2027, осень
+[2026-09-29 09:08:42] [INFO] [__main__] Применено авторасписание: 477 вставлено, 0 пропущено
+[2026-09-29 09:09:42] [INFO] [__main__] Выход: admin
+[2026-09-29 09:09:58] [INFO] [__main__] Успешный вход: u44ast
+[2026-09-29 09:14:33] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 09:14:48] [INFO] [__main__] ============================================================
+[2026-09-29 09:14:48] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 09:14:48] [INFO] [__main__] ============================================================
+[2026-09-29 09:14:48] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 09:14:49] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_091448.db
+[2026-09-29 09:14:49] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_161015.db
+[2026-09-29 09:14:50] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 09:14:50] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 09:14:50] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_091450.db
+[2026-09-29 09:14:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_161016.db
+[2026-09-29 09:14:56] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 09:15:09] [INFO] [auto_generator_v2] 🎯 Генерация расписания: 2026/2027, осень
+[2026-09-29 09:15:21] [INFO] [__main__] Применено авторасписание: 477 вставлено, 0 пропущено
+[2026-09-29 11:13:24] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 11:13:34] [INFO] [__main__] ============================================================
+[2026-09-29 11:13:34] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 11:13:34] [INFO] [__main__] ============================================================
+[2026-09-29 11:13:34] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 11:13:34] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_111334.db
+[2026-09-29 11:13:35] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_161520.db
+[2026-09-29 11:13:35] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_161520.db
+[2026-09-29 11:13:35] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 11:13:38] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 11:13:39] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_111338.db
+[2026-09-29 11:13:40] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_162108.db
+[2026-09-29 11:13:56] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 11:14:08] [INFO] [__main__] Выход: u44ast
+[2026-09-29 11:14:21] [INFO] [__main__] Успешный вход: admin
+[2026-09-29 11:15:46] [INFO] [auto_generator_v2] 🎯 Генерация расписания: 2026/2027, осень
+[2026-09-29 11:19:53] [INFO] [__main__] Выход: admin
+[2026-09-29 11:20:18] [INFO] [__main__] Успешный вход: admin
+[2026-09-29 12:01:05] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 12:01:12] [INFO] [__main__] ============================================================
+[2026-09-29 12:01:12] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 12:01:12] [INFO] [__main__] ============================================================
+[2026-09-29 12:01:12] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 12:01:13] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_120112.db
+[2026-09-29 12:01:13] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_162109.db
+[2026-09-29 12:01:13] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 12:01:13] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 12:01:13] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_120113.db
+[2026-09-29 12:01:13] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260928_165037.db
+[2026-09-29 12:01:19] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 12:03:46] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 12:03:49] [INFO] [__main__] ============================================================
+[2026-09-29 12:03:49] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 12:03:49] [INFO] [__main__] ============================================================
+[2026-09-29 12:03:49] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 12:03:50] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_120349.db
+[2026-09-29 12:03:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260928_165038.db
+[2026-09-29 12:03:50] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 12:03:50] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 12:03:50] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_120350.db
+[2026-09-29 12:03:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_090544.db
+[2026-09-29 12:03:52] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 12:09:42] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 12:09:46] [INFO] [__main__] ============================================================
+[2026-09-29 12:09:46] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 12:09:46] [INFO] [__main__] ============================================================
+[2026-09-29 12:09:46] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 12:09:46] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_120946.db
+[2026-09-29 12:09:46] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_090545.db
+[2026-09-29 12:09:46] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 12:09:47] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 12:09:47] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_120946.db
+[2026-09-29 12:09:47] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_091448.db
+[2026-09-29 12:09:51] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 12:15:58] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 12:16:02] [INFO] [__main__] ============================================================
+[2026-09-29 12:16:02] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 12:16:02] [INFO] [__main__] ============================================================
+[2026-09-29 12:16:02] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 12:16:02] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_121602.db
+[2026-09-29 12:16:02] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_091450.db
+[2026-09-29 12:16:03] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 12:16:03] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 12:16:03] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_121603.db
+[2026-09-29 12:16:03] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_before_clear.db
+[2026-09-29 12:16:06] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 12:18:58] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 12:19:01] [INFO] [__main__] ============================================================
+[2026-09-29 12:19:01] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 12:19:01] [INFO] [__main__] ============================================================
+[2026-09-29 12:19:01] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 12:19:01] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_121901.db
+[2026-09-29 12:19:01] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_111334.db
+[2026-09-29 12:19:02] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 12:19:02] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 12:19:02] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_121902.db
+[2026-09-29 12:19:02] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_111338.db
+[2026-09-29 12:19:05] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 12:22:41] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 12:22:44] [INFO] [__main__] ============================================================
+[2026-09-29 12:22:44] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 12:22:44] [INFO] [__main__] ============================================================
+[2026-09-29 12:22:44] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 12:22:44] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_122244.db
+[2026-09-29 12:22:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_120112.db
+[2026-09-29 12:22:44] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 12:22:45] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 12:22:45] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_122245.db
+[2026-09-29 12:22:45] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_120113.db
+[2026-09-29 12:22:51] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 13:30:37] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 13:30:43] [INFO] [__main__] ============================================================
+[2026-09-29 13:30:43] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 13:30:43] [INFO] [__main__] ============================================================
+[2026-09-29 13:30:43] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 13:30:43] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_133043.db
+[2026-09-29 13:30:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_120349.db
+[2026-09-29 13:30:44] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 13:30:44] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 13:30:44] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_133044.db
+[2026-09-29 13:30:44] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_120350.db
+[2026-09-29 13:30:46] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 13:30:59] [INFO] [__main__] Успешный вход: admin
+[2026-09-29 13:34:57] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 13:41:47] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 13:41:51] [INFO] [__main__] ============================================================
+[2026-09-29 13:41:51] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 13:41:51] [INFO] [__main__] ============================================================
+[2026-09-29 13:41:51] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 13:41:51] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_134151.db
+[2026-09-29 13:41:51] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_120946.db
+[2026-09-29 13:41:51] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 13:41:51] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 13:41:52] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_134151.db
+[2026-09-29 13:41:52] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_120946.db
+[2026-09-29 13:42:18] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 13:43:14] [INFO] [__main__] Выход: admin
+[2026-09-29 13:43:25] [INFO] [__main__] Успешный вход: admin
+[2026-09-29 13:43:41] [ERROR] [app] Exception on /curriculum-v2 [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 996, in curriculum_v2_page
+    groups = db.get_active_groups_for_schedule()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\database.py", line 3356, in get_active_groups_for_schedule
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        SELECT id, name, current_course, admission_year,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        ORDER BY current_course, name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''')
+    ^^^^
+sqlite3.OperationalError: no such column: current_course
+[2026-09-29 13:43:46] [ERROR] [app] Exception on /curriculum-v2 [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 996, in curriculum_v2_page
+    groups = db.get_active_groups_for_schedule()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\database.py", line 3356, in get_active_groups_for_schedule
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        SELECT id, name, current_course, admission_year,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        ORDER BY current_course, name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''')
+    ^^^^
+sqlite3.OperationalError: no such column: current_course
+[2026-09-29 13:43:50] [ERROR] [app] Exception on /curriculum-v2 [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 996, in curriculum_v2_page
+    groups = db.get_active_groups_for_schedule()
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\database.py", line 3356, in get_active_groups_for_schedule
+    cursor.execute('''
+    ~~~~~~~~~~~~~~^^^^
+        SELECT id, name, current_course, admission_year,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        ORDER BY current_course, name
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ''')
+    ^^^^
+sqlite3.OperationalError: no such column: current_course
+[2026-09-29 13:50:11] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 13:50:15] [INFO] [__main__] ============================================================
+[2026-09-29 13:50:15] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 13:50:15] [INFO] [__main__] ============================================================
+[2026-09-29 13:50:15] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 13:50:15] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_135015.db
+[2026-09-29 13:50:15] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_121602.db
+[2026-09-29 13:50:15] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 13:50:15] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 13:50:16] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_135015.db
+[2026-09-29 13:50:16] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_121603.db
+[2026-09-29 13:50:48] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 13:52:50] [INFO] [__main__] Импорт УП: группа ID=30, создано 90 записей
+[2026-09-29 14:04:47] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 14:04:50] [INFO] [__main__] ============================================================
+[2026-09-29 14:04:50] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 14:04:50] [INFO] [__main__] ============================================================
+[2026-09-29 14:04:50] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 14:04:50] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_140450.db
+[2026-09-29 14:04:50] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_121901.db
+[2026-09-29 14:04:51] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 14:04:51] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 14:04:51] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_140451.db
+[2026-09-29 14:04:51] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_121902.db
+[2026-09-29 14:06:26] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 14:06:43] [ERROR] [app] Exception on /admin [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 2701, in admin_page
+    return render_template('admin.html',
+                           user=user, active_page='admin',
+    ...<3 lines>...
+                           rooms=db.get_all_rooms(),
+                           duplicates_count=duplicates_count)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\templates\admin.html", line 619, in template
+    {% block title %}Справочники{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'title' defined twice
+[2026-09-29 14:07:23] [ERROR] [app] Exception on /admin [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 2701, in admin_page
+    return render_template('admin.html',
+                           user=user, active_page='admin',
+    ...<3 lines>...
+                           rooms=db.get_all_rooms(),
+                           duplicates_count=duplicates_count)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\templates\admin.html", line 619, in template
+    {% block title %}Справочники{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'title' defined twice
+[2026-09-29 14:07:30] [ERROR] [app] Exception on /admin [GET]
+Traceback (most recent call last):
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\app.py", line 2701, in admin_page
+    return render_template('admin.html',
+                           user=user, active_page='admin',
+    ...<3 lines>...
+                           rooms=db.get_all_rooms(),
+                           duplicates_count=duplicates_count)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\flask\templating.py", line 150, in render_template
+    template = app.jinja_env.get_or_select_template(template_name_or_list)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 1087, in get_or_select_template
+    return self.get_template(template_name_or_list, parent, globals)
+           ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 1016, in get_template
+    return self._load_template(name, globals)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 975, in _load_template
+    template = self.loader.load(self, name, self.make_globals(globals))
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\loaders.py", line 138, in load
+    code = environment.compile(source, name, filename)
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 771, in compile
+    self.handle_exception(source=source_hint)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "\\share\Backup-Худсовет\Техотдел\!учебчасть\u4ebkaWebnew\.venv\Lib\site-packages\jinja2\environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "Z:\Техотдел\!учебчасть\u4ebkaWebnew\templates\admin.html", line 619, in template
+    {% block title %}Справочники{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^
+jinja2.exceptions.TemplateAssertionError: block 'title' defined twice
+[2026-09-29 14:11:38] [INFO] [root] 📝 Логирование инициализировано (level=INFO)
+[2026-09-29 14:11:41] [INFO] [__main__] ============================================================
+[2026-09-29 14:11:41] [INFO] [__main__] ЗАПУСК СИСТЕМЫ РАСПИСАНИЯ
+[2026-09-29 14:11:41] [INFO] [__main__] ============================================================
+[2026-09-29 14:11:41] [INFO] [__main__] Создание стартового бэкапа...
+[2026-09-29 14:11:41] [INFO] [backup] 💾 Бэкап создан: schedule_startup_20260929_141141.db
+[2026-09-29 14:11:41] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_startup_20260929_122244.db
+[2026-09-29 14:11:41] [INFO] [backup] ⏰ Планировщик бэкапов запущен
+[2026-09-29 14:11:42] [INFO] [__main__] Flask-приложение создано
+[2026-09-29 14:11:42] [INFO] [backup] 💾 Бэкап создан: schedule_daily_20260929_141142.db
+[2026-09-29 14:11:42] [INFO] [backup] 🗑 Удалён старый бэкап: schedule_daily_20260929_122245.db
+[2026-09-29 14:11:48] [INFO] [waitress] Serving on http://0.0.0.0:5000
+[2026-09-29 14:12:40] [INFO] [__main__] Кабинет обновлён: id=7, поля=['number', 'building', 'room_type', 'capacity', 'subjects_allowed']
+[2026-09-29 14:14:28] [INFO] [auto_generator_v2] 🎯 Генерация расписания: 2026/2027, осень
+[2026-09-29 14:16:46] [INFO] [__main__] Импорт УП: группа ID=2, создано 98 записей
+[2026-09-29 14:16:53] [INFO] [auto_generator_v2] 🎯 Генерация расписания: 2026/2027, осень
+[2026-09-29 14:27:15] [INFO] [__main__] Успешный вход: admin
+[2026-09-29 14:34:58] [INFO] [__main__] Выход: admin

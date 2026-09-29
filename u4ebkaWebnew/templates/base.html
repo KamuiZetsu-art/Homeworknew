@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+{% set is_dark = user and user.role in ['admin', 'editor'] %}
+<html lang="ru" data-theme="{{ 'dark' if is_dark else 'light' }}" class="{{ 'dark' if is_dark else '' }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Расписание{% endblock %} — НОККиИ</title>
+
+    {# --- Анти-FOUC: применяем сохранённую тему максимально рано --- #}
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem('theme');
+                var isDark = saved === 'dark';
+                if (saved !== 'dark' && saved !== 'light') {
+                    isDark = document.documentElement.classList.contains('dark');
+                }
+                if (isDark) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            } catch (e) {}
+        })();
+    </script>
+
+    <!-- Tailwind CDN & Config -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: ['class', '[data-theme="dark"]'],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'Roboto', 'sans-serif'],
+                    },
+                    colors: {
+                        glass: {
+                            light: 'rgba(255, 255, 255, 0.4)',
+                            dark: 'rgba(17, 24, 39, 0.6)',
+                        },
+                        accent: {
+                            cyan: '#06b6d4',
+                            violet: '#8b5cf6'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/design-system.css') }}?v=20260922">
+
+    <style>
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(156, 163, 175, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(156, 163, 175, 0.8); }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+
+<body class="font-sans antialiased min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-cyan-50 dark:from-slate-950 dark:via-indigo-950 dark:to-slate-900 text-slate-800 dark:text-slate-100 selection:bg-cyan-500 selection:text-white transition-colors duration-500">
+
+<div class="fixed top-[-10%] left-[-10%] w-96 h-96 bg-cyan-400/30 dark:bg-cyan-600/20 rounded-full blur-3xl pointer-events-none"></div>
+<div class="fixed bottom-[-10%] right-[-10%] w-96 h-96 bg-violet-400/30 dark:bg-violet-600/20 rounded-full blur-3xl pointer-events-none"></div>
+
+<div class="flex h-screen overflow-hidden relative z-10">
+
+    {% if is_dark %}
+    {# ===== GLASS САЙДБАР (Для Админов и Редакторов) ===== #}
+    <aside id="appSidebar" class="w-64 h-full flex flex-col flex-shrink-0 bg-white/30 dark:bg-black/30 backdrop-blur-xl border-r border-white/50 dark:border-white/10 shadow-[4px_0_24px_rgba(0,0,0,0.05)] transition-all duration-300">
+
+        <a href="/" class="flex items-center gap-3 p-6 border-b border-white/30 dark:border-white/10 hover:bg-white/10 dark:hover:bg-black/10 transition">
+            <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-violet-500 text-white shadow-lg">
+                <i class="fa-solid fa-masks-theater text-xl"></i>
+            </div>
+            <div>
+                <div class="text-xl font-bold tracking-tight">НОККиИ <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-violet-500">Portal</span></div>
+                <div class="text-xs font-medium text-slate-500 dark:text-slate-400">{{ user.role|upper if user else '' }}</div>
+            </div>
+        </a>
+
+        <nav class="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+            <div class="px-3 pb-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Управление</div>
+
+            {% macro nav_link(url, icon, text, active_name) %}
+            <a href="{{ url }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group
+                {% if active_page == active_name %}
+                    bg-gradient-to-r from-cyan-500/10 to-violet-500/10 text-cyan-600 dark:text-cyan-400 font-semibold border border-cyan-500/20 shadow-sm
+                {% else %}
+                    text-slate-600 dark:text-slate-300 hover:bg-white/40 dark:hover:bg-white/5 hover:shadow-sm
+                {% endif %}">
+                <i class="fa-solid {{ icon }} w-5 text-center {% if active_page == active_name %}text-cyan-500{% else %}text-slate-400 group-hover:text-cyan-500{% endif %} transition-colors"></i>
+                <span>{{ text }}</span>
+            </a>
+            {% endmacro %}
+
+            {{ nav_link('/', 'fa-gauge-high', 'Расписание', 'schedule') }}
+            {{ nav_link('/admin', 'fa-folder-tree', 'Справочники', 'admin') }}
+            {{ nav_link('/curriculum', 'fa-book-bookmark', 'Учебный план', 'curriculum') }}
+            {{ nav_link('/curriculum-v2', 'fa-book-bookmark', 'Учебный план v2', 'curriculum-v2') }}
+            {{ nav_link('/personal-schedule', 'fa-user-clock', 'Личные расписания', 'personal-schedule') }}
+            {{ nav_link('/generator-schedule', 'fa-wand-magic-sparkles', 'Генератор расписания', 'generator-schedule') }}
+            {{ nav_link('/generator-v2', 'fa-wand-magic-sparkles', 'Генератор v2', 'generator-v2') }}
+            {{ nav_link('/editor', 'fa-pen-to-square', 'Редактор', 'editor') }}
+            {{ nav_link('/performance', 'fa-chart-line', 'Успеваемость', 'performance') }}
+            {{ nav_link('/reports', 'fa-file-export', 'Отчёты', 'reports') }}
+            {{ nav_link('/archive', 'fa-box-archive', 'Архив', 'archive') }}
+            {{ nav_link('/rating', 'fa-trophy', 'Рейтинг', 'rating') }}
+            {{ nav_link('/import', 'fa-file-import', 'Импорт', 'import') }}
+
+            {% if user and user.role == 'admin' %}
+            <div class="px-3 pt-4 pb-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Система</div>
+            {{ nav_link('/users', 'fa-users', 'Пользователи', 'users') }}
+            {{ nav_link('/generator', 'fa-graduation-cap', 'Генератор логинов', 'generator') }}
+            {{ nav_link('/stats', 'fa-chart-pie', 'Статистика', 'stats') }}
+            {{ nav_link('/admin/backups', 'fa-database', 'Бэкапы', 'backups') }}
+            {% endif %}
+
+            <div class="px-3 pt-4 pb-2 text-xs font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">Общее</div>
+            {{ nav_link('/calendar', 'fa-calendar', 'Календарь', 'calendar') }}
+            {{ nav_link('/change-password', 'fa-key', 'Пароль', 'change-password') }}
+        </nav>
+
+        <div class="p-4 border-t border-white/30 dark:border-white/10 bg-white/20 dark:bg-black/20">
+            {% if user %}
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white font-bold shadow-md flex-shrink-0">
+                    {{ (user.full_name or user.username)[:1]|upper }}
+                </div>
+                <div class="overflow-hidden">
+                    <div class="text-sm font-bold truncate">{{ user.full_name or user.username }}</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 truncate">{{ user.role }}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="flex gap-2 mt-4">
+                <button id="themeToggleSidebar" class="flex-1 flex items-center justify-center gap-2 py-2 bg-white/40 dark:bg-white/10 hover:bg-white/60 dark:hover:bg-white/20 border border-white/50 dark:border-white/10 rounded-xl transition-all text-sm shadow-sm" title="Сменить тему" type="button">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:block">☀️</span>
+                </button>
+                <a href="/logout" class="flex-1 flex items-center justify-center gap-2 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-xl transition-all font-medium text-sm shadow-sm" title="Выйти">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+    {% endif %}
+
+    <div class="flex-1 flex flex-col h-screen overflow-hidden">
+
+        {% if not is_dark %}
+        {# ===== GLASS ВЕРХНЯЯ НАВИГАЦИЯ ===== #}
+        <header class="sticky top-0 z-50 w-full bg-white/40 dark:bg-black/40 backdrop-blur-xl border-b border-white/50 dark:border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.05)] px-4 sm:px-6 py-3 flex items-center justify-between">
+
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 flex items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 to-violet-500 text-white shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-masks-theater text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-lg font-bold tracking-tight leading-none">НОККиИ <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-violet-500">Portal</span></div>
+                    <div class="text-xs font-medium text-slate-500 dark:text-slate-400">Расписание</div>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex items-center gap-1 p-1 bg-white/50 dark:bg-black/50 backdrop-blur-md border border-white/60 dark:border-white/10 rounded-full shadow-inner">
+                {% macro top_link(url, text, active_name) %}
+                <a href="{{ url }}" class="px-5 py-1.5 rounded-full text-sm font-semibold transition-all duration-300
+                    {% if active_page == active_name %}
+                        bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md
+                    {% else %}
+                        text-slate-600 dark:text-slate-300 hover:bg-white/60 dark:hover:bg-white/10
+                    {% endif %}">
+                    {{ text }}
+                </a>
+                {% endmacro %}
+
+                {{ top_link('/', 'Расписание', 'schedule') }}
+
+                {% if user %}
+                    {{ top_link('/calendar', 'Календарь', 'calendar') }}
+
+                    {% if user.role in ['student', 'parent'] %}
+                        {{ top_link('/diary', 'Дневник', 'diary') }}
+                    {% endif %}
+
+                    {% if user.role == 'teacher' %}
+                        {{ top_link('/gradebook', 'Журнал', 'gradebook') }}
+                        {{ top_link('/profile', 'Профиль', 'profile') }}
+                    {% endif %}
+                {% endif %}
+            </nav>
+
+            <div class="flex items-center gap-4">
+                <button id="themeToggleTop" class="w-10 h-10 rounded-full flex items-center justify-center text-lg bg-white/50 dark:bg-white/10 border border-white/60 dark:border-white/5 shadow-sm hover:scale-110 transition-transform" type="button">
+                    <span class="dark:hidden">🌙</span>
+                    <span class="hidden dark:block">☀️</span>
+                </button>
+
+                {% if user %}
+                <div class="hidden md:flex items-center gap-3 pl-4 border-l border-slate-300/50 dark:border-slate-700/50">
+                    <div class="text-right">
+                        <div class="text-sm font-bold">{{ user.full_name or user.username }}</div>
+                        <div class="text-xs text-slate-500 dark:text-slate-400">{{ user.role }}</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 flex items-center justify-center text-white font-bold shadow-md">
+                        {{ (user.full_name or user.username)[:1]|upper }}
+                    </div>
+                </div>
+                <a href="/logout" class="hidden md:flex w-10 h-10 items-center justify-center rounded-full bg-white/50 dark:bg-white/10 border border-white/60 dark:border-white/5 text-slate-600 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition-all shadow-sm">
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                </a>
+                {% else %}
+                <a href="/login" class="flex items-center gap-2 px-5 py-2 bg-gradient-to-r from-cyan-500 to-violet-500 hover:from-cyan-400 hover:to-violet-500 text-white rounded-full font-semibold shadow-lg shadow-cyan-500/30 transition-all">
+                    <i class="fa-solid fa-right-to-bracket"></i> <span class="hidden sm:inline">Войти</span>
+                </a>
+                {% endif %}
+            </div>
+        </header>
+        {% endif %}
+
+        <main class="flex-1 overflow-y-auto p-4 md:p-8">
+            <div class="max-w-7xl mx-auto h-full">
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<div id="toast" class="fixed bottom-5 right-5 z-50"></div>
+
+<script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,901 @@
+{% extends "base.html" %}
+{% block title %}Учебный план{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </span>
+                Учебный план
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Плановые часы, пар в неделю, факт и остаток</p>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="openImportModal()"
+                    class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-file-import"></i> Импорт из Excel
+            </button>
+            <a href="/api/curriculum/export?group={{ selected_group }}&semester={{ selected_semester }}&year={{ selected_year }}"
+               class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-file-excel"></i> Экспорт Excel
+            </a>
+            <button type="button" onclick="openAddModal()"
+                    class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-plus"></i> Добавить строку
+            </button>
+            <button type="button" onclick="openClearFilteredModal()"
+                    class="px-5 py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs border border-red-500/30 backdrop-blur-md transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+                <i class="fa-solid fa-broom"></i> Очистить по фильтру
+            </button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-xl border border-cyan-500/30">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">План, часов</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">{{ total_planned }}</div>
+            </div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xl border border-emerald-500/30">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Факт, часов</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">{{ total_fact }}</div>
+            </div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl {% if total_remaining < 0 %}bg-red-500/20 text-red-500 border-red-500/30{% else %}bg-violet-500/20 text-violet-500 border-violet-500/30{% endif %} flex items-center justify-center text-xl border">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Остаток, часов</div>
+                <div class="text-2xl font-black {% if total_remaining < 0 %}text-red-600 dark:text-red-400{% else %}text-slate-900 dark:text-white{% endif %}">{{ total_remaining }}</div>
+            </div>
+        </div>
+    </div>
+
+    <form method="GET" action="/curriculum"
+          class="bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 dark:border-white/10 p-4 rounded-3xl shadow-lg flex flex-wrap gap-4 items-end">
+        <div class="flex-1 min-w-[180px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Группа</label>
+            <select name="group"
+                    class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                <option value="">Все группы</option>
+                {% for g in groups %}
+                <option value="{{ g.name }}" {% if g.name == selected_group %}selected{% endif %}>{{ g.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="flex-1 min-w-[140px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Семестр</label>
+            <select name="semester"
+                    class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                <option value="">Все</option>
+                {% for s in semesters %}
+                <option value="{{ s }}" {% if s == selected_semester %}selected{% endif %}>Семестр {{ s }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="flex-1 min-w-[140px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Учебный год</label>
+            <select name="year"
+                    class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                <option value="">Все годы</option>
+                {% for y in all_years %}
+                <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit"
+                class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-filter"></i> Применить
+        </button>
+        <button type="button" id="resetFiltersBtn"
+                class="px-4 py-2.5 rounded-2xl bg-white/50 dark:bg-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-700/80 text-slate-600 dark:text-slate-300 font-bold text-xs shadow-sm hover:shadow border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-rotate-left"></i> Сброс
+        </button>
+    </form>
+
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-white/30 dark:bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-white/10">
+                        <th class="py-3 px-4">Группа</th>
+                        <th class="py-3 px-4">Предмет</th>
+                        <th class="py-3 px-4">Преподаватель</th>
+                        <th class="py-3 px-4 text-center">Семестр</th>
+                        <th class="py-3 px-4 text-center">Год</th>
+                        <th class="py-3 px-4 text-center">План, ч</th>
+                        <th class="py-3 px-4 text-center">Пар/нед</th>
+                        <th class="py-3 px-4 text-center">Факт, ч</th>
+                        <th class="py-3 px-4 text-center">Остаток, ч</th>
+                        <th class="py-3 px-4 text-center">%</th>
+                        <th class="py-3 px-4 text-center">Приоритет</th>
+                        <th class="py-3 px-4 text-right">Действия</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-medium">
+                    {% for r in rows %}
+                    <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-4 font-bold text-slate-900 dark:text-white">
+                            <span class="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                                {{ r.group_name or '—' }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-slate-800 dark:text-slate-200">{{ r.subject_name or '—' }}</td>
+                        <td class="py-3 px-4 text-slate-500 dark:text-slate-400">{{ r.teacher_short or r.teacher_name or '—' }}</td>
+                        <td class="py-3 px-4 text-center text-slate-500 dark:text-slate-400">{{ r.semester }}</td>
+                        <td class="py-3 px-4 text-center text-slate-500 dark:text-slate-400 text-[10px]">{{ r.academic_year }}</td>
+                        <td class="py-3 px-4 text-center font-bold text-slate-900 dark:text-white">{{ r.planned_hours }}</td>
+                        <td class="py-3 px-4 text-center text-slate-500 dark:text-slate-400">{{ r.pairs_per_week }}</td>
+                        <td class="py-3 px-4 text-center font-bold text-emerald-600 dark:text-emerald-400">{{ r.fact_hours }}</td>
+                        <td class="py-3 px-4 text-center">
+                            {% set rem = r.remaining_hours %}
+                            <span class="px-2 py-1 rounded-lg font-bold text-[11px]
+                                {% if rem < 0 %}bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20
+                                {% elif rem == 0 %}bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20
+                                {% else %}bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20{% endif %}">
+                                {{ rem }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            {% set pct = r.percent %}
+                            <span class="px-2 py-1 rounded-lg font-bold text-[11px]
+                                {% if pct >= 100 %}bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20
+                                {% elif pct >= 50 %}bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20
+                                {% else %}bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20{% endif %}">
+                                {{ pct }}%
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            {% if r.priority == 1 %}<span class="text-red-500 font-bold text-[10px]">Высокий</span>
+                            {% elif r.priority == 3 %}<span class="text-slate-400 font-bold text-[10px]">Низкий</span>
+                            {% else %}<span class="text-amber-500 font-bold text-[10px]">Средний</span>{% endif %}
+                        </td>
+                        <td class="py-3 px-4 text-right">
+                            <div class="flex gap-1.5 justify-end">
+                                <button type="button"
+                                        class="edit-curriculum-btn w-8 h-8 rounded-lg bg-white/50 dark:bg-slate-800 hover:bg-white/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-cyan-500 transition-all border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm"
+                                        data-id="{{ r.id }}"
+                                        title="Редактировать">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                                <button type="button"
+                                        class="delete-curriculum-btn w-8 h-8 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-all border border-red-500/20 flex items-center justify-center shadow-sm"
+                                        data-id="{{ r.id }}"
+                                        data-label="{{ r.group_name }} / {{ r.subject_name }}"
+                                        title="Удалить">
+                                    <i class="fa-solid fa-trash-can"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if not rows %}
+        <div class="text-center py-16 text-slate-400">
+            <i class="fa-solid fa-book-bookmark text-4xl mb-4 opacity-50 block"></i>
+            <p class="font-medium">Учебный план пока пуст</p>
+            <p class="text-xs mt-1">Нажмите «Добавить строку» или «Импорт из Excel», чтобы создать записи</p>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<style>
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 1rem; }
+.modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1.5rem; padding: 1.5rem; width: 100%; max-width: 520px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: modalIn 0.2s forwards; max-height: 90vh; overflow-y: auto; }
+:is(.dark) .modal-content { background: rgba(15, 23, 42, 0.85); border-color: rgba(255, 255, 255, 0.1); }
+@keyframes modalIn { to { transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; background: none; border: none; }
+.modal-close:hover { color: #ef4444; }
+.modal-header h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: #0f172a; display: flex; align-items: center; gap: 8px;}
+:is(.dark) .modal-header h2 { color: white; }
+.form-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.4rem; letter-spacing: 0.05em; }
+.form-input, .form-select { width: 100%; margin-bottom: 0.9rem; padding: 0.625rem 1rem; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1rem; font-size: 0.875rem; outline: none; transition: box-shadow 0.2s; }
+:is(.dark) .form-input, :is(.dark) .form-select { background: rgba(15, 23, 42, 0.5); border-color: rgba(255, 255, 255, 0.1); color: white;}
+.form-input:focus, .form-select:focus { box-shadow: 0 0 0 2px #06b6d4; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1); }
+:is(.dark) .modal-actions { border-top-color: rgba(255,255,255,0.1); }
+</style>
+
+<div class="modal" id="curriculumModal">
+    <div class="modal-content relative">
+        <div class="modal-header">
+            <h2 id="modalTitle"><i class="fa-solid fa-plus text-cyan-500"></i> Добавить в план</h2>
+            <button class="modal-close" onclick="closeModal('curriculumModal')">&times;</button>
+        </div>
+
+        <input type="hidden" id="rowId">
+
+        <label class="form-label">Группа *</label>
+        <select id="groupId" class="form-select">
+            <option value="">— Выберите группу —</option>
+            {% for g in groups %}
+            <option value="{{ g.id }}">{{ g.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label class="form-label">Предмет *</label>
+        <select id="subjectId" class="form-select">
+            <option value="">— Выберите предмет —</option>
+            {% for s in subjects %}
+            <option value="{{ s.id }}">{{ s.name }}</option>
+            {% endfor %}
+        </select>
+
+        <label class="form-label">Преподаватель</label>
+        <select id="teacherId" class="form-select">
+            <option value="">— Не выбран —</option>
+            {% for t in teachers %}
+            <option value="{{ t.id }}">{{ t.full_name }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="form-label">План, часов *</label>
+                <input type="number" id="plannedHours" min="1" value="36" class="form-input">
+            </div>
+            <div>
+                <label class="form-label">Пар в неделю *</label>
+                <input type="number" id="pairsPerWeek" min="1" max="10" value="2" class="form-input">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="form-label">Семестр</label>
+                <select id="semester" class="form-select">
+                    {% for s in semesters %}
+                    <option value="{{ s }}" {% if loop.first %}selected{% endif %}>Семестр {{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Учебный год</label>
+                <input type="text" id="academicYear" value="2025/2026" class="form-input">
+            </div>
+        </div>
+
+        <label class="form-label">Приоритет</label>
+        <select id="priority" class="form-select">
+            <option value="1">🔴 Высокий</option>
+            <option value="2" selected>🟡 Средний</option>
+            <option value="3">⚪ Низкий</option>
+        </select>
+
+        <label class="form-label">Комментарий</label>
+        <input type="text" id="comment" placeholder="Необязательно" class="form-input">
+
+        <div class="modal-actions">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('curriculumModal')">Отмена</button>
+            <button id="saveBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform flex items-center gap-2" onclick="saveRow()">
+                <i class="fa-solid fa-floppy-disk"></i> Сохранить
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="importCurriculumModal">
+    <div class="modal-content relative" style="max-width: 1100px;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-file-import text-violet-500"></i> Импорт учебного плана</h2>
+            <button class="modal-close" onclick="closeModal('importCurriculumModal')">&times;</button>
+        </div>
+
+        <div id="importStep1">
+            <div class="p-3 mb-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-[11px] text-violet-700 dark:text-violet-300">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                Загрузите файл учебного плана (<strong>.xls</strong> или <strong>.xlsx</strong>).
+                Будут импортированы только строки с номером, реестровым номером и аудиторными часами &gt; 0.
+                Модули (ПМ), аттестация (ПА) и практики (ПП) пропускаются.
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                <div>
+                    <label class="form-label">Группа *</label>
+                    <select id="importGroupName" class="form-select">
+                        <option value="">— Выберите группу —</option>
+                        {% for g in groups %}
+                        <option value="{{ g.name }}">{{ g.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="form-label">Учебный год *</label>
+                    <input type="text" id="importAcademicYear" value="2025/2026" class="form-input">
+                </div>
+            </div>
+
+            <label class="form-label">Файл учебного плана *</label>
+            <input type="file" id="importFileInput" accept=".xls,.xlsx" class="form-input">
+
+            <div id="importResult" class="mt-4"></div>
+
+            <div class="modal-actions">
+                <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('importCurriculumModal')">Отмена</button>
+                <button id="importParseBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 hover:scale-105 transition-transform flex items-center gap-2" onclick="parseCurriculumFile()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Разобрать файл
+                </button>
+            </div>
+        </div>
+
+        <div id="importStep2" style="display: none;">
+            <div id="importMetaBlock" class="p-3 mb-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[11px] font-semibold text-cyan-800 dark:text-cyan-200"></div>
+
+            <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+                <div class="text-xs font-bold text-slate-700 dark:text-slate-300">
+                    Найдено дисциплин: <span id="importTotalCount">0</span>
+                </div>
+                <div class="flex gap-2">
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors" onclick="toggleAllImport(true)">
+                        <i class="fa-solid fa-check-double"></i> Выбрать все
+                    </button>
+                    <button type="button" class="px-3 py-1.5 rounded-lg text-[10px] font-bold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/30 hover:bg-slate-500/20 transition-colors" onclick="toggleAllImport(false)">
+                        <i class="fa-solid fa-xmark"></i> Снять все
+                    </button>
+                </div>
+            </div>
+
+            <div class="overflow-y-auto max-h-[55vh] rounded-2xl border border-white/40 dark:border-slate-700">
+                <table class="w-full text-left text-xs">
+                    <thead class="sticky top-0 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-slate-700">
+                        <tr>
+                            <th class="py-2 px-3 w-10 text-center">
+                                <i class="fa-solid fa-check"></i>
+                            </th>
+                            <th class="py-2 px-3">Индекс</th>
+                            <th class="py-2 px-3">Название</th>
+                            <th class="py-2 px-3 text-center">Семестры</th>
+                            <th class="py-2 px-3 text-center">Аудит. ч</th>
+                            <th class="py-2 px-3 text-center">В БД</th>
+                            <th class="py-2 px-3">Реестр</th>
+                        </tr>
+                    </thead>
+                    <tbody id="importTableBody" class="divide-y divide-white/30 dark:divide-slate-700"></tbody>
+                </table>
+            </div>
+
+            <div class="modal-actions">
+                <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="backToImportStep1()">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Назад
+                </button>
+                <button id="importApplyBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:scale-105 transition-transform flex items-center gap-2" onclick="applyCurriculumImport()">
+                    <i class="fa-solid fa-floppy-disk"></i> Импортировать выбранные
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="clearFilteredModal">
+    <div class="modal-content relative">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-broom text-red-500"></i> Очистить учебный план</h2>
+            <button class="modal-close" onclick="closeModal('clearFilteredModal')">&times;</button>
+        </div>
+
+        <div class="p-3 mb-4 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-700 dark:text-red-300">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+            <strong>Внимание!</strong> Будут удалены <u>все строки</u> учебного плана, попадающие под фильтр ниже.
+            Действие <strong>нельзя отменить</strong>.
+        </div>
+
+        <label class="form-label">Группа *</label>
+        <select id="clearGroup" class="form-select">
+            <option value="">— Выберите группу —</option>
+            {% for g in groups %}
+            <option value="{{ g.name }}" {% if g.name == selected_group %}selected{% endif %}>{{ g.name }}</option>
+            {% endfor %}
+        </select>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="form-label">Семестр</label>
+                <select id="clearSemester" class="form-select">
+                    <option value="">Все семестры</option>
+                    {% for s in semesters %}
+                    <option value="{{ s }}" {% if s == selected_semester %}selected{% endif %}>Семестр {{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Учебный год</label>
+                <select id="clearYear" class="form-select">
+                    <option value="">Все годы</option>
+                    {% for y in all_years %}
+                    <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div id="clearFilteredInfo" class="p-3 rounded-xl bg-slate-500/10 border border-slate-300/50 dark:border-slate-700 text-[11px] text-slate-600 dark:text-slate-300 text-center">
+            <i class="fa-solid fa-circle-info mr-1"></i>
+            Нажмите «Проверить», чтобы узнать, сколько строк будет удалено
+        </div>
+
+        <div id="clearFilteredResult" class="mt-3"></div>
+
+        <div class="modal-actions justify-between">
+            <button type="button" class="px-4 py-2 rounded-xl text-xs font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('clearFilteredModal')">Отмена</button>
+            <div class="flex gap-2">
+                <button type="button" id="clearCheckBtn" class="px-4 py-2 rounded-xl text-xs font-bold text-cyan-600 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 transition-all flex items-center gap-1.5" onclick="checkFilteredCount()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Проверить
+                </button>
+                <button type="button" id="clearConfirmBtn" class="px-5 py-2 rounded-xl text-xs font-bold text-white bg-red-500 hover:bg-red-600 shadow-md transition-all flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed" onclick="doClearFiltered()" disabled>
+                    <i class="fa-solid fa-trash-can"></i> Удалить
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ==================== СБРОС ФИЛЬТРОВ ====================
+document.addEventListener('DOMContentLoaded', () => {
+    const resetBtn = document.getElementById('resetFiltersBtn');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            const groupSel = document.querySelector('select[name="group"]');
+            const semSel = document.querySelector('select[name="semester"]');
+            const yearSel = document.querySelector('select[name="year"]');
+            if (groupSel) groupSel.value = '';
+            if (semSel) semSel.value = '';
+            if (yearSel) yearSel.value = '';
+            window.location.href = '/curriculum';
+        });
+    }
+});
+
+function openModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; }
+function closeModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+function openAddModal() {
+    document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-plus text-cyan-500"></i> Добавить в план';
+    document.getElementById('rowId').value = '';
+    document.getElementById('groupId').value = '';
+    document.getElementById('subjectId').value = '';
+    document.getElementById('teacherId').value = '';
+    document.getElementById('plannedHours').value = 36;
+    document.getElementById('pairsPerWeek').value = 2;
+    document.getElementById('semester').value = '1';
+    document.getElementById('academicYear').value = '2025/2026';
+    document.getElementById('priority').value = '2';
+    document.getElementById('comment').value = '';
+    openModal('curriculumModal');
+}
+
+async function openEditModal(rowId) {
+    try {
+        const r = await fetch('/api/curriculum/' + rowId);
+        const res = await r.json();
+        if (!res.success) {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            return;
+        }
+        const row = res.row;
+        document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-pen text-cyan-500"></i> Редактировать строку';
+        document.getElementById('rowId').value = row.id;
+        document.getElementById('groupId').value = row.group_id || '';
+        document.getElementById('subjectId').value = row.subject_id || '';
+        document.getElementById('teacherId').value = row.teacher_id || '';
+        document.getElementById('plannedHours').value = row.planned_hours || 0;
+        document.getElementById('pairsPerWeek').value = row.pairs_per_week || 2;
+        document.getElementById('semester').value = row.semester || '1';
+        document.getElementById('academicYear').value = row.academic_year || '2025/2026';
+        document.getElementById('priority').value = String(row.priority || 2);
+        document.getElementById('comment').value = row.comment || '';
+        openModal('curriculumModal');
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    }
+}
+
+async function saveRow() {
+    const rowId = document.getElementById('rowId').value;
+    const groupId = document.getElementById('groupId').value;
+    const subjectId = document.getElementById('subjectId').value;
+    if (!groupId) { showToastSafe('Выберите группу', 'error'); return; }
+    if (!subjectId) { showToastSafe('Выберите предмет', 'error'); return; }
+
+    const payload = {
+        group_id: parseInt(groupId),
+        subject_id: parseInt(subjectId),
+        teacher_id: document.getElementById('teacherId').value || null,
+        planned_hours: parseInt(document.getElementById('plannedHours').value) || 0,
+        pairs_per_week: parseInt(document.getElementById('pairsPerWeek').value) || 2,
+        semester: document.getElementById('semester').value,
+        academic_year: document.getElementById('academicYear').value.trim(),
+        priority: parseInt(document.getElementById('priority').value) || 2,
+        comment: document.getElementById('comment').value.trim()
+    };
+
+    if (payload.planned_hours <= 0) { showToastSafe('План часов должен быть > 0', 'error'); return; }
+    if (payload.pairs_per_week <= 0) { showToastSafe('Пар в неделю должно быть > 0', 'error'); return; }
+
+    const url = rowId ? '/api/curriculum/update' : '/api/curriculum/add';
+    if (rowId) payload.id = parseInt(rowId);
+
+    const btn = document.getElementById('saveBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Сохранение...';
+
+    try {
+        const r = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Сохранено', 'success');
+            setTimeout(() => location.reload(), 400);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+async function deleteRow(rowId, label) {
+    if (!confirm(`Удалить строку плана: ${label}?`)) return;
+    try {
+        const r = await fetch('/api/curriculum/delete/' + rowId, { method: 'POST' });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Удалено', 'success');
+            setTimeout(() => location.reload(), 400);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    }
+}
+
+function attachHandlers() {
+    document.querySelectorAll('.edit-curriculum-btn').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(parseInt(btn.dataset.id)));
+    });
+    document.querySelectorAll('.delete-curriculum-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteRow(parseInt(btn.dataset.id), btn.dataset.label || ''));
+    });
+}
+
+document.addEventListener('DOMContentLoaded', attachHandlers);
+
+let parsedImportData = null;
+
+function openImportModal() {
+    document.getElementById('importStep1').style.display = 'block';
+    document.getElementById('importStep2').style.display = 'none';
+    document.getElementById('importResult').innerHTML = '';
+    document.getElementById('importFileInput').value = '';
+    document.getElementById('importGroupName').value = '';
+    document.getElementById('importAcademicYear').value = '2025/2026';
+    parsedImportData = null;
+    openModal('importCurriculumModal');
+}
+
+async function parseCurriculumFile() {
+    const groupName = document.getElementById('importGroupName').value;
+    const fileInput = document.getElementById('importFileInput');
+    const resultEl = document.getElementById('importResult');
+
+    if (!groupName) { showToastSafe('Выберите группу', 'error'); return; }
+    if (!fileInput.files || fileInput.files.length === 0) { showToastSafe('Выберите файл', 'error'); return; }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('group_name', groupName);
+
+    const btn = document.getElementById('importParseBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Разбор...';
+    resultEl.innerHTML = '<div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-[11px] text-cyan-700 dark:text-cyan-300"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Читаем файл...</div>';
+
+    try {
+        const r = await fetch('/api/curriculum/import/preview', {
+            method: 'POST',
+            body: formData
+        });
+        const res = await r.json();
+
+        if (!res.success) {
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(res.error || 'Ошибка')}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = orig;
+            return;
+        }
+
+        if (!res.disciplines || res.disciplines.length === 0) {
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-700 dark:text-amber-300">⚠️ В файле не найдено ни одной дисциплины, подходящей под фильтр.</div>`;
+            btn.disabled = false;
+            btn.innerHTML = orig;
+            return;
+        }
+
+        parsedImportData = {
+            group_name: groupName,
+            academic_year: document.getElementById('importAcademicYear').value.trim(),
+            filename: file.name,
+            meta: res.meta || {},
+            disciplines: res.disciplines
+        };
+
+        showImportPreview();
+        resultEl.innerHTML = '';
+    } catch (e) {
+        resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(e.message)}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+function showImportPreview() {
+    const data = parsedImportData;
+    if (!data) return;
+
+    document.getElementById('importStep1').style.display = 'none';
+    document.getElementById('importStep2').style.display = 'block';
+
+    const meta = data.meta || {};
+    document.getElementById('importMetaBlock').innerHTML = `
+        <div class="flex flex-wrap gap-x-4 gap-y-1">
+            <span>📄 <strong>${escapeHtml(data.filename)}</strong></span>
+            <span>👥 Группа: <strong>${escapeHtml(data.group_name)}</strong></span>
+            <span>📅 Уч. год: <strong>${escapeHtml(data.academic_year)}</strong></span>
+            ${meta.direction ? `<span>🎓 ${escapeHtml(meta.direction)}</span>` : ''}
+        </div>
+    `;
+
+    document.getElementById('importTotalCount').textContent = data.disciplines.length;
+
+    const tbody = document.getElementById('importTableBody');
+    let html = '';
+    data.disciplines.forEach((d, idx) => {
+        const semStr = (d.semesters || []).join(', ') || '—';
+        const matched = d.matched ? '<span class="text-emerald-600 dark:text-emerald-400 font-bold">✓ есть</span>' : '<span class="text-amber-600 dark:text-amber-400 font-bold">+ создать</span>';
+        html += `
+            <tr class="hover:bg-white/40 dark:hover:bg-slate-800/50">
+                <td class="py-2 px-3 text-center">
+                    <input type="checkbox" class="import-row-checkbox w-4 h-4 text-cyan-500" data-idx="${idx}" checked>
+                </td>
+                <td class="py-2 px-3 font-mono font-bold text-slate-700 dark:text-slate-300">${escapeHtml(d.index)}</td>
+                <td class="py-2 px-3 text-slate-900 dark:text-white">${escapeHtml(d.name)}</td>
+                <td class="py-2 px-3 text-center text-slate-500">${escapeHtml(semStr)}</td>
+                <td class="py-2 px-3 text-center font-bold text-cyan-600 dark:text-cyan-400">${d.auditory_hours}</td>
+                <td class="py-2 px-3 text-center">${matched}</td>
+                <td class="py-2 px-3 text-slate-400 text-[10px] font-mono">${escapeHtml(d.registry || '')}</td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function toggleAllImport(checked) {
+    document.querySelectorAll('.import-row-checkbox').forEach(cb => { cb.checked = checked; });
+}
+
+function backToImportStep1() {
+    document.getElementById('importStep1').style.display = 'block';
+    document.getElementById('importStep2').style.display = 'none';
+    parsedImportData = null;
+}
+
+async function applyCurriculumImport() {
+    if (!parsedImportData) return;
+
+    const checkboxes = document.querySelectorAll('.import-row-checkbox:checked');
+    const selectedIdxs = Array.from(checkboxes).map(cb => parseInt(cb.dataset.idx));
+
+    if (selectedIdxs.length === 0) { showToastSafe('Выберите хотя бы одну строку', 'error'); return; }
+
+    const items = selectedIdxs.map(i => parsedImportData.disciplines[i]);
+
+    const btn = document.getElementById('importApplyBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Импорт...';
+
+    try {
+        const r = await fetch('/api/curriculum/import/apply', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                group_name: parsedImportData.group_name,
+                academic_year: parsedImportData.academic_year,
+                filename: parsedImportData.filename,
+                meta: parsedImportData.meta,
+                items: items
+            })
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            let msg = `✅ Импорт завершён! Создано записей: ${res.created}`;
+            if (res.errors && res.errors.length > 0) {
+                msg += `\nОшибок: ${res.errors.length}`;
+                console.warn('Ошибки импорта:', res.errors);
+            }
+            showToastSafe(msg, 'success');
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+// ==================== ОЧИСТКА ПО ФИЛЬТРУ ====================
+let clearFilteredExpectedCount = null;
+
+function openClearFilteredModal() {
+    document.getElementById('clearFilteredResult').innerHTML = '';
+    document.getElementById('clearFilteredInfo').innerHTML =
+        '<i class="fa-solid fa-circle-info mr-1"></i> Нажмите «Проверить», чтобы узнать, сколько строк будет удалено';
+    document.getElementById('clearConfirmBtn').disabled = true;
+    clearFilteredExpectedCount = null;
+    openModal('clearFilteredModal');
+}
+
+async function checkFilteredCount() {
+    const group = document.getElementById('clearGroup').value;
+    const semester = document.getElementById('clearSemester').value;
+    const year = document.getElementById('clearYear').value;
+    const resultEl = document.getElementById('clearFilteredResult');
+    const infoEl = document.getElementById('clearFilteredInfo');
+    const btn = document.getElementById('clearCheckBtn');
+    const confirmBtn = document.getElementById('clearConfirmBtn');
+
+    if (!group) {
+        showToastSafe('Выберите группу', 'error');
+        return;
+    }
+
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Проверка...';
+    resultEl.innerHTML = '';
+    confirmBtn.disabled = true;
+    clearFilteredExpectedCount = null;
+
+    try {
+        const r = await fetch('/api/curriculum/count-filtered', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({group, semester, year})
+        });
+        const res = await r.json();
+
+        if (!res.success) {
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(res.error || 'Ошибка')}</div>`;
+            return;
+        }
+
+        if (res.count === 0) {
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-700 dark:text-amber-300 text-center">⚠️ По этому фильтру нет строк для удаления</div>`;
+            infoEl.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Нечего удалять';
+            return;
+        }
+
+        infoEl.innerHTML = `
+            <div class="flex flex-col gap-1 items-center">
+                <span>Будет удалено <strong class="text-red-600 dark:text-red-400 text-base">${res.count}</strong> строк(и)</span>
+                <span class="text-[10px] opacity-70">Группа: <strong>${escapeHtml(group)}</strong>${semester ? ` • Семестр: <strong>${escapeHtml(semester)}</strong>` : ''}${year ? ` • Год: <strong>${escapeHtml(year)}</strong>` : ''}</span>
+            </div>`;
+
+        clearFilteredExpectedCount = res.count;
+        confirmBtn.disabled = false;
+    } catch (e) {
+        resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(e.message)}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+async function doClearFiltered() {
+    const group = document.getElementById('clearGroup').value;
+    const semester = document.getElementById('clearSemester').value;
+    const year = document.getElementById('clearYear').value;
+    const resultEl = document.getElementById('clearFilteredResult');
+    const btn = document.getElementById('clearConfirmBtn');
+
+    if (!group) { showToastSafe('Выберите группу', 'error'); return; }
+    if (clearFilteredExpectedCount === null) { showToastSafe('Сначала нажмите «Проверить»', 'error'); return; }
+
+    const ok = confirm(`Удалить ${clearFilteredExpectedCount} строк(и) учебного плана?\n\nГруппа: ${group}${semester ? '\nСеместр: ' + semester : ''}${year ? '\nГод: ' + year : ''}\n\nЭто действие нельзя отменить!`);
+    if (!ok) return;
+
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Удаление...';
+    resultEl.innerHTML = '';
+
+    try {
+        const r = await fetch('/api/curriculum/delete-filtered', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                group, semester, year,
+                confirm_count: clearFilteredExpectedCount
+            })
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            showToastSafe(`✅ Удалено строк: ${res.deleted}`, 'success');
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-[11px] text-emerald-700 dark:text-emerald-300 text-center">✅ Удалено: <strong>${res.deleted}</strong> строк</div>`;
+            setTimeout(() => location.reload(), 1000);
+        } else {
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(res.error || 'Ошибка')}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(e.message)}</div>`;
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+// Автопроверка при смене фильтров в модалке
+document.addEventListener('DOMContentLoaded', () => {
+    ['clearGroup', 'clearSemester', 'clearYear'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('change', () => {
+            document.getElementById('clearConfirmBtn').disabled = true;
+            clearFilteredExpectedCount = null;
+            document.getElementById('clearFilteredInfo').innerHTML =
+                '<i class="fa-solid fa-circle-info mr-1"></i> Фильтр изменён — нажмите «Проверить» заново';
+        });
+    });
+});
+</script>
+{% endblock %}

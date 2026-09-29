@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-6 px-4 space-y-6">
+
+    {# ==================== ГЛАВНАЯ КАРТОЧКА ПРОФИЛЯ ==================== #}
+    <div class="relative bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden p-6 sm:p-8">
+        <div class="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-cyan-500/30 via-purple-500/30 to-violet-500/30 blur-xl pointer-events-none"></div>
+
+        <div class="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6">
+            <div class="w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-400 to-violet-600 flex items-center justify-center text-white text-3xl font-bold shadow-xl shadow-cyan-500/20 border-2 border-white/50 dark:border-white/20 flex-shrink-0">
+                {{ (user.full_name or user.username)[:1]|upper }}
+            </div>
+
+            <div class="flex-1 text-center sm:text-left space-y-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                    <i class="fa-solid fa-user-shield"></i> {{ user.role }}
+                </div>
+                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">{{ user.full_name or user.username }}</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">@{{ user.username }}</p>
+                {% if teacher %}
+                <p class="text-xs text-slate-500 dark:text-slate-400">
+                    <i class="fa-solid fa-id-badge text-cyan-500"></i>
+                    Преподаватель ID: <strong>{{ teacher.id }}</strong>
+                    {% if teacher.short_name %}• {{ teacher.short_name }}{% endif %}
+                </p>
+                {% endif %}
+            </div>
+
+            <div class="flex flex-wrap gap-2 w-full sm:w-auto justify-center">
+                <a href="/my-schedule" class="flex-1 sm:flex-none px-4 py-2.5 rounded-2xl bg-white/50 dark:bg-white/10 hover:bg-white/70 text-slate-700 dark:text-slate-200 font-semibold text-sm border border-white/60 dark:border-white/10 backdrop-blur-md transition-all flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-calendar-day"></i> Моё расписание
+                </a>
+                <a href="/change-password" class="flex-1 sm:flex-none px-4 py-2.5 rounded-2xl bg-white/50 dark:bg-white/10 hover:bg-white/70 text-slate-700 dark:text-slate-200 font-semibold text-sm border border-white/60 dark:border-white/10 backdrop-blur-md transition-all flex items-center justify-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-key"></i> Пароль
+                </a>
+                <a href="/logout" class="flex-1 sm:flex-none px-4 py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-semibold text-sm border border-red-500/20 backdrop-blur-md transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-right-from-bracket"></i> Выйти
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# ==================== KPI-КАРТОЧКИ ==================== #}
+    {% if stats %}
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-xl border border-cyan-500/30">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Всего пар</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.total_lessons or 0 }}</div>
+            </div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-violet-500/20 text-violet-500 flex items-center justify-center text-xl border border-violet-500/30">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Часов</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.total_hours or 0 }}</div>
+            </div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xl border border-emerald-500/30">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Групп</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.total_groups or 0 }}</div>
+            </div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl border border-amber-500/30">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Предметов</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">{{ stats.total_subjects or 0 }}</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ==================== РАСПИСАНИЕ НА СЕГОДНЯ ==================== #}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden p-6">
+        <div class="flex items-center justify-between border-b border-white/40 dark:border-white/10 pb-3 mb-4">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                <i class="fa-solid fa-calendar-day text-cyan-500"></i>
+                Расписание на сегодня
+            </h3>
+            {% if today_lessons %}
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                {{ today_lessons|length }} пар
+            </span>
+            {% endif %}
+        </div>
+
+        {% if today_lessons %}
+        <div class="space-y-2">
+            {% for lesson in today_lessons %}
+            <div class="p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 border-l-4 border-l-cyan-500 flex items-center justify-between gap-4 hover:shadow-md transition-all shadow-sm">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-cyan-600 text-white flex items-center justify-center font-bold flex-shrink-0 shadow-md">
+                        {{ lesson.para_number }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="font-bold text-slate-900 dark:text-white text-sm truncate">{{ lesson.subject_name or '—' }}</div>
+                        <div class="text-[11px] text-slate-500 dark:text-slate-400 flex flex-wrap gap-3 mt-0.5">
+                            {% if lesson.group_name %}<span><i class="fa-solid fa-users"></i> {{ lesson.group_name }}</span>{% endif %}
+                            {% if lesson.room_number %}<span><i class="fa-solid fa-door-open"></i> Каб. {{ lesson.room_number }}</span>{% endif %}
+                            {% if lesson['время'] %}<span><i class="fa-solid fa-clock"></i> {{ lesson['время'] }}</span>{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-10 text-slate-400 text-xs">
+            <i class="fa-solid fa-mug-hot text-3xl mb-3 text-slate-300 dark:text-slate-600 block"></i>
+            Сегодня у вас нет занятий
+        </div>
+        {% endif %}
+    </div>
+
+    {# ==================== УСПЕВАЕМОСТЬ ПО ПРЕДМЕТАМ ==================== #}
+    {% if avg_grades and avg_grades|length > 0 %}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-6 border-b border-white/40 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                <i class="fa-solid fa-star text-amber-500"></i>
+                Успеваемость по предметам
+            </h3>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                Всего: {{ avg_grades|length }}
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-white/30 dark:bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-white/10">
+                        <th class="py-3 px-6">Предмет</th>
+                        <th class="py-3 px-6">Группа</th>
+                        <th class="py-3 px-6 text-center">Оценок</th>
+                        <th class="py-3 px-6 text-right">Средний балл</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-medium">
+                    {% for row in avg_grades %}
+                    <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-6 font-bold text-slate-900 dark:text-white">{{ row.subject_name or '—' }}</td>
+                        <td class="py-3 px-6">
+                            <span class="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-bold text-[10px]">
+                                {{ row.group_name or '—' }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-6 text-center text-slate-700 dark:text-slate-300">{{ row.grades_count or 0 }}</td>
+                        <td class="py-3 px-6 text-right">
+                            {% set avg = row.avg_grade or 0 %}
+                            <span class="px-3 py-1.5 rounded-xl font-extrabold text-xs shadow-sm
+                                {% if avg >= 4.5 %}
+                                    bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30
+                                {% elif avg >= 3.5 %}
+                                    bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30
+                                {% elif avg > 0 %}
+                                    bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30
+                                {% else %}
+                                    bg-slate-500/20 text-slate-500 border border-slate-500/30
+                                {% endif %}">
+                                {{ "%.2f"|format(avg) }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ==================== ПОСЕЩАЕМОСТЬ ПО ГРУППАМ ==================== #}
+    {% if attendance and attendance|length > 0 %}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-6 border-b border-white/40 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-2">
+                <i class="fa-solid fa-user-check text-emerald-500"></i>
+                Посещаемость по группам
+            </h3>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+                Групп: {{ attendance|length }}
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-white/30 dark:bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-white/10">
+                        <th class="py-3 px-6">Группа</th>
+                        <th class="py-3 px-6 text-center">Всего отметок</th>
+                        <th class="py-3 px-6 text-center">Был</th>
+                        <th class="py-3 px-6 text-center">Опоздал</th>
+                        <th class="py-3 px-6 text-center">Н</th>
+                        <th class="py-3 px-6 text-right">Посещаемость</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-medium">
+                    {% for row in attendance %}
+                    <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-6">
+                            <span class="px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-bold text-[10px]">
+                                {{ row.group_name }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-6 text-center text-slate-700 dark:text-slate-300">{{ row.total_marks or 0 }}</td>
+                        <td class="py-3 px-6 text-center font-bold text-emerald-600 dark:text-emerald-400">{{ row.present or 0 }}</td>
+                        <td class="py-3 px-6 text-center font-bold text-orange-500">{{ row.late or 0 }}</td>
+                        <td class="py-3 px-6 text-center font-bold text-red-500">{{ row.absent or 0 }}</td>
+                        <td class="py-3 px-6 text-right">
+                            {% set pct = row.percent or 0 %}
+                            <span class="px-3 py-1.5 rounded-xl font-extrabold text-xs shadow-sm
+                                {% if pct >= 90 %}
+                                    bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30
+                                {% elif pct >= 75 %}
+                                    bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 border border-cyan-500/30
+                                {% elif pct > 0 %}
+                                    bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30
+                                {% else %}
+                                    bg-slate-500/20 text-slate-500 border border-slate-500/30
+                                {% endif %}">
+                                {{ pct }}%
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {# ==================== ДОПОЛНИТЕЛЬНО: список групп и предметов ==================== #}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        {% if groups %}
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-users text-cyan-500"></i>
+                Группы, с которыми я работаю ({{ groups|length }})
+            </h3>
+            <div class="flex flex-wrap gap-2">
+                {% for g in groups %}
+                <span class="px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-bold text-xs">
+                    {{ g.name }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        {% if subjects %}
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-book text-violet-500"></i>
+                Предметы, которые я веду ({{ subjects|length }})
+            </h3>
+            <div class="flex flex-wrap gap-2">
+                {% for s in subjects %}
+                <span class="px-3 py-1.5 rounded-xl bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 font-bold text-xs">
+                    {{ s.name }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

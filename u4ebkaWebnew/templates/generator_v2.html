@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Генератор v2{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </span>
+                Генератор расписания v2
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Генерация на семестр для всех активных групп
+            </p>
+        </div>
+    </div>
+
+    <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-sm font-medium text-cyan-800 dark:text-cyan-200 flex items-start gap-3 shadow-sm">
+        <i class="fa-solid fa-circle-info text-cyan-600 mt-0.5 text-lg"></i>
+        <div>
+            <strong>Как это работает:</strong> система берёт <strong>учебный план каждой активной группы</strong>
+            на её текущий курс и семестр, а затем расставляет пары в свободные слоты.
+            Учитывается занятость <strong>групп</strong> и <strong>преподавателей</strong>.
+            Пары добавляются к существующим — уже занятые слоты не трогаются.
+        </div>
+    </div>
+
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6">
+        <div class="text-center">
+            <button id="generateBtn"
+                    onclick="generate()"
+                    class="px-10 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-lg shadow-lg hover:shadow-emerald-500/30 hover:scale-105 transition-all">
+                <i class="fa-solid fa-rocket mr-2"></i> Сгенерировать расписание
+            </button>
+        </div>
+    </div>
+
+    <div id="resultBlock" style="display: none;"></div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+async function generate() {
+    const btn = document.getElementById('generateBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Генерация...';
+
+    document.getElementById('resultBlock').style.display = 'none';
+
+    try {
+        const r = await fetch('/api/generator-v2/preview', { method: 'POST' });
+        const res = await r.json();
+
+        if (!res.success) {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            return;
+        }
+
+        window.generatedData = res;
+        renderResult(res);
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+function renderResult(res) {
+    const placed = res.placed || [];
+    const conflicts = res.conflicts || [];
+    const groupStats = res.group_stats || [];
+    const stats = res.stats || {};
+
+    let html = '';
+
+    // Шапка с параметрами генерации
+    html += `
+    <div class="p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-violet-500/10 border border-cyan-500/30 mb-4">
+        <div class="text-sm font-bold text-cyan-800 dark:text-cyan-200">
+            📅 Учебный год: <span class="text-slate-900 dark:text-white">${escapeHtml(res.academic_year || '—')}</span>
+            &nbsp;•&nbsp;
+            Семестр: <span class="text-slate-900 dark:text-white">${escapeHtml(res.semester_label || '—')}</span>
+        </div>
+    </div>`;
+
+    // KPI
+    html += `
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-xl border border-cyan-500/30">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Групп</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">${stats.total_groups || 0}</div>
+            </div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xl border border-emerald-500/30">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Пар расставлено</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">${stats.total_placed || 0}</div>
+            </div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl border border-amber-500/30">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase text-slate-400">Конфликтов</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">${stats.total_conflicts || 0}</div>
+            </div>
+        </div>
+    </div>`;
+
+    // По группам
+    if (groupStats.length > 0) {
+        html += `
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden mb-6">
+            <div class="p-4 border-b border-white/40 dark:border-white/10">
+                <h3 class="font-bold text-slate-900 dark:text-white">📊 По группам</h3>
+            </div>
+            <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-white/50 dark:bg-slate-800 sticky top-0 text-[10px] font-bold uppercase text-slate-500">
+                        <tr>
+                            <th class="py-2 px-3">Группа</th>
+                            <th class="py-2 px-3 text-center">Курс</th>
+                            <th class="py-2 px-3 text-center">Расставлено</th>
+                            <th class="py-2 px-3 text-center">Хотели</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/30 dark:divide-white/5">
+        `;
+        groupStats.forEach(g => {
+            const ok = g.placed === g.wanted;
+            const color = ok ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400';
+            html += `
+                <tr class="hover:bg-white/30 dark:hover:bg-white/5">
+                    <td class="py-2 px-3 font-bold text-slate-900 dark:text-white">${escapeHtml(g.group_name)}</td>
+                    <td class="py-2 px-3 text-center text-slate-500">${g.course}</td>
+                    <td class="py-2 px-3 text-center font-bold ${color}">${g.placed}</td>
+                    <td class="py-2 px-3 text-center text-slate-500">${g.wanted}</td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table></div></div>`;
+    }
+
+    // Конфликты
+    if (conflicts.length > 0) {
+        html += `
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-5 mb-6">
+            <h3 class="font-bold text-amber-700 dark:text-amber-300 mb-3">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Конфликты (${conflicts.length})
+            </h3>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+        `;
+        conflicts.slice(0, 50).forEach(c => {
+            html += `
+                <div class="p-2 rounded-lg bg-white/40 dark:bg-black/20 text-xs">
+                    <strong>${escapeHtml(c.group_name)}</strong> / ${escapeHtml(c.subject_name)}
+                    — расставлено ${c.placed} из ${c.wanted}
+                </div>
+            `;
+        });
+        html += `</div></div>`;
+    }
+
+    // Кнопка применения
+    if (placed.length > 0) {
+        html += `
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6 mb-6 text-center">
+            <button onclick="applyGeneration()"
+                    class="px-10 py-4 rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 text-white font-black text-lg shadow-lg hover:shadow-emerald-500/30 hover:scale-105 transition-all">
+                <i class="fa-solid fa-floppy-disk mr-2"></i> Применить (${placed.length} пар)
+            </button>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-3">
+                Пары будут добавлены в расписание с меткой «Авто». Уже занятые слоты не тронутся.
+            </p>
+        </div>`;
+    }
+
+    const rb = document.getElementById('resultBlock');
+    rb.innerHTML = html;
+    rb.style.display = 'block';
+}
+
+async function applyGeneration() {
+    if (!window.generatedData || !window.generatedData.placed) {
+        showToastSafe('Сначала сгенерируйте', 'error');
+        return;
+    }
+
+    const placed = window.generatedData.placed;
+
+    if (!confirm(`Записать ${placed.length} пар в расписание?\n\nСуществующие пары в этих слотах НЕ будут затронуты.`)) return;
+
+    try {
+        const r = await fetch('/api/generator-v2/apply', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ placed }),
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            showToastSafe(`✅ Вставлено: ${res.inserted}, пропущено: ${res.skipped}`, 'success');
+            setTimeout(() => location.href = '/', 1500);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    }
+}
+</script>
+{% endblock %}

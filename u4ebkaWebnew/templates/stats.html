@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Статистика системы{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-6 pb-12">
+
+    <div class="flex items-center justify-between bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-chart-pie"></i>
+                </span>
+                Статистика и аналитика
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Системные показатели колледжа НОККиИ</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center text-lg border border-emerald-500/20">
+                <i class="fa-solid fa-user-graduate"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ overall.students or 0 }}</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Студентов</div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center text-lg border border-cyan-500/20">
+                <i class="fa-solid fa-chalkboard-user"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ overall.teachers or 0 }}</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Преподавателей</div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-violet-500/10 text-violet-500 flex items-center justify-center text-lg border border-violet-500/20">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ overall.groups or 0 }}</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Групп</div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-lg border border-amber-500/20">
+                <i class="fa-solid fa-book"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ overall.subjects or 0 }}</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Предметов</div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center text-lg border border-orange-500/20">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ overall.lessons or 0 }}</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Пар в расписании</div>
+        </div>
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-xl space-y-2">
+            <div class="w-10 h-10 rounded-2xl bg-pink-500/10 text-pink-500 flex items-center justify-center text-lg border border-pink-500/20">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ overall.hours or 0 }}</div>
+            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Академ. часов</div>
+        </div>
+
+    </div>
+
+    {% if teacher_stats and teacher_stats|length > 0 %}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-6 border-b border-white/40 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
+            <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <i class="fa-solid fa-chalkboard-user text-cyan-500"></i>
+                Нагрузка преподавателей
+            </h3>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                Всего: {{ teacher_stats|length }}
+            </span>
+        </div>
+
+        <div class="stats-scroll overflow-y-auto pr-1" style="max-height: 520px;">
+            <table class="w-full text-left">
+                <thead class="sticky top-0 z-10">
+                    <tr class="bg-slate-100 dark:bg-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-white/10">
+                        <th class="py-3 px-6 w-12 text-center bg-slate-100 dark:bg-slate-800">#</th>
+                        <th class="py-3 px-6 bg-slate-100 dark:bg-slate-800">Преподаватель</th>
+                        <th class="py-3 px-6 text-center bg-slate-100 dark:bg-slate-800">Пар</th>
+                        <th class="py-3 px-6 text-center bg-slate-100 dark:bg-slate-800">Часов</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-medium">
+                    {% for t in teacher_stats %}
+                    <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-6 text-center">
+                            <span class="w-6 h-6 rounded-lg inline-flex items-center justify-center font-black text-[10px]
+                                {% if loop.index == 1 %}bg-amber-400 text-slate-900
+                                {% elif loop.index == 2 %}bg-slate-300 text-slate-900
+                                {% elif loop.index == 3 %}bg-amber-700 text-white
+                                {% else %}bg-slate-100 dark:bg-slate-800 text-slate-500{% endif %}">
+                                {{ loop.index }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-6">
+                            <div class="font-bold text-slate-900 dark:text-white">{{ t.full_name }}</div>
+                            {% if t.short_name %}
+                            <div class="text-[10px] text-slate-400 font-mono">{{ t.short_name }}</div>
+                            {% endif %}
+                        </td>
+                        <td class="py-3 px-6 text-center font-bold text-cyan-600 dark:text-cyan-400">{{ t.lessons_count or 0 }}</td>
+                        <td class="py-3 px-6 text-center">
+                            <span class="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 font-bold text-[10px]">
+                                {{ t.total_hours or 0 }} ч.
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if group_stats and group_stats|length > 0 %}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+        <div class="p-6 border-b border-white/40 dark:border-white/10 flex items-center justify-between flex-wrap gap-3">
+            <h3 class="font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
+                <i class="fa-solid fa-users text-violet-500"></i>
+                Нагрузка по группам
+            </h3>
+            <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20">
+                Всего: {{ group_stats|length }}
+            </span>
+        </div>
+
+        <div class="stats-scroll overflow-y-auto pr-1" style="max-height: 520px;">
+            <table class="w-full text-left">
+                <thead class="sticky top-0 z-10">
+                    <tr class="bg-slate-100 dark:bg-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-white/40 dark:border-white/10">
+                        <th class="py-3 px-6 bg-slate-100 dark:bg-slate-800">Группа</th>
+                        <th class="py-3 px-6 bg-slate-100 dark:bg-slate-800">Специальность</th>
+                        <th class="py-3 px-6 text-center bg-slate-100 dark:bg-slate-800">Пар</th>
+                        <th class="py-3 px-6 text-center bg-slate-100 dark:bg-slate-800">Часов</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-medium">
+                    {% for g in group_stats %}
+                    <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                        <td class="py-3 px-6">
+                            <span class="px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 font-bold text-xs">
+                                {{ g.name }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-6 text-slate-500 dark:text-slate-400 text-[11px]">{{ g.specialty or '—' }}</td>
+                        <td class="py-3 px-6 text-center font-bold text-cyan-600 dark:text-cyan-400">{{ g.lessons_count or 0 }}</td>
+                        <td class="py-3 px-6 text-center">
+                            <span class="px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20 font-bold text-[10px]">
+                                {{ g.total_hours or 0 }} ч.
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+.stats-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+.stats-scroll::-webkit-scrollbar-track {
+    background: rgba(148, 163, 184, 0.1);
+    border-radius: 8px;
+    margin: 8px 0;
+}
+.stats-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #06b6d4, #8b5cf6);
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+.stats-scroll::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #0891b2, #7c3aed);
+}
+.stats-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #06b6d4 rgba(148, 163, 184, 0.1);
+}
+</style>
+{% endblock %}

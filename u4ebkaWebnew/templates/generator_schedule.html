@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block title %}Генератор расписания{% endblock %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </span>
+                Генератор расписания
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Автоматически расставляет пары по учебному плану, учитывая занятость преподавателей и групп
+            </p>
+        </div>
+    </div>
+
+    {# ==================== ИНФО ==================== #}
+    <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-sm font-medium text-cyan-800 dark:text-cyan-200 flex items-start gap-3 shadow-sm">
+        <i class="fa-solid fa-circle-info text-cyan-600 mt-0.5 text-lg"></i>
+        <div>
+            <strong>Как это работает:</strong> система берёт строки учебного плана (по фильтру),
+            сортирует их по приоритету и пытается расставить пары в свободные слоты.
+            План <strong>не изменяется</strong> — сначала вы видите предпросмотр, затем нажимаете «Применить».
+        </div>
+    </div>
+
+    {# ==================== ФИЛЬТРЫ ==================== #}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Группа</label>
+                <select id="groupFilter"
+                        class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+                    <option value="">Все группы</option>
+                    {% for g in groups %}
+                    <option value="{{ g.name }}">{{ g.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Семестр</label>
+                <select id="semesterFilter"
+                        class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+                    <option value="">Все</option>
+                    {% for s in semesters %}
+                    <option value="{{ s }}">{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Учебный год</label>
+                <input type="text" id="yearFilter" value="2025/2026" placeholder="2025/2026"
+                       class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+        </div>
+
+        <div class="flex flex-wrap gap-3 pt-4 border-t border-white/40 dark:border-white/10">
+            <button type="button" onclick="generate(this)"
+                    class="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-wand-magic-sparkles"></i> Сгенерировать
+            </button>
+            <button type="button" id="applyBtn" onclick="apply(this)" disabled
+                    class="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm shadow-lg shadow-emerald-500/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100">
+                <i class="fa-solid fa-floppy-disk"></i> Применить
+            </button>
+        </div>
+    </div>
+
+    {# ==================== РЕЗУЛЬТАТ ==================== #}
+    <div id="resultBlock" style="display: none;"></div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let generatedData = null;
+
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+async function generate(btn) {
+    const group = document.getElementById('groupFilter').value;
+    const semester = document.getElementById('semesterFilter').value;
+    const year = document.getElementById('yearFilter').value.trim();
+
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Генерация...';
+
+    document.getElementById('resultBlock').style.display = 'none';
+    document.getElementById('applyBtn').disabled = true;
+    generatedData = null;
+
+    try {
+        const r = await fetch('/api/generator/auto-fill', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({group, semester, year})
+        });
+        const res = await r.json();
+        if (!res.success) {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            return;
+        }
+        generatedData = res;
+        renderResult(res);
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+function renderResult(res) {
+    const placed = res.placed || [];
+    const conflicts = res.conflicts || [];
+    const stats = res.stats || {total_requests: 0, total_placed: 0, total_conflicts: 0};
+
+    let html = '';
+
+    // KPI
+    html += `
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-xl border border-cyan-500/30">
+                <i class="fa-solid fa-list-check"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Заявок</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">${stats.total_requests}</div>
+            </div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xl border border-emerald-500/30">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Расставлено пар</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">${stats.total_placed}</div>
+            </div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-500 flex items-center justify-center text-xl border border-amber-500/30">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Конфликтов</div>
+                <div class="text-2xl font-black text-slate-900 dark:text-white">${stats.total_conflicts}</div>
+            </div>
+        </div>
+    </div>`;
+
+    // Конфликты
+    if (conflicts.length > 0) {
+        html += `
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-amber-500/30 rounded-3xl shadow-xl p-6 mb-6">
+            <h3 class="font-bold text-amber-600 dark:text-amber-400 mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                Конфликты (${conflicts.length})
+            </h3>
+            <div class="space-y-2 max-h-64 overflow-y-auto">
+        `;
+        conflicts.forEach(c => {
+            html += `
+                <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 border-l-4 border-l-amber-500">
+                    <div class="font-bold text-sm text-slate-900 dark:text-white">
+                        ${escapeHtml(c.group_name)} / ${escapeHtml(c.subject_name)}
+                    </div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        👨‍🏫 ${escapeHtml(c.teacher_name || '—')} · ${c.placed_count} из ${c.wanted} пар
+                    </div>
+                    <div class="text-[11px] text-amber-700 dark:text-amber-300 mt-1 italic">${escapeHtml(c.reason)}</div>
+                </div>
+            `;
+        });
+        html += `</div></div>`;
+    }
+
+    // Превью размещённых пар
+    if (placed.length > 0) {
+        const preview = placed.slice(0, 50);
+        html += `
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6">
+            <h3 class="font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                <i class="fa-solid fa-list text-emerald-500"></i>
+                Размещённые пары <span class="text-xs text-slate-400 font-normal">(показано ${preview.length} из ${placed.length})</span>
+            </h3>
+            <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-white/30 dark:bg-white/5 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/40 dark:border-white/10">
+                            <th class="py-2 px-3">Группа</th>
+                            <th class="py-2 px-3">Предмет</th>
+                            <th class="py-2 px-3">Преподаватель</th>
+                            <th class="py-2 px-3 text-center">День</th>
+                            <th class="py-2 px-3 text-center">Пара</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs">
+        `;
+        preview.forEach(p => {
+            html += `
+                <tr class="hover:bg-white/30 dark:hover:bg-white/5">
+                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-bold text-[10px]">${escapeHtml(p.group_name)}</span></td>
+                    <td class="py-2 px-3 text-slate-800 dark:text-slate-200">${escapeHtml(p.subject_name)}</td>
+                    <td class="py-2 px-3 text-slate-500 dark:text-slate-400">${escapeHtml(p.teacher_short || p.teacher_name || '—')}</td>
+                    <td class="py-2 px-3 text-center text-slate-700 dark:text-slate-300">${escapeHtml(p.day_of_week)}</td>
+                    <td class="py-2 px-3 text-center font-bold text-cyan-600 dark:text-cyan-400">${p.para_number}</td>
+                </tr>
+            `;
+        });
+        html += `</tbody></table></div></div>`;
+    }
+
+    const resultBlock = document.getElementById('resultBlock');
+    resultBlock.innerHTML = html;
+    resultBlock.style.display = 'block';
+
+    if (placed.length > 0) {
+        document.getElementById('applyBtn').disabled = false;
+    }
+}
+
+async function apply(btn) {
+    if (!generatedData || !generatedData.placed || generatedData.placed.length === 0) {
+        showToastSafe('Нет данных для применения', 'error');
+        return;
+    }
+
+    if (!confirm(`Записать ${generatedData.placed.length} пар в расписание?\n\nСуществующие пары в этих слотах не будут затронуты.`)) {
+        return;
+    }
+
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Применение...';
+
+    try {
+        const r = await fetch('/api/generator/apply', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({placed: generatedData.placed})
+        });
+        const res = await r.json();
+        if (res.success) {
+            const msg = `✅ Применено! Вставлено: ${res.inserted}, пропущено: ${res.skipped}`;
+            showToastSafe(msg, 'success');
+            setTimeout(() => { window.location.href = '/'; }, 1200);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+{% block title %}Отчёты{% endblock %}
+{% block content %}
+
+<div class="max-w-5xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-file-export"></i>
+                </span>
+                Отчёты
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Экспорт дневника ученика или целой группы в Excel</p>
+        </div>
+    </div>
+
+    {# ==================== ФОРМА ==================== #}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6 space-y-5">
+
+        {# Режим #}
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Что экспортировать</label>
+            <div class="flex flex-wrap gap-2">
+                <label class="flex-1 min-w-[200px] cursor-pointer">
+                    <input type="radio" name="mode" value="student" class="hidden peer" {% if mode != 'group' %}checked{% endif %} onchange="toggleMode()">
+                    <div class="p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 peer-checked:border-cyan-500 peer-checked:bg-cyan-500/10 transition-all flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-600 dark:text-cyan-400 flex items-center justify-center text-lg flex-shrink-0">
+                            <i class="fa-solid fa-user-graduate"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 dark:text-white text-sm">Один ученик</div>
+                            <div class="text-xs text-slate-500">Дневник с оценками и посещением</div>
+                        </div>
+                    </div>
+                </label>
+
+                <label class="flex-1 min-w-[200px] cursor-pointer">
+                    <input type="radio" name="mode" value="group" class="hidden peer" {% if mode == 'group' %}checked{% endif %} onchange="toggleMode()">
+                    <div class="p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 border-2 border-slate-200 dark:border-slate-700 peer-checked:border-violet-500 peer-checked:bg-violet-500/10 transition-all flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-violet-500/20 text-violet-600 dark:text-violet-400 flex items-center justify-center text-lg flex-shrink-0">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 dark:text-white text-sm">Вся группа</div>
+                            <div class="text-xs text-slate-500">Сводный отчёт + лист на каждого</div>
+                        </div>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        {# Период #}
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">С даты</label>
+                <input type="date" name="from" value="{{ date_from or '' }}"
+                       class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">По дату</label>
+                <input type="date" name="to" value="{{ date_to or '' }}"
+                       class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+        </div>
+
+        {# Группа #}
+        <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Группа *</label>
+            <select id="groupSelect" name="group" onchange="onGroupChange()"
+                    class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+                <option value="">— Выберите группу —</option>
+                {% for g in groups %}
+                <option value="{{ g.name }}" {% if g.name == selected_group %}selected{% endif %}>{{ g.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        {# Ученик (только в режиме «ученик») #}
+        <div id="studentBlock">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-2">Ученик *</label>
+            <select id="studentSelect" name="student_id"
+                    class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold focus:ring-2 focus:ring-cyan-500 outline-none">
+                {% if students_in_group %}
+                    <option value="">— Выберите ученика —</option>
+                    {% for st in students_in_group %}
+                    <option value="{{ st.id }}" {% if st.id|string == selected_student_id %}selected{% endif %}>{{ st.full_name }}</option>
+                    {% endfor %}
+                {% else %}
+                    <option value="">— Сначала выберите группу —</option>
+                {% endif %}
+            </select>
+        </div>
+
+        {# Кнопки #}
+        <div class="flex flex-wrap gap-3 pt-4 border-t border-white/40 dark:border-white/10">
+            <button type="button" onclick="downloadReport(this)"
+                    class="flex-1 sm:flex-none px-6 py-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-sm shadow-lg shadow-emerald-500/30 hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-file-excel"></i> Скачать Excel
+            </button>
+            <a href="/reports"
+               class="px-5 py-3 rounded-2xl bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold text-sm shadow-sm hover:shadow border border-slate-300 dark:border-slate-700 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-rotate-left"></i> Сброс
+            </a>
+        </div>
+
+        <div id="reportResult"></div>
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function toggleMode() {
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const studentBlock = document.getElementById('studentBlock');
+    studentBlock.style.display = (mode === 'student') ? 'block' : 'none';
+}
+
+async function onGroupChange() {
+    const group = document.getElementById('groupSelect').value;
+    const studentSelect = document.getElementById('studentSelect');
+    studentSelect.innerHTML = '<option value="">Загрузка...</option>';
+
+    if (!group) {
+        studentSelect.innerHTML = '<option value="">— Сначала выберите группу —</option>';
+        return;
+    }
+
+    try {
+        const r = await fetch('/api/group/' + encodeURIComponent(group) + '/students');
+        const res = await r.json();
+        if (res.success && res.students && res.students.length > 0) {
+            studentSelect.innerHTML = '<option value="">— Выберите ученика —</option>' +
+                res.students.map(s => `<option value="${s.id}">${escapeHtml(s.full_name)}</option>`).join('');
+        } else {
+            studentSelect.innerHTML = '<option value="">— В группе нет учеников —</option>';
+        }
+    } catch (e) {
+        studentSelect.innerHTML = '<option value="">Ошибка загрузки</option>';
+    }
+}
+
+async function downloadReport(btn) {
+    const mode = document.querySelector('input[name="mode"]:checked').value;
+    const group = document.getElementById('groupSelect').value;
+    const studentId = document.getElementById('studentSelect').value;
+    const dateFrom = document.querySelector('input[name="from"]').value;
+    const dateTo = document.querySelector('input[name="to"]').value;
+    const resultEl = document.getElementById('reportResult');
+
+    if (!group) { showToastSafe('Выберите группу', 'error'); return; }
+    if (mode === 'student' && !studentId) { showToastSafe('Выберите ученика', 'error'); return; }
+
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Формирование...';
+    resultEl.innerHTML = '';
+
+    try {
+        const r = await fetch('/reports/export', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                mode: mode,
+                group: group,
+                student_id: studentId ? parseInt(studentId) : null,
+                from: dateFrom,
+                to: dateTo
+            })
+        });
+
+        if (!r.ok) {
+            let errText = 'Ошибка ' + r.status;
+            try { const j = await r.json(); errText = j.error || errText; } catch (e) {}
+            throw new Error(errText);
+        }
+
+        const blob = await r.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const dispo = r.headers.get('Content-Disposition') || '';
+        let fname = 'Отчёт.xlsx';
+        const m = dispo.match(/filename\*?=(?:UTF-8'')?"?([^";]+)"?/i);
+        if (m && m[1]) fname = decodeURIComponent(m[1]);
+        a.download = fname;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        resultEl.innerHTML = `
+            <div class="mt-4 p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-sm font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-3 shadow-sm">
+                <i class="fa-solid fa-circle-check text-lg"></i>
+                Файл сформирован и скачан
+            </div>`;
+    } catch (e) {
+        resultEl.innerHTML = `
+            <div class="mt-4 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-sm font-bold text-red-700 dark:text-red-300 flex items-center gap-3 shadow-sm">
+                <i class="fa-solid fa-circle-exclamation text-lg"></i>
+                ${escapeHtml(e.message || 'Ошибка формирования отчёта')}
+            </div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+    }
+}
+
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+// Инициализация: если группа уже выбрана — подгрузить учеников
+document.addEventListener('DOMContentLoaded', () => {
+    toggleMode();
+    const group = document.getElementById('groupSelect').value;
+    if (group) onGroupChange();
+});
+</script>
+{% endblock %}

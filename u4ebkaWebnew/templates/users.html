@@ -1,0 +1,663 @@
+{% extends "base.html" %}
+{% block title %}Пользователи{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-users"></i>
+                </span>
+                Пользователи
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Управление учётными записями и ролями</p>
+        </div>
+
+        {% if user.role == 'admin' %}
+        <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="openModal('addStudentModal')" class="px-4 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold text-xs transition-all flex items-center gap-1.5"><i class="fa-solid fa-user-graduate"></i> Студент</button>
+            <button type="button" onclick="openModal('addTeacherModal')" class="px-4 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 font-bold text-xs transition-all flex items-center gap-1.5"><i class="fa-solid fa-chalkboard-user"></i> Преподаватель</button>
+            <button type="button" onclick="openModal('addEditorModal')" class="px-4 py-2 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 border border-orange-500/30 text-orange-600 dark:text-orange-400 font-bold text-xs transition-all flex items-center gap-1.5"><i class="fa-solid fa-pen"></i> Редактор</button>
+            <button type="button" onclick="openModal('addParentModal')" class="px-4 py-2 rounded-xl bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/30 text-violet-600 dark:text-violet-400 font-bold text-xs transition-all flex items-center gap-1.5"><i class="fa-solid fa-user-friends"></i> Родитель</button>
+            <button type="button" onclick="exportUsers()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-1.5"><i class="fa-solid fa-file-excel"></i> Экспорт в Excel</button>
+        </div>
+        {% else %}
+        <div class="flex flex-wrap gap-2 items-center">
+            <div class="px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-600 dark:text-cyan-400 font-bold text-xs flex items-center gap-2">
+                <i class="fa-solid fa-circle-info"></i> Редактор может редактировать пользователей и сбрасывать пароли
+            </div>
+            <button type="button" onclick="exportUsers()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-1.5"><i class="fa-solid fa-file-excel"></i> Экспорт в Excel</button>
+        </div>
+        {% endif %}
+    </div>
+
+    {# ==================== МЕТРИКИ РОЛЕЙ ==================== #}
+    {% set admins_count = users|selectattr('role', 'equalto', 'admin')|list|length %}
+    {% set editors_count = users|selectattr('role', 'equalto', 'editor')|list|length %}
+    {% set teachers_count = users|selectattr('role', 'equalto', 'teacher')|list|length %}
+    {% set students_count = users|selectattr('role', 'equalto', 'student')|list|length %}
+    {% set parents_count = users|selectattr('role', 'equalto', 'parent')|list|length %}
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-red-500/20 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-1">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-shield-halved text-red-500"></i> Админы</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ admins_count }}</div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-orange-500/20 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-1">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-pen text-orange-500"></i> Редакторы</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ editors_count }}</div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-cyan-500/20 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-1">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-chalkboard-user text-cyan-500"></i> Преподаватели</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ teachers_count }}</div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-emerald-500/20 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-1">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-user-graduate text-emerald-500"></i> Студенты</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ students_count }}</div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-violet-500/20 p-4 rounded-3xl shadow-sm flex flex-col items-center justify-center gap-1">
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5"><i class="fa-solid fa-user-friends text-violet-500"></i> Родители</div>
+            <div class="text-2xl font-black text-slate-900 dark:text-white">{{ parents_count }}</div>
+        </div>
+    </div>
+
+    {# ==================== ФИЛЬТРЫ ==================== #}
+    <div class="bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 dark:border-white/10 p-4 rounded-3xl shadow-lg flex flex-wrap gap-4 items-end">
+        <div class="flex-1 min-w-[180px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Роль</label>
+            <select id="roleFilter" onchange="filterUsers()" class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                <option value="">Все роли</option>
+                <option value="admin">🔴 Администратор</option>
+                <option value="editor">🟡 Редактор</option>
+                <option value="teacher">🔵 Преподаватель</option>
+                <option value="student">🟢 Студент</option>
+                <option value="parent">🟣 Родитель</option>
+            </select>
+        </div>
+        <div class="flex-[2] min-w-[250px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Поиск</label>
+            <input type="text" id="searchInput" onkeyup="filterUsers()" placeholder="ФИО или логин..." class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+        </div>
+    </div>
+
+    {# ==================== ТАБЛИЦА ==================== #}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+        <div class="overflow-x-auto">
+            <table id="usersTable" class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="border-b border-white/40 dark:border-white/10 bg-white/30 dark:bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        <th class="py-4 px-6">Логин</th>
+                        <th class="py-4 px-6">ФИО</th>
+                        <th class="py-4 px-6">Роль</th>
+                        <th class="py-4 px-6">Группа / Дети</th>
+                        <th class="py-4 px-6">Последний вход</th>
+                        <th class="py-4 px-6 text-right">Действия</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-medium">
+                    {% for u in users %}
+                    <tr data-role="{{ u.role }}"
+                        data-search="{{ (u.username ~ ' ' ~ u.full_name)|lower }}"
+                        data-user-id="{{ u.id }}"
+                        class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                        <td class="py-4 px-6">
+                            <code class="px-2 py-1 rounded-md bg-white/50 dark:bg-slate-800 font-mono text-cyan-600 dark:text-cyan-400 text-[11px] border border-white/60 dark:border-slate-700 shadow-sm">{{ u.username }}</code>
+                        </td>
+                        <td class="py-4 px-6 font-bold text-slate-900 dark:text-white">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">
+                                    {{ (u.full_name or u.username)[:1]|upper }}
+                                </div>
+                                <span class="row-fullname">{{ u.full_name }}</span>
+                            </div>
+                        </td>
+                        <td class="py-4 px-6 row-role-cell">
+                            {% if u.role == 'admin' %}<span class="px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[10px] font-bold uppercase">🔴 Админ</span>
+                            {% elif u.role == 'editor' %}<span class="px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-400 text-[10px] font-bold uppercase">🟡 Редактор</span>
+                            {% elif u.role == 'teacher' %}<span class="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400 text-[10px] font-bold uppercase">🔵 Преподаватель</span>
+                            {% elif u.role == 'student' %}<span class="px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold uppercase">🟢 Студент</span>
+                            {% elif u.role == 'parent' %}<span class="px-2.5 py-1 rounded-lg bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-[10px] font-bold uppercase">🟣 Родитель</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-4 px-6 row-extra text-[11px]">
+                            {% if u.role == 'student' %}<span class="row-group px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">{{ u.group_name or '—' }}</span>{% endif %}
+                            {% if u.role == 'parent' %}<span class="row-group px-2 py-0.5 rounded-md bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-semibold">👶 {{ u.parent_of or '—' }}</span>{% endif %}
+                            {% if u.role not in ['student', 'parent'] %}<span class="text-slate-400">—</span>{% endif %}
+                        </td>
+                        <td class="py-4 px-6 text-[10px] text-slate-500">{{ u.last_login or 'Никогда' }}</td>
+                        <td class="py-4 px-6 text-right">
+                            {% if u.id != user.id %}
+                                {% if user.role == 'admin' or (user.role == 'editor' and u.role != 'admin') %}
+                                <div class="flex gap-2 justify-end">
+                                    <button type="button"
+                                            class="edit-user-btn w-8 h-8 rounded-xl bg-white/50 dark:bg-slate-800 hover:bg-white/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-cyan-500 transition-all border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm"
+                                            data-user-id="{{ u.id }}"
+                                            title="Редактировать">
+                                        <i class="fa-solid fa-pen"></i>
+                                    </button>
+                                    <button type="button"
+                                            class="reset-pwd-user-btn w-8 h-8 rounded-xl bg-white/50 dark:bg-slate-800 hover:bg-white/80 dark:hover:bg-slate-700 text-slate-500 dark:text-slate-400 hover:text-orange-500 transition-all border border-slate-200 dark:border-slate-700 flex items-center justify-center shadow-sm"
+                                            data-user-id="{{ u.id }}"
+                                            data-full-name="{{ u.full_name }}"
+                                            data-role="{{ u.role }}"
+                                            title="Сбросить пароль">
+                                        <i class="fa-solid fa-key"></i>
+                                    </button>
+                                    {% if user.role == 'admin' %}
+                                    <button type="button"
+                                            class="delete-user-btn w-8 h-8 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 transition-all border border-red-500/20 flex items-center justify-center shadow-sm"
+                                            data-user-id="{{ u.id }}"
+                                            data-full-name="{{ u.full_name }}"
+                                            title="Удалить">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                    {% endif %}
+                                </div>
+                                {% endif %}
+                            {% else %}
+                            <span class="text-[10px] text-slate-400 italic bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">Это вы</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div id="noUsersMessage" style="display: none;" class="text-center py-16 text-slate-400">
+            <i class="fa-solid fa-search text-4xl mb-3 opacity-50 block"></i>
+            <p>Пользователи не найдены</p>
+        </div>
+    </div>
+</div>
+
+{# ==================== МОДАЛКИ ==================== #}
+<style>
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 1rem; }
+.modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1.5rem; padding: 1.5rem; width: 100%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: modalIn 0.2s forwards; max-height: 90vh; overflow-y: auto; }
+:is(.dark) .modal-content { background: rgba(15, 23, 42, 0.85); border-color: rgba(255, 255, 255, 0.1); }
+@keyframes modalIn { to { transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; background: none; border: none; }
+.modal-close:hover { color: #ef4444; }
+.modal-header h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: #0f172a; display: flex; align-items: center; gap: 8px;}
+:is(.dark) .modal-header h2 { color: white; }
+.form-label { display: block; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.5rem; }
+.form-input, .form-select { width: 100%; margin-bottom: 1rem; padding: 0.625rem 1rem; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1rem; font-size: 0.875rem; outline: none; transition: box-shadow 0.2s; }
+:is(.dark) .form-input, :is(.dark) .form-select { background: rgba(15, 23, 42, 0.5); border-color: rgba(255, 255, 255, 0.1); color: white;}
+.form-input:focus, .form-select:focus { box-shadow: 0 0 0 2px #06b6d4; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; }
+.btn-save { padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; color: white; transition: transform 0.2s; }
+.btn-save:hover { transform: scale(1.05); }
+.btn-cancel { padding: 0.625rem 1.25rem; border-radius: 0.75rem; font-size: 0.875rem; font-weight: 700; color: #64748b; background: rgba(255, 255, 255, 0.4); border: 1px solid #e2e8f0; transition: background 0.2s; }
+:is(.dark) .btn-cancel { background: rgba(30, 41, 59, 0.5); border-color: #334155; color: #94a3b8; }
+</style>
+
+{# ==================== МОДАЛКА: РЕДАКТИРОВАНИЕ ==================== #}
+<div class="modal" id="editUserModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2><i class="fa-solid fa-pen text-cyan-500"></i> Редактирование</h2><button class="modal-close" onclick="closeModal('editUserModal')">&times;</button></div>
+
+        <div id="editUserInfo" class="mb-4 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-700 dark:text-cyan-300"></div>
+
+        <label class="form-label">ФИО *</label>
+        <input type="text" id="editFullName" class="form-input">
+
+        <div id="editStudentBlock" style="display: none;">
+            <label class="form-label">Группа *</label>
+            <select id="editGroupName" class="form-select">
+                <option value="">-- Выберите группу --</option>
+                {% for g in all_groups %}
+                <option value="{{ g.name }}">{{ g.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div id="editParentBlock" style="display: none;">
+            <label class="form-label">Логины детей (через запятую) *</label>
+            <input type="text" id="editParentOf" placeholder="ivanov, petrov" class="form-input">
+        </div>
+
+        <div id="editTeacherBlock" style="display: none;">
+            <label class="form-label">Привязка к преподавателю</label>
+            <select id="editTeacherLink" class="form-select">
+                <option value="">-- Не привязан --</option>
+                {% for t in all_teachers %}
+                <option value="{{ t.id }}">{{ t.full_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <label class="form-label">Email</label>
+        <input type="email" id="editEmail" placeholder="email@example.com" class="form-input">
+        <label class="form-label">Телефон</label>
+        <input type="tel" id="editPhone" placeholder="+7 ..." class="form-input">
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('editUserModal')">Отмена</button>
+            <button class="btn-save bg-gradient-to-r from-cyan-500 to-violet-600 shadow-md shadow-cyan-500/30" onclick="saveUserEdit()" id="editSaveBtn"><i class="fa-solid fa-floppy-disk mr-1"></i> Сохранить</button>
+        </div>
+    </div>
+</div>
+
+{# ==================== МОДАЛКА: СБРОС ПАРОЛЯ ==================== #}
+<div class="modal" id="resetPwdModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2><i class="fa-solid fa-key text-orange-500"></i> Сброс пароля</h2><button class="modal-close" onclick="closeModal('resetPwdModal')">&times;</button></div>
+
+        <div id="resetPwdInfo" class="mb-4 text-sm text-slate-600 dark:text-slate-300"></div>
+
+        <div class="p-4 rounded-xl mb-4 border border-white/60 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 shadow-sm">
+            <label class="flex items-center gap-3 cursor-pointer text-sm text-slate-800 dark:text-white font-bold mb-2">
+                <input type="radio" name="pwdMode" value="auto" checked onchange="togglePwdMode()" class="w-4 h-4 text-cyan-500">
+                <span>🔄 Сгенерировать автоматически</span>
+            </label>
+            <div id="autoPwdHint" class="text-[11px] text-slate-500 ml-7 mb-4">Пароль по шаблону роли (например, <code>Student12345678</code>)</div>
+
+            <label class="flex items-center gap-3 cursor-pointer text-sm text-slate-800 dark:text-white font-bold">
+                <input type="radio" name="pwdMode" value="manual" onchange="togglePwdMode()" class="w-4 h-4 text-cyan-500">
+                <span>✏️ Ввести вручную</span>
+            </label>
+        </div>
+
+        <div id="manualPwdBlock" style="display: none;">
+            <label class="form-label">Новый пароль *</label>
+            <input type="text" id="manualNewPwd" placeholder="Минимум 6 символов" class="form-input">
+            <label class="form-label">Повторите пароль *</label>
+            <input type="text" id="manualNewPwd2" placeholder="Повторите пароль" class="form-input">
+        </div>
+
+        <div id="resetPwdResult" style="display: none;" class="mt-4"></div>
+
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('resetPwdModal')">Отмена</button>
+            <button class="btn-save bg-gradient-to-r from-orange-400 to-orange-600 shadow-md shadow-orange-500/30" onclick="doResetPassword()" id="resetPwdBtn"><i class="fa-solid fa-check mr-1"></i> Сбросить</button>
+        </div>
+    </div>
+</div>
+
+{# ==================== МОДАЛКИ СОЗДАНИЯ (admin) ==================== #}
+{% if user.role == 'admin' %}
+{# СТУДЕНТ #}
+<div class="modal" id="addStudentModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2><i class="fa-solid fa-user-graduate text-emerald-500"></i> Добавить студента</h2><button class="modal-close" onclick="closeModal('addStudentModal')">&times;</button></div>
+        <div class="p-3 mb-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-700 dark:text-emerald-400 font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Студент сможет просматривать расписание и свой дневник</div>
+        <label class="form-label">ФИО *</label><input type="text" id="studentFullName" placeholder="Иванов Иван Иванович" class="form-input">
+        <label class="form-label">Группа *</label>
+        <select id="studentGroup" class="form-select"><option value="">-- Выберите группу --</option>{% for group in all_groups %}<option value="{{ group.name }}">{{ group.name }}</option>{% endfor %}</select>
+        <label class="form-label">Логин *</label><input type="text" id="studentUsername" placeholder="ivanov" class="form-input">
+        <label class="form-label">Email</label><input type="email" id="studentEmail" placeholder="ivanov@example.com" class="form-input">
+        <label class="form-label">Пароль *</label><input type="password" id="studentPassword" placeholder="Минимум 6 символов" class="form-input mb-2">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('addStudentModal')">Отмена</button>
+            <button class="btn-save bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-md shadow-emerald-500/30" onclick="createStudent()"><i class="fa-solid fa-check mr-1"></i> Создать</button>
+        </div>
+    </div>
+</div>
+
+{# ПРЕПОДАВАТЕЛЬ #}
+<div class="modal" id="addTeacherModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2><i class="fa-solid fa-chalkboard-user text-cyan-500"></i> Добавить преподавателя</h2><button class="modal-close" onclick="closeModal('addTeacherModal')">&times;</button></div>
+        <div class="p-3 mb-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-700 dark:text-cyan-400 font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Преподаватель сможет выставлять оценки и отмечать посещаемость</div>
+        <label class="form-label">ФИО *</label><input type="text" id="newTeacherFullName" placeholder="Сидоров Пётр Иванович" class="form-input">
+        <label class="form-label">Привязать к преподавателю из списка</label>
+        <select id="newTeacherLink" class="form-select"><option value="">-- Создать нового --</option>{% for t in all_teachers %}<option value="{{ t.id }}">{{ t.full_name }}</option>{% endfor %}</select>
+        <label class="form-label">Логин *</label><input type="text" id="newTeacherUsername" placeholder="sidorov" class="form-input">
+        <label class="form-label">Email</label><input type="email" id="newTeacherEmail" class="form-input">
+        <label class="form-label">Пароль *</label><input type="password" id="newTeacherPassword" placeholder="Минимум 6 символов" class="form-input mb-2">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('addTeacherModal')">Отмена</button>
+            <button class="btn-save bg-gradient-to-r from-cyan-500 to-blue-600 shadow-md shadow-cyan-500/30" onclick="createTeacher()"><i class="fa-solid fa-check mr-1"></i> Создать</button>
+        </div>
+    </div>
+</div>
+
+{# РЕДАКТОР #}
+<div class="modal" id="addEditorModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2><i class="fa-solid fa-pen text-orange-500"></i> Добавить редактора</h2><button class="modal-close" onclick="closeModal('addEditorModal')">&times;</button></div>
+        <div class="p-3 mb-4 rounded-xl bg-orange-500/10 border border-orange-500/20 text-xs text-orange-700 dark:text-orange-400 font-medium"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Редактор сможет добавлять, изменять и удалять занятия</div>
+        <label class="form-label">ФИО *</label><input type="text" id="editorFullName" placeholder="Петрова Мария Сергеевна" class="form-input">
+        <label class="form-label">Логин *</label><input type="text" id="editorUsername" placeholder="petrova" class="form-input">
+        <label class="form-label">Email</label><input type="email" id="editorEmail" class="form-input">
+        <label class="form-label">Пароль *</label><input type="password" id="editorPassword" placeholder="Минимум 6 символов" class="form-input mb-2">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('addEditorModal')">Отмена</button>
+            <button class="btn-save bg-gradient-to-r from-orange-400 to-orange-600 shadow-md shadow-orange-500/30" onclick="createEditor()"><i class="fa-solid fa-check mr-1"></i> Создать</button>
+        </div>
+    </div>
+</div>
+
+{# РОДИТЕЛЬ #}
+<div class="modal" id="addParentModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2><i class="fa-solid fa-user-friends text-violet-500"></i> Добавить родителя</h2><button class="modal-close" onclick="closeModal('addParentModal')">&times;</button></div>
+        <div class="p-3 mb-4 rounded-xl bg-violet-500/10 border border-violet-500/20 text-xs text-violet-700 dark:text-violet-400 font-medium"><i class="fa-solid fa-circle-info mr-1"></i> Родитель сможет смотреть дневник ребёнка. Укажите логин (или несколько через запятую).</div>
+        <label class="form-label">ФИО *</label><input type="text" id="parentFullName" placeholder="Иванова Мария Петровна" class="form-input">
+        <label class="form-label">Логин ребёнка (через запятую) *</label><input type="text" id="parentChildren" placeholder="ivanov, petrov" class="form-input">
+        <label class="form-label">Логин *</label><input type="text" id="parentUsername" placeholder="ivanova" class="form-input">
+        <label class="form-label">Email</label><input type="email" id="parentEmail" class="form-input">
+        <label class="form-label">Пароль *</label><input type="password" id="parentPassword" placeholder="Минимум 6 символов" class="form-input mb-2">
+        <div class="modal-actions">
+            <button class="btn-cancel" onclick="closeModal('addParentModal')">Отмена</button>
+            <button class="btn-save bg-gradient-to-r from-violet-500 to-purple-600 shadow-md shadow-violet-500/30" onclick="createParent()"><i class="fa-solid fa-check mr-1"></i> Создать</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ==================== ОТКРЫТИЕ/ЗАКРЫТИЕ МОДАЛОК ====================
+function openModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; }
+function closeModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+
+// ==================== ЭКСПОРТ ПОЛЬЗОВАТЕЛЕЙ ====================
+function exportUsers() {
+    const roleFilter = document.getElementById('roleFilter').value;
+    const url = '/users/export' + (roleFilter ? '?role=' + encodeURIComponent(roleFilter) : '');
+    window.location.href = url;
+}
+
+// ==================== ФИЛЬТРАЦИЯ ====================
+function filterUsers() {
+    const role = document.getElementById('roleFilter').value;
+    const search = document.getElementById('searchInput').value.toLowerCase().trim();
+    const rows = document.querySelectorAll('#usersTable tbody tr');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+        const rowRole = row.getAttribute('data-role');
+        const rowSearch = row.getAttribute('data-search') || '';
+        const matchRole = !role || rowRole === role;
+        const matchSearch = !search || rowSearch.includes(search);
+        const visible = matchRole && matchSearch;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+    });
+
+    document.getElementById('noUsersMessage').style.display = visibleCount > 0 ? 'none' : 'block';
+}
+
+// ==================== НАВЕШИВАНИЕ ОБРАБОТЧИКОВ ====================
+function attachRowHandlers() {
+    document.querySelectorAll('.edit-user-btn').forEach(btn => {
+        btn.addEventListener('click', () => openEditModal(parseInt(btn.dataset.userId)));
+    });
+    document.querySelectorAll('.reset-pwd-user-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            openResetModal(parseInt(btn.dataset.userId), btn.dataset.fullName || '', btn.dataset.role || '');
+        });
+    });
+    document.querySelectorAll('.delete-user-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            deleteUser(parseInt(btn.dataset.userId), btn.dataset.fullName || '', btn);
+        });
+    });
+}
+
+// ==================== РЕДАКТИРОВАНИЕ ====================
+let editCurrentUserId = null;
+
+async function openEditModal(userId) {
+    try {
+        const r = await fetch('/api/users/' + userId);
+        const res = await r.json();
+
+        if (!res.success) { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); return; }
+
+        const u = res.user;
+        editCurrentUserId = userId;
+
+        document.getElementById('editUserInfo').innerHTML =
+            `<div class="flex items-center gap-2"><span class="px-2 py-0.5 bg-cyan-500/20 rounded-md font-mono text-cyan-700 dark:text-cyan-300">🔑 ${escapeHtml(u.username)}</span> <span class="px-2 py-0.5 bg-white/50 dark:bg-black/20 rounded-md font-bold uppercase text-[9px] border border-cyan-500/20">🎭 ${escapeHtml(u.role)}</span></div>`;
+
+        document.getElementById('editFullName').value = u.full_name || '';
+        document.getElementById('editEmail').value = u.email || '';
+        document.getElementById('editPhone').value = u.phone || '';
+
+        document.getElementById('editStudentBlock').style.display = 'none';
+        document.getElementById('editParentBlock').style.display = 'none';
+        document.getElementById('editTeacherBlock').style.display = 'none';
+
+        if (u.role === 'student') {
+            document.getElementById('editStudentBlock').style.display = 'block';
+            document.getElementById('editGroupName').value = u.group_name || '';
+        } else if (u.role === 'parent') {
+            document.getElementById('editParentBlock').style.display = 'block';
+            document.getElementById('editParentOf').value = u.parent_of || '';
+        } else if (u.role === 'teacher') {
+            document.getElementById('editTeacherBlock').style.display = 'block';
+            document.getElementById('editTeacherLink').value = u.teacher_id || '';
+        }
+
+        openModal('editUserModal');
+    } catch(e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+async function saveUserEdit() {
+    if (!editCurrentUserId) return;
+
+    const payload = {
+        user_id: editCurrentUserId,
+        full_name: document.getElementById('editFullName').value.trim(),
+        email: document.getElementById('editEmail').value.trim(),
+        phone: document.getElementById('editPhone').value.trim()
+    };
+
+    if (document.getElementById('editStudentBlock').style.display !== 'none') {
+        payload.group_name = document.getElementById('editGroupName').value;
+    }
+    if (document.getElementById('editParentBlock').style.display !== 'none') {
+        payload.parent_of = document.getElementById('editParentOf').value.trim();
+    }
+    if (document.getElementById('editTeacherBlock').style.display !== 'none') {
+        payload.teacher_id = document.getElementById('editTeacherLink').value || null;
+    }
+
+    const btn = document.getElementById('editSaveBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Сохранение...';
+
+    try {
+        const r = await fetch('/api/users/update', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            showToastSafe('✅ Сохранено', 'success');
+            updateRow(editCurrentUserId, res.user);
+            closeModal('editUserModal');
+        } else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch(e) { showToastSafe('❌ ' + e.message, 'error'); }
+    finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-floppy-disk mr-1"></i> Сохранить'; }
+}
+
+function updateRow(userId, user) {
+    const row = document.querySelector(`#usersTable tbody tr[data-user-id="${userId}"]`);
+    if (!row) return;
+
+    row.querySelector('.row-fullname').textContent = user.full_name || '';
+
+    const extra = row.querySelector('.row-extra');
+    if (user.role === 'student') {
+        extra.innerHTML = `<span class="row-group px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">${escapeHtml(user.group_name || '—')}</span>`;
+    } else if (user.role === 'parent') {
+        extra.innerHTML = `<span class="row-group px-2 py-0.5 rounded-md bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-semibold">👶 ${escapeHtml(user.parent_of || '—')}</span>`;
+    }
+
+    row.setAttribute('data-search', (user.username + ' ' + user.full_name).toLowerCase());
+}
+
+// ==================== СБРОС ПАРОЛЯ ====================
+let resetCurrentUserId = null;
+
+function openResetModal(userId, fullName, role) {
+    resetCurrentUserId = userId;
+    document.getElementById('resetPwdInfo').innerHTML =
+        `Пользователь: <strong>${escapeHtml(fullName)}</strong> <span class="px-2 py-0.5 bg-slate-200 dark:bg-slate-700 rounded-md font-bold uppercase text-[9px] ml-2 border border-slate-300 dark:border-slate-600">${escapeHtml(role)}</span>`;
+    document.getElementById('manualNewPwd').value = '';
+    document.getElementById('manualNewPwd2').value = '';
+    document.getElementById('resetPwdResult').style.display = 'none';
+    document.querySelector('input[name="pwdMode"][value="auto"]').checked = true;
+    togglePwdMode();
+    openModal('resetPwdModal');
+}
+
+function togglePwdMode() {
+    const mode = document.querySelector('input[name="pwdMode"]:checked').value;
+    document.getElementById('manualPwdBlock').style.display = (mode === 'manual') ? 'block' : 'none';
+    document.getElementById('autoPwdHint').style.display = (mode === 'auto') ? 'block' : 'none';
+}
+
+async function doResetPassword() {
+    if (!resetCurrentUserId) return;
+
+    const mode = document.querySelector('input[name="pwdMode"]:checked').value;
+    const payload = { user_id: resetCurrentUserId };
+
+    if (mode === 'auto') { payload.auto_generate = true; }
+    else {
+        const p1 = document.getElementById('manualNewPwd').value;
+        const p2 = document.getElementById('manualNewPwd2').value;
+        if (p1.length < 6) { showToastSafe('Минимум 6 символов', 'error'); return; }
+        if (p1 !== p2) { showToastSafe('Пароли не совпадают', 'error'); return; }
+        payload.new_password = p1;
+    }
+
+    const btn = document.getElementById('resetPwdBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Сброс...';
+
+    try {
+        const r = await fetch('/api/users/reset-password', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            const resultEl = document.getElementById('resetPwdResult');
+            resultEl.style.display = 'block';
+            resultEl.innerHTML = `
+                <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-center shadow-sm">
+                    <div class="font-bold text-emerald-600 dark:text-emerald-400 mb-3"><i class="fa-solid fa-check-circle"></i> Пароль успешно изменён</div>
+                    <div class="p-3 rounded-xl bg-white/60 dark:bg-slate-900/60 font-mono text-xl font-black text-slate-900 dark:text-white border-2 border-dashed border-emerald-500/50 select-all tracking-widest">${escapeHtml(res.new_password)}</div>
+                    <div class="text-[11px] mt-2 text-slate-500 font-medium">Выделите и скопируйте пароль, чтобы передать пользователю</div>
+                </div>`;
+            showToastSafe('✅ Пароль сброшен', 'success');
+        } else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch(e) { showToastSafe('❌ ' + e.message, 'error'); }
+    finally { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-check mr-1"></i> Сбросить'; }
+}
+
+// ==================== СОЗДАНИЕ ====================
+async function createUser(payload, successMsg) {
+    try {
+        const r = await fetch('/api/users/add', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const res = await r.json();
+        if (res.success) {
+            let msg = '✅ ' + successMsg;
+            if (res.teacher_created) msg += ' (создан новый преподаватель)';
+            else if (res.teacher_linked) msg += ' (привязан к преподавателю)';
+            showToastSafe(msg, 'success');
+            setTimeout(() => location.reload(), 800);
+        } else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch(e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+function createStudent() {
+    const fullName = document.getElementById('studentFullName').value.trim();
+    const groupName = document.getElementById('studentGroup').value;
+    const username = document.getElementById('studentUsername').value.trim();
+    const email = document.getElementById('studentEmail').value.trim();
+    const password = document.getElementById('studentPassword').value;
+    if (!fullName) return showToastSafe('Введите ФИО', 'error');
+    if (!groupName) return showToastSafe('Выберите группу', 'error');
+    if (!username || username.length < 3) return showToastSafe('Логин минимум 3 символа', 'error');
+    if (password.length < 6) return showToastSafe('Пароль минимум 6 символов', 'error');
+    createUser({ full_name: fullName, username, email, password, role: 'student', group_name: groupName }, 'Студент создан');
+}
+
+function createTeacher() {
+    const fullName = document.getElementById('newTeacherFullName').value.trim();
+    const teacherId = document.getElementById('newTeacherLink').value;
+    const username = document.getElementById('newTeacherUsername').value.trim();
+    const email = document.getElementById('newTeacherEmail').value.trim();
+    const password = document.getElementById('newTeacherPassword').value;
+    if (!fullName) return showToastSafe('Введите ФИО', 'error');
+    if (!username || username.length < 3) return showToastSafe('Логин минимум 3 символа', 'error');
+    if (password.length < 6) return showToastSafe('Пароль минимум 6 символов', 'error');
+    createUser({ full_name: fullName, username, email, password, role: 'teacher', teacher_id: teacherId ? parseInt(teacherId) : null }, 'Преподаватель создан');
+}
+
+function createEditor() {
+    const fullName = document.getElementById('editorFullName').value.trim();
+    const username = document.getElementById('editorUsername').value.trim();
+    const email = document.getElementById('editorEmail').value.trim();
+    const password = document.getElementById('editorPassword').value;
+    if (!fullName) return showToastSafe('Введите ФИО', 'error');
+    if (!username || username.length < 3) return showToastSafe('Логин минимум 3 символа', 'error');
+    if (password.length < 6) return showToastSafe('Пароль минимум 6 символов', 'error');
+    createUser({ full_name: fullName, username, email, password, role: 'editor' }, 'Редактор создан');
+}
+
+function createParent() {
+    const fullName = document.getElementById('parentFullName').value.trim();
+    const children = document.getElementById('parentChildren').value.trim();
+    const username = document.getElementById('parentUsername').value.trim();
+    const email = document.getElementById('parentEmail').value.trim();
+    const password = document.getElementById('parentPassword').value;
+    if (!fullName) return showToastSafe('Введите ФИО', 'error');
+    if (!children) return showToastSafe('Укажите логин ребёнка', 'error');
+    if (!username || username.length < 3) return showToastSafe('Логин минимум 3 символа', 'error');
+    if (password.length < 6) return showToastSafe('Пароль минимум 6 символов', 'error');
+    createUser({ full_name: fullName, username, email, password, role: 'parent', parent_of: children }, 'Родитель создан');
+}
+
+// ==================== УДАЛЕНИЕ ====================
+async function deleteUser(id, name, btn) {
+    if (!confirm(`Удалить пользователя "${name}"?\n\nПользователь будет деактивирован.`)) return;
+    if (btn) { btn.disabled = true; }
+    try {
+        const r = await fetch('/api/users/delete/' + id, {method: 'POST'});
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Пользователь удалён', 'success');
+            const row = document.querySelector(`#usersTable tbody tr[data-user-id="${id}"]`);
+            if (row) { row.style.transition = 'opacity 0.3s'; row.style.opacity = '0'; setTimeout(() => row.remove(), 300); }
+            setTimeout(() => location.reload(), 900);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            if (btn) btn.disabled = false;
+        }
+    } catch(e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        if (btn) btn.disabled = false;
+    }
+}
+
+// ==================== УТИЛИТЫ ====================
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+// ==================== СТАРТ ====================
+attachRowHandlers();
+</script>
+{% endblock %}

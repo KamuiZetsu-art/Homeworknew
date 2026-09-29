@@ -1,0 +1,455 @@
+{% extends "base.html" %}
+{% block title %}Журнал{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-book-open"></i>
+                </span>
+                Журнал преподавателя
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Выставление оценок и отметка посещаемости</p>
+        </div>
+
+        <div class="flex flex-wrap gap-3 items-end w-full md:w-auto">
+            <div class="flex-1 min-w-[120px]">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">День</label>
+                <select id="daySelect" onchange="loadLessons()" class="w-full py-2 px-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                    {% for day in days %}
+                    <option value="{{ day }}" {% if day == current_day %}selected{% endif %}>{{ day }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="flex-1 min-w-[150px]">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Дата</label>
+                <input type="date" id="dateInput" value="{{ today }}" onchange="loadLessons()" class="w-full py-2 px-3 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+        </div>
+    </div>
+
+    {# ==================== ИНФО ==================== #}
+    <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-sm font-medium text-cyan-800 dark:text-cyan-200 flex items-start gap-3 shadow-sm">
+        <i class="fa-solid fa-circle-info text-cyan-600 mt-0.5 text-lg"></i>
+        <div>Все студенты по умолчанию отмечены как <strong>«Был»</strong>. Отмечайте отсутствующих и опоздавших. Изменения сохраняются кнопкой <strong>«Сохранить всё»</strong>.</div>
+    </div>
+
+    {# ==================== СПИСОК ПАР ==================== #}
+    <div id="lessonsContainer" class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6 min-h-[300px]">
+        <div class="text-center py-16 text-slate-400">
+            <i class="fa-solid fa-spinner fa-spin text-3xl mb-3"></i>
+            <p>Загрузка...</p>
+        </div>
+    </div>
+</div>
+
+{# ==================== МОДАЛКА ЖУРНАЛА ==================== #}
+<style>
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 1rem; }
+.modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1.5rem; padding: 1.5rem; width: 100%; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: modalIn 0.2s forwards; max-height: 90vh; overflow-y: auto; }
+:is(.dark) .modal-content { background: rgba(15, 23, 42, 0.85); border-color: rgba(255, 255, 255, 0.1); }
+@keyframes modalIn { to { transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; background: none; border: none; }
+.modal-close:hover { color: #ef4444; }
+.modal-header h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: #0f172a; }
+:is(.dark) .modal-header h2 { color: white; }
+
+.grade-btn { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; }
+.grade-btn:hover { transform: scale(1.1); }
+.att-btn { padding: 6px 12px; border-radius: 10px; font-weight: 700; font-size: 11px; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); cursor: pointer; white-space: nowrap;}
+.att-btn:hover { transform: scale(1.05); }
+.comment-input { width: 100%; padding: 6px 12px; background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.1); border-radius: 8px; font-size: 12px; outline: none; transition: border 0.2s; }
+:is(.dark) .comment-input { background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.1); color: white; }
+.comment-input:focus { border-color: #06b6d4; }
+</style>
+
+<div class="modal" id="journalModal">
+    <div class="modal-content relative" style="max-width: 1100px;">
+        <div class="modal-header">
+            <h2 id="journalTitle" class="flex items-center gap-2"><i class="fa-solid fa-book-bookmark text-cyan-500"></i> Журнал</h2>
+            <button class="modal-close" onclick="closeModal('journalModal')">&times;</button>
+        </div>
+
+        <div id="journalInfo" class="mb-4 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-800 dark:text-cyan-200"></div>
+
+        <div id="studentsContainer" class="min-h-[200px]"></div>
+
+        <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700/50">
+            <button class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-500 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="closeModal('journalModal')">Отмена</button>
+            <button class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-400 to-emerald-600 shadow-md hover:shadow-lg transition-all flex items-center gap-2" onclick="saveAllMarks()">
+                <i class="fa-solid fa-floppy-disk"></i> Сохранить всё
+            </button>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+let currentLessonId = null;
+let currentDate = '{{ today }}';
+let currentGroup = '';
+let currentPara = 0;
+let currentSubject = '';
+let studentsData = [];
+
+// ==================== СПИСОК ПАР ====================
+async function loadLessons() {
+    const container = document.getElementById('lessonsContainer');
+    const day = document.getElementById('daySelect').value;
+    currentDate = document.getElementById('dateInput').value;
+
+    container.innerHTML = '<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-3xl mb-3"></i><p>Загрузка...</p></div>';
+
+    try {
+        const url = `/api/teacher/lessons?day=${encodeURIComponent(day)}&date=${encodeURIComponent(currentDate)}`;
+        const response = await fetch(url);
+        const lessons = await response.json();
+
+        if (!lessons || lessons.length === 0) {
+            container.innerHTML = '<div class="text-center py-16 text-slate-400"><div class="text-5xl mb-3 opacity-50 block">📭</div><p>На этот день у вас нет пар</p></div>';
+            return;
+        }
+
+        let html = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">';
+        lessons.forEach(l => {
+            const isCancelled = l.cancelled === true;
+            const isReplaced = l.replaced === true || (l.override && l.override.type === 'replaced');
+
+            const groupName = escapeHtml(l.group_name || '');
+            const subjectName = escapeHtml(l.subject_name || '');
+            const roomName = escapeHtml(l.room_number || '');
+            const comment = l.override && l.override.comment ? escapeHtml(l.override.comment) : '';
+
+            let bgClass = 'bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 border-l-4 border-l-cyan-500';
+            let iconClass = 'bg-gradient-to-br from-cyan-400 to-cyan-600 text-white';
+            let icon = 'fa-book';
+            let badge = '<span class="px-2 py-1 rounded-md bg-cyan-500 text-white text-[10px] font-bold shadow-sm">📔 Открыть</span>';
+            let clickAction = 'open';
+            let cursorClass = 'cursor-pointer hover:shadow-lg transition-all hover:scale-[1.01]';
+
+            if (isCancelled) {
+                bgClass = 'bg-red-500/10 border-red-500/30 border-l-4 border-l-red-500';
+                iconClass = 'bg-red-500 text-white';
+                icon = 'fa-ban';
+                badge = '<span class="px-2 py-1 rounded-md bg-red-500 text-white text-[10px] font-bold shadow-sm">🚫 Отменена</span>';
+                clickAction = 'cancelled';
+                cursorClass = 'cursor-pointer hover:bg-red-500/20';
+            } else if (isReplaced) {
+                bgClass = 'bg-orange-500/10 border-orange-500/30 border-l-4 border-l-orange-500';
+                iconClass = 'bg-orange-500 text-white';
+                icon = 'fa-arrows-rotate';
+                badge = '<span class="px-2 py-1 rounded-md bg-orange-500 text-white text-[10px] font-bold shadow-sm">🔁 Замена</span>';
+            }
+
+            html += `
+            <div class="${bgClass} rounded-2xl p-4 shadow-sm ${cursorClass} flex flex-col lesson-card"
+                 data-action="${clickAction}"
+                 data-lesson-id="${l.lesson_id}"
+                 data-group="${escapeHtml(l.group_name || '')}"
+                 data-para="${l.para_number}"
+                 data-subject="${escapeHtml(l.subject_name || '')}"
+                 data-comment="${l.override && l.override.comment ? escapeHtml(l.override.comment) : ''}">
+
+                <div class="flex items-start justify-between mb-3">
+                    <div class="w-10 h-10 rounded-xl ${iconClass} flex items-center justify-center text-lg shadow-md flex-shrink-0">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+                    ${badge}
+                </div>
+
+                <div class="font-bold text-slate-900 dark:text-white text-sm mb-1 leading-tight">${subjectName}</div>
+
+                <div class="mt-auto space-y-1 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-users w-3"></i> ${groupName}</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-door-open w-3"></i> Каб. ${roomName || '—'}</div>
+                    <div class="flex items-center gap-2"><i class="fa-solid fa-clock w-3"></i> ${l.para_number} пара</div>
+                </div>
+
+                ${comment ? `<div class="mt-3 p-2 rounded-lg bg-white/50 dark:bg-black/20 text-[10px] text-orange-600 dark:text-orange-400 border border-orange-500/20">💬 ${comment}</div>` : ''}
+            </div>`;
+        });
+        html += '</div>';
+        container.innerHTML = html;
+
+        // Обработчики без inline onclick
+        container.querySelectorAll('.lesson-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const action = card.dataset.action;
+                if (action === 'cancelled') {
+                    showCancelledInfo(card.dataset.comment || '');
+                } else {
+                    openJournal(
+                        parseInt(card.dataset.lessonId),
+                        card.dataset.group,
+                        parseInt(card.dataset.para),
+                        card.dataset.subject
+                    );
+                }
+            });
+        });
+    } catch(e) {
+        container.innerHTML = '<div class="text-center py-16 text-red-500 font-bold">Ошибка загрузки</div>';
+    }
+}
+
+function showCancelledInfo(comment) {
+    const msg = comment ? `❌ Пара отменена.\n\n💬 ${comment}` : '❌ Пара отменена.';
+    if (typeof showToast === 'function') showToast(msg, 'error');
+    else alert(msg);
+}
+
+// ==================== ОТКРЫТИЕ ЖУРНАЛА ====================
+async function openJournal(lessonId, groupName, paraNumber, subjectName) {
+    currentLessonId = lessonId;
+    currentGroup = groupName;
+    currentPara = paraNumber;
+    currentSubject = subjectName;
+
+    document.getElementById('journalTitle').innerHTML = `<i class="fa-solid fa-book-bookmark text-cyan-500"></i> ${escapeHtml(groupName)}`;
+    document.getElementById('journalInfo').innerHTML =
+        `📅 <strong>${escapeHtml(currentDate)}</strong> &nbsp;•&nbsp; 📖 <strong>${escapeHtml(subjectName)}</strong> &nbsp;•&nbsp; 🔢 Пара <strong>${paraNumber}</strong>`;
+    document.getElementById('studentsContainer').innerHTML = '<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-3xl"></i></div>';
+
+    if (typeof openModal === 'function') openModal('journalModal');
+    else document.getElementById('journalModal').style.display = 'flex';
+
+    try {
+        const response = await fetch(`/api/gradebook/lesson/${lessonId}?date=${encodeURIComponent(currentDate)}`);
+        studentsData = await response.json();
+        studentsData.forEach(st => { st.comment = st.grade_comment || ''; });
+        renderStudents();
+    } catch(e) {
+        document.getElementById('studentsContainer').innerHTML = '<p class="text-center py-16 text-red-500">Ошибка загрузки списка студентов</p>';
+    }
+}
+
+// ==================== ОТРИСОВКА ====================
+function renderStudents() {
+    if (!studentsData || studentsData.length === 0) {
+        document.getElementById('studentsContainer').innerHTML = '<p class="text-center py-16 text-slate-400">📭 В группе нет студентов</p>';
+        return;
+    }
+
+    const total = studentsData.length;
+    const presentCount = studentsData.filter(s => s.attendance === 'present').length;
+    const lateCount = studentsData.filter(s => s.attendance === 'late').length;
+    const absentCount = studentsData.filter(s => s.attendance === 'absent').length;
+
+    let html = `
+    <div class="p-3 mb-4 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-between gap-4">
+        <div class="flex flex-wrap gap-4 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+            <span>Всего: <span class="text-slate-900 dark:text-white text-sm">${total}</span></span>
+            <span>Был: <span class="text-emerald-500 text-sm">${presentCount}</span></span>
+            <span>Опоздал: <span class="text-orange-500 text-sm">${lateCount}</span></span>
+            <span>Н: <span class="text-red-500 text-sm">${absentCount}</span></span>
+        </div>
+        <div class="flex gap-2">
+            <button class="px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 text-xs font-bold hover:bg-emerald-500/20 transition-all" onclick="markAllPresent()"><i class="fa-solid fa-check"></i> Все Был</button>
+            <button class="px-3 py-1.5 rounded-lg bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/30 text-xs font-bold hover:bg-red-500/20 transition-all" onclick="markAllAbsent()"><i class="fa-solid fa-xmark"></i> Все Н</button>
+        </div>
+    </div>`;
+
+    // ТАБЛИЦА (Desktop)
+    html += '<div class="overflow-x-auto rounded-2xl border border-white/60 dark:border-slate-700" id="desktopTable">';
+    html += '<table class="w-full text-left bg-white/40 dark:bg-black/20">';
+    html += '<thead class="bg-white/50 dark:bg-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700"><tr><th class="py-3 px-4">Студент</th><th class="py-3 px-4 text-center">Оценка</th><th class="py-3 px-4 text-center">Посещение</th><th class="py-3 px-4">Комментарий</th></tr></thead><tbody class="divide-y divide-slate-200/50 dark:divide-slate-700/50">';
+
+    studentsData.forEach((st, idx) => {
+        // ⚠️ Было: escapeHtml((st.full_name || '?')[:1]|upper) — SyntaxError
+        // Стало: чистый JS
+        const initial = escapeHtml(((st.full_name || '?')[0] || '').toUpperCase());
+        const fullName = escapeHtml(st.full_name || '');
+        const username = escapeHtml(st.username || '');
+        const comment = escapeHtml(st.comment || '');
+
+        html += `
+        <tr class="hover:bg-white/60 dark:hover:bg-slate-800/50 transition-colors">
+            <td class="py-3 px-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 text-white flex items-center justify-center font-bold text-xs flex-shrink-0">${initial}</div>
+                    <div>
+                        <div class="font-bold text-slate-900 dark:text-white text-xs">${fullName}</div>
+                        <div class="text-[10px] text-slate-400 font-mono">@${username}</div>
+                    </div>
+                </div>
+            </td>
+            <td class="py-3 px-4">
+                <div class="flex justify-center gap-1">
+                    <div class="grade-btn ${st.grade == 5 ? 'bg-emerald-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 5)">5</div>
+                    <div class="grade-btn ${st.grade == 4 ? 'bg-cyan-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 4)">4</div>
+                    <div class="grade-btn ${st.grade == 3 ? 'bg-orange-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 3)">3</div>
+                    <div class="grade-btn ${st.grade == 2 ? 'bg-red-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 2)">2</div>
+                    <div class="grade-btn !w-auto px-3 rounded-full ${st.grade == null ? 'bg-slate-800 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, null)">—</div>
+                </div>
+            </td>
+            <td class="py-3 px-4">
+                <div class="flex justify-center gap-1.5">
+                    <div class="att-btn ${st.attendance == 'present' ? 'bg-emerald-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setAtt(${idx}, 'present')">✅ Был</div>
+                    <div class="att-btn ${st.attendance == 'late' ? 'bg-orange-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setAtt(${idx}, 'late')">⏰ Опозд.</div>
+                    <div class="att-btn ${st.attendance == 'absent' ? 'bg-red-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setAtt(${idx}, 'absent')">❌ Н</div>
+                </div>
+            </td>
+            <td class="py-3 px-4">
+                <input type="text"
+                       data-idx="${idx}"
+                       class="comment-input"
+                       value="${comment}"
+                       placeholder="Комментарий (необязательно)"
+                       onchange="setComment(${idx}, this.value)"
+                       oninput="setComment(${idx}, this.value)">
+            </td>
+        </tr>`;
+    });
+    html += '</tbody></table></div>';
+
+    // КАРТОЧКИ (Mobile)
+    html += '<div class="space-y-3 hidden" id="mobileCards">';
+    studentsData.forEach((st, idx) => {
+        const fullName = escapeHtml(st.full_name || '');
+        const username = escapeHtml(st.username || '');
+        const comment = escapeHtml(st.comment || '');
+
+        html += `
+        <div class="p-4 rounded-2xl bg-white/40 dark:bg-slate-800/40 border border-white/60 dark:border-slate-700 shadow-sm">
+            <div class="font-bold text-slate-900 dark:text-white text-sm mb-0.5">${fullName}</div>
+            <div class="text-[10px] text-slate-400 font-mono mb-3">@${username}</div>
+
+            <div class="mb-3">
+                <div class="text-[10px] font-bold uppercase text-slate-500 mb-1">Оценка</div>
+                <div class="flex gap-1">
+                    <div class="grade-btn ${st.grade == 5 ? 'bg-emerald-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 5)">5</div>
+                    <div class="grade-btn ${st.grade == 4 ? 'bg-cyan-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 4)">4</div>
+                    <div class="grade-btn ${st.grade == 3 ? 'bg-orange-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 3)">3</div>
+                    <div class="grade-btn ${st.grade == 2 ? 'bg-red-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, 2)">2</div>
+                    <div class="grade-btn !w-auto px-3 rounded-full ${st.grade == null ? 'bg-slate-800 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setGrade(${idx}, null)">—</div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <div class="text-[10px] font-bold uppercase text-slate-500 mb-1">Посещение</div>
+                <div class="grid grid-cols-3 gap-1">
+                    <div class="att-btn text-center ${st.attendance == 'present' ? 'bg-emerald-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setAtt(${idx}, 'present')">✅ Был</div>
+                    <div class="att-btn text-center ${st.attendance == 'late' ? 'bg-orange-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setAtt(${idx}, 'late')">⏰ Опозд.</div>
+                    <div class="att-btn text-center ${st.attendance == 'absent' ? 'bg-red-500 text-white' : 'bg-white/50 dark:bg-slate-700 text-slate-500'}" onclick="setAtt(${idx}, 'absent')">❌ Н</div>
+                </div>
+            </div>
+            <input type="text"
+                   data-idx="${idx}"
+                   class="comment-input"
+                   value="${comment}"
+                   placeholder="Комментарий"
+                   onchange="setComment(${idx}, this.value)"
+                   oninput="setComment(${idx}, this.value)">
+        </div>`;
+    });
+    html += '</div>';
+
+    document.getElementById('studentsContainer').innerHTML = html;
+    updateResponsive();
+}
+
+// ==================== ДЕЙСТВИЯ ====================
+function setGrade(idx, grade) {
+    captureComments();
+    studentsData[idx].grade = grade;
+    renderStudents();
+}
+
+function setAtt(idx, status) {
+    captureComments();
+    if (studentsData[idx].attendance === status) studentsData[idx].attendance = 'present';
+    else studentsData[idx].attendance = status;
+    renderStudents();
+}
+
+function setComment(idx, value) {
+    if (studentsData[idx]) studentsData[idx].comment = value;
+}
+
+function captureComments() {
+    document.querySelectorAll('.comment-input').forEach(input => {
+        const idx = parseInt(input.dataset.idx);
+        if (!isNaN(idx) && studentsData[idx]) {
+            studentsData[idx].comment = input.value;
+        }
+    });
+}
+
+function markAllPresent() {
+    captureComments();
+    studentsData.forEach(st => { st.attendance = 'present'; });
+    renderStudents();
+}
+
+function markAllAbsent() {
+    captureComments();
+    studentsData.forEach(st => { st.attendance = 'absent'; });
+    renderStudents();
+}
+
+// ==================== СОХРАНЕНИЕ ====================
+async function saveAllMarks() {
+    captureComments();
+
+    const records = studentsData.map(st => ({
+        student_id: st.id,
+        lesson_id: currentLessonId,
+        date: currentDate,
+        grade: st.grade,
+        attendance: st.attendance,
+        comment: st.comment || ''
+    }));
+
+    try {
+        const r = await fetch('/api/gradebook/save', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ records })
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            const msg = `✅ Журнал сохранён! Оценок: ${res.grades}, отметок: ${res.attendance}`;
+            if (typeof showToast === 'function') showToast(msg, 'success');
+            else alert(msg);
+
+            if (typeof closeModal === 'function') closeModal('journalModal');
+            else document.getElementById('journalModal').style.display = 'none';
+        } else {
+            const msg = '❌ Ошибка: ' + (res.error || 'Неизвестная');
+            if (typeof showToast === 'function') showToast(msg, 'error');
+            else alert(msg);
+        }
+    } catch(e) {
+        const msg = '❌ Ошибка сети: ' + e.message;
+        if (typeof showToast === 'function') showToast(msg, 'error');
+        else alert(msg);
+    }
+}
+
+// ==================== АДАПТИВНОСТЬ ====================
+function updateResponsive() {
+    const desk = document.getElementById('desktopTable');
+    const mob = document.getElementById('mobileCards');
+    if (desk && mob) {
+        if (window.innerWidth >= 768) {
+            desk.style.display = 'block';
+            mob.style.display = 'none';
+        } else {
+            desk.style.display = 'none';
+            mob.style.display = 'block';
+        }
+    }
+}
+window.addEventListener('resize', updateResponsive);
+
+// ==================== СТАРТ ====================
+loadLessons();
+</script>
+{% endblock %}

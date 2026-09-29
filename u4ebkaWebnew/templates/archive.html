@@ -1,0 +1,592 @@
+{% extends "base.html" %}
+{% block title %}Архив{% endblock %}
+{% block content %}
+
+<div class="max-w-6xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-box-archive"></i>
+                </span>
+                Архив семестров
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Замороженные снимки расписания, оценок и посещаемости за период
+            </p>
+        </div>
+
+        {% if user.role in ['admin', 'editor'] %}
+        <button type="button" onclick="openCreateModal()"
+                class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-plus"></i> Создать снимок
+        </button>
+        {% endif %}
+    </div>
+
+    {# ==================== ИНФО ==================== #}
+    <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-sm font-medium text-cyan-800 dark:text-cyan-200 flex items-start gap-3 shadow-sm">
+        <i class="fa-solid fa-circle-info text-cyan-600 mt-0.5 text-lg"></i>
+        <div>
+            <strong>Что такое снимок:</strong> копия всех оценок, отметок посещения, расписания и учебного плана
+            за указанный период. Снимок <strong>не изменяется</strong> — данные в нём «заморожены».
+            Учителя, ученики и родители видят в снимке только свои данные.
+        </div>
+    </div>
+
+    {# ==================== СПИСОК СНИМКОВ ==================== #}
+    <div id="snapshotsBlock">
+        {% if snapshots %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {% for s in snapshots %}
+            <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6 space-y-4 hover:shadow-2xl transition-all">
+
+                {# Заголовок снимка #}
+                <div class="flex items-start justify-between gap-3">
+                    <div class="flex items-start gap-3 min-w-0 flex-1">
+                        <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-400 to-violet-500 text-white flex items-center justify-center shadow-md flex-shrink-0">
+                            <i class="fa-solid fa-box"></i>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <div class="font-bold text-slate-900 dark:text-white text-base truncate">{{ s.name }}</div>
+                            <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                {{ s.semester|capitalize }} {{ s.academic_year }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Период #}
+                <div class="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                    <i class="fa-solid fa-calendar-day w-3"></i>
+                    <span>{{ s.date_from }} — {{ s.date_to }}</span>
+                </div>
+
+                {# Статистика #}
+                {% set st = s.stats or {} %}
+                <div class="grid grid-cols-2 gap-2 text-[11px]">
+                    <div class="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+                        <div class="text-[9px] uppercase font-bold text-cyan-600 dark:text-cyan-400">Оценок</div>
+                        <div class="font-black text-slate-900 dark:text-white text-lg">{{ st.grades_count or 0 }}</div>
+                    </div>
+                    <div class="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
+                        <div class="text-[9px] uppercase font-bold text-emerald-600 dark:text-emerald-400">Учеников</div>
+                        <div class="font-black text-slate-900 dark:text-white text-lg">{{ st.total_students or 0 }}</div>
+                    </div>
+                    <div class="p-2 rounded-xl bg-violet-500/10 border border-violet-500/20">
+                        <div class="text-[9px] uppercase font-bold text-violet-600 dark:text-violet-400">Пар</div>
+                        <div class="font-black text-slate-900 dark:text-white text-lg">{{ st.schedule_count or 0 }}</div>
+                    </div>
+                    <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                        <div class="text-[9px] uppercase font-bold text-amber-600 dark:text-amber-400">Ср. балл</div>
+                        <div class="font-black text-slate-900 dark:text-white text-lg">{{ st.avg_grade or 0 }}</div>
+                    </div>
+                </div>
+
+                {# Метаданные #}
+                <div class="text-[10px] text-slate-400 pt-2 border-t border-white/40 dark:border-white/10">
+                    Создан: {{ s.created_at }} — {{ s.created_by_name or '—' }}
+                </div>
+
+                {# Действия #}
+                <div class="flex flex-wrap gap-2 pt-1">
+                    <button type="button"
+                            class="view-snapshot-btn flex-1 px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 font-bold text-[11px] border border-white/60 dark:border-slate-700 transition-all flex items-center justify-center gap-1.5 shadow-sm"
+                            data-id="{{ s.id }}">
+                        <i class="fa-solid fa-eye"></i> Просмотр
+                    </button>
+                    <a href="/api/archive/export/{{ s.id }}"
+                       class="flex-1 px-3 py-2 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[11px] border border-emerald-500/20 transition-all flex items-center justify-center gap-1.5">
+                        <i class="fa-solid fa-file-excel"></i> Скачать
+                    </a>
+                    {% if user.role == 'admin' %}
+                    <button type="button"
+                            class="delete-snapshot-btn w-9 h-9 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 border border-red-500/20 transition-all flex items-center justify-center"
+                            data-id="{{ s.id }}"
+                            data-name="{{ s.name }}"
+                            title="Удалить снимок">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-16 text-center">
+            <i class="fa-solid fa-box-open text-5xl mb-4 text-slate-300 dark:text-slate-600"></i>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">Архив пуст</p>
+            {% if user.role in ['admin', 'editor'] %}
+            <p class="text-xs text-slate-400 mt-2">Нажмите «Создать снимок», чтобы сделать первый архив</p>
+            {% else %}
+            <p class="text-xs text-slate-400 mt-2">Снимки создаёт администратор или редактор</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+{# ==================== МОДАЛКА: СОЗДАНИЕ ==================== #}
+<style>
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 1rem; }
+.modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1.5rem; padding: 1.5rem; width: 100%; max-width: 520px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: modalIn 0.2s forwards; max-height: 90vh; overflow-y: auto; }
+:is(.dark) .modal-content { background: rgba(15, 23, 42, 0.85); border-color: rgba(255, 255, 255, 0.1); }
+@keyframes modalIn { to { transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; background: none; border: none; }
+.modal-close:hover { color: #ef4444; }
+.modal-header h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: #0f172a; display: flex; align-items: center; gap: 8px;}
+:is(.dark) .modal-header h2 { color: white; }
+.form-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.4rem; letter-spacing: 0.05em; }
+.form-input, .form-select { width: 100%; margin-bottom: 0.9rem; padding: 0.625rem 1rem; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1rem; font-size: 0.875rem; outline: none; transition: box-shadow 0.2s; }
+:is(.dark) .form-input, :is(.dark) .form-select { background: rgba(15, 23, 42, 0.5); border-color: rgba(255, 255, 255, 0.1); color: white;}
+.form-input:focus, .form-select:focus { box-shadow: 0 0 0 2px #06b6d4; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1); }
+:is(.dark) .modal-actions { border-top-color: rgba(255,255,255,0.1); }
+</style>
+
+<div class="modal" id="createModal">
+    <div class="modal-content relative">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-plus text-cyan-500"></i> Создать снимок архива</h2>
+            <button class="modal-close" onclick="closeModal('createModal')">&times;</button>
+        </div>
+
+        <div class="p-3 mb-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] text-amber-700 dark:text-amber-300">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>
+            Снимок собирает <strong>все оценки, посещения, расписание и учебный план</strong> за указанный период.
+            Это может занять несколько секунд.
+        </div>
+
+        <label class="form-label">Название снимка *</label>
+        <input type="text" id="snapshotName" placeholder="Например: Осень 2025/2026" class="form-input">
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="form-label">Семестр *</label>
+                <select id="snapshotSemester" class="form-select">
+                    {% for s in semesters %}
+                    <option value="{{ s }}" {% if loop.first %}selected{% endif %}>{{ s }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label class="form-label">Учебный год *</label>
+                <input type="text" id="snapshotYear" value="2025/2026" class="form-input">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="form-label">С даты *</label>
+                <input type="date" id="snapshotDateFrom" class="form-input">
+            </div>
+            <div>
+                <label class="form-label">По дату *</label>
+                <input type="date" id="snapshotDateTo" class="form-input">
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('createModal')">Отмена</button>
+            <button id="createBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform flex items-center gap-2" onclick="createSnapshot()">
+                <i class="fa-solid fa-box-archive"></i> Создать
+            </button>
+        </div>
+
+        <div id="createResult" class="mt-4"></div>
+    </div>
+</div>
+
+{# ==================== МОДАЛКА: ПРОСМОТР ==================== #}
+<div class="modal" id="viewModal">
+    <div class="modal-content relative" style="max-width: 1100px;">
+        <div class="modal-header">
+            <h2 id="viewModalTitle"><i class="fa-solid fa-eye text-cyan-500"></i> Просмотр снимка</h2>
+            <button class="modal-close" onclick="closeModal('viewModal')">&times;</button>
+        </div>
+
+        <div id="viewModalBody" class="min-h-[200px]">
+            <div class="text-center py-16 text-slate-400">
+                <i class="fa-solid fa-spinner fa-spin text-3xl"></i>
+            </div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('viewModal')">Закрыть</button>
+            <a id="viewDownloadBtn" href="#" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 shadow-md hover:scale-105 transition-transform flex items-center gap-2">
+                <i class="fa-solid fa-file-excel"></i> Скачать Excel
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; }
+function closeModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+// ==================== СОЗДАНИЕ ====================
+function openCreateModal() {
+    // Значения по умолчанию: текущий семестр
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1; // 1-12
+
+    // Определяем семестр: сентябрь-январь — осень, февраль-июнь — весна
+    let semester = 'осень';
+    if (month >= 2 && month <= 6) semester = 'весна';
+
+    // Учебный год: если месяц >= 9 — текущий/следующий, иначе — предыдущий/текущий
+    let y1 = year, y2 = year + 1;
+    if (month < 9) { y1 = year - 1; y2 = year; }
+    const academicYear = `${y1}/${y2}`;
+
+    // Даты по умолчанию: сентябрь-декабрь (осень) или февраль-июнь (весна)
+    let df, dt;
+    if (semester === 'осень') {
+        df = `${y1}-09-01`;
+        dt = `${y1}-12-31`;
+    } else {
+        df = `${y2}-02-01`;
+        dt = `${y2}-06-30`;
+    }
+
+    document.getElementById('snapshotName').value = `${semester[0].toUpperCase() + semester.slice(1)} ${academicYear}`;
+    document.getElementById('snapshotSemester').value = semester;
+    document.getElementById('snapshotYear').value = academicYear;
+    document.getElementById('snapshotDateFrom').value = df;
+    document.getElementById('snapshotDateTo').value = dt;
+    document.getElementById('createResult').innerHTML = '';
+
+    openModal('createModal');
+}
+
+async function createSnapshot() {
+    const name = document.getElementById('snapshotName').value.trim();
+    const semester = document.getElementById('snapshotSemester').value;
+    const academic_year = document.getElementById('snapshotYear').value.trim();
+    const date_from = document.getElementById('snapshotDateFrom').value;
+    const date_to = document.getElementById('snapshotDateTo').value;
+
+    if (!name) { showToastSafe('Укажите название', 'error'); return; }
+    if (!academic_year) { showToastSafe('Укажите учебный год', 'error'); return; }
+    if (!date_from || !date_to) { showToastSafe('Укажите обе даты', 'error'); return; }
+    if (date_from > date_to) { showToastSafe('Дата начала позже даты конца', 'error'); return; }
+
+    const btn = document.getElementById('createBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Создание...';
+
+    const resultEl = document.getElementById('createResult');
+    resultEl.innerHTML = '<div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-xs text-cyan-700 dark:text-cyan-300"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Собираем данные... Это может занять несколько секунд.</div>';
+
+    try {
+        const r = await fetch('/api/archive/create', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, semester, academic_year, date_from, date_to})
+        });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Снимок создан', 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-600">❌ ${escapeHtml(res.error || 'Ошибка')}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-600">❌ ${escapeHtml(e.message)}</div>`;
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+// ==================== ПРОСМОТР ====================
+async function viewSnapshot(snapshotId) {
+    document.getElementById('viewModalTitle').innerHTML = `<i class="fa-solid fa-eye text-cyan-500"></i> Просмотр снимка`;
+    document.getElementById('viewModalBody').innerHTML = '<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-3xl"></i></div>';
+    document.getElementById('viewDownloadBtn').href = `/api/archive/export/${snapshotId}`;
+    openModal('viewModal');
+
+    try {
+        const r = await fetch('/api/archive/' + snapshotId);
+        const res = await r.json();
+        if (!res.success) {
+            document.getElementById('viewModalBody').innerHTML = `<div class="text-center py-16 text-red-500 font-bold">❌ ${escapeHtml(res.error || 'Ошибка')}</div>`;
+            return;
+        }
+        renderSnapshot(res.snapshot);
+    } catch (e) {
+        document.getElementById('viewModalBody').innerHTML = `<div class="text-center py-16 text-red-500 font-bold">❌ ${escapeHtml(e.message)}</div>`;
+    }
+}
+
+function renderSnapshot(snap) {
+    const stats = snap.stats || {};
+    const grades = snap.grades || [];
+    const attendance = snap.attendance || [];
+    const scheduleData = snap.schedule || {};
+    const scheduleBase = scheduleData.base || [];
+    const scheduleOverrides = scheduleData.overrides || [];
+    const curriculum = snap.curriculum || [];
+
+    document.getElementById('viewModalTitle').innerHTML = `<i class="fa-solid fa-box text-cyan-500"></i> ${escapeHtml(snap.name)}`;
+
+    // Вкладки
+    let html = '';
+
+    // Шапка снимка
+    html += `
+    <div class="p-4 mb-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30">
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+            <div>
+                <div class="text-[9px] uppercase font-bold text-cyan-600 dark:text-cyan-400">Семестр</div>
+                <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(snap.semester)} ${escapeHtml(snap.academic_year)}</div>
+            </div>
+            <div>
+                <div class="text-[9px] uppercase font-bold text-cyan-600 dark:text-cyan-400">Период</div>
+                <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(snap.date_from)} — ${escapeHtml(snap.date_to)}</div>
+            </div>
+            <div>
+                <div class="text-[9px] uppercase font-bold text-cyan-600 dark:text-cyan-400">Создан</div>
+                <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(snap.created_at || '—')}</div>
+            </div>
+            <div>
+                <div class="text-[9px] uppercase font-bold text-cyan-600 dark:text-cyan-400">Автор</div>
+                <div class="font-bold text-slate-900 dark:text-white">${escapeHtml(snap.created_by_name || '—')}</div>
+            </div>
+        </div>
+    </div>`;
+
+    // Статистика
+    html += `
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+        <div class="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-center">
+            <div class="text-[9px] uppercase font-bold text-emerald-600 dark:text-emerald-400">Оценок</div>
+            <div class="text-xl font-black text-slate-900 dark:text-white">${stats.grades_count || grades.length}</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-center">
+            <div class="text-[9px] uppercase font-bold text-cyan-600 dark:text-cyan-400">Учеников</div>
+            <div class="text-xl font-black text-slate-900 dark:text-white">${stats.total_students || 0}</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-violet-500/10 border border-violet-500/20 text-center">
+            <div class="text-[9px] uppercase font-bold text-violet-600 dark:text-violet-400">Пар</div>
+            <div class="text-xl font-black text-slate-900 dark:text-white">${scheduleBase.length}</div>
+        </div>
+        <div class="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
+            <div class="text-[9px] uppercase font-bold text-amber-600 dark:text-amber-400">Ср. балл</div>
+            <div class="text-xl font-black text-slate-900 dark:text-white">${stats.avg_grade || 0}</div>
+        </div>
+    </div>`;
+
+    // Вкладки
+    html += `
+    <div class="flex flex-wrap gap-1 mb-4 p-1.5 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-white/60 dark:border-white/10 rounded-2xl">
+        <button class="snap-tab snap-tab-active px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all" onclick="switchSnapTab('grades', this)">
+            Оценки (${grades.length})
+        </button>
+        <button class="snap-tab px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all text-slate-500 hover:text-slate-800 dark:hover:text-white" onclick="switchSnapTab('attendance', this)">
+            Посещение (${attendance.length})
+        </button>
+        <button class="snap-tab px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all text-slate-500 hover:text-slate-800 dark:hover:text-white" onclick="switchSnapTab('schedule', this)">
+            Расписание (${scheduleBase.length})
+        </button>
+        <button class="snap-tab px-3 py-1.5 rounded-xl text-[11px] font-bold transition-all text-slate-500 hover:text-slate-800 dark:hover:text-white" onclick="switchSnapTab('plan', this)">
+            План (${curriculum.length})
+        </button>
+    </div>`;
+
+    // Панель оценок
+    html += `<div id="snapTab-grades" class="snap-panel">`;
+    if (grades.length === 0) {
+        html += '<p class="text-center py-8 text-slate-400 text-sm">Оценок за период нет</p>';
+    } else {
+        html += `
+        <div class="overflow-x-auto max-h-96 overflow-y-auto rounded-2xl border border-white/60 dark:border-slate-700">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-white/50 dark:bg-slate-800 sticky top-0 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <tr>
+                        <th class="py-2 px-3">Дата</th>
+                        <th class="py-2 px-3">Ученик</th>
+                        <th class="py-2 px-3">Группа</th>
+                        <th class="py-2 px-3">Предмет</th>
+                        <th class="py-2 px-3">Преподаватель</th>
+                        <th class="py-2 px-3 text-center">Оценка</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-slate-700">`;
+        grades.forEach(g => {
+            html += `
+                <tr class="hover:bg-white/30 dark:hover:bg-slate-800/50">
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(g.date || '')}</td>
+                    <td class="py-2 px-3 font-bold text-slate-900 dark:text-white">${escapeHtml(g.student_name || '')}</td>
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(g.student_group || '')}</td>
+                    <td class="py-2 px-3 text-slate-700 dark:text-slate-300">${escapeHtml(g.subject_name || '')}</td>
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(g.teacher_name || '')}</td>
+                    <td class="py-2 px-3 text-center"><span class="w-7 h-7 inline-flex items-center justify-center rounded-lg font-bold ${g.grade == 5 ? 'bg-emerald-500/20 text-emerald-600' : g.grade == 4 ? 'bg-cyan-500/20 text-cyan-600' : g.grade == 3 ? 'bg-amber-500/20 text-amber-600' : 'bg-red-500/20 text-red-600'}">${g.grade}</span></td>
+                </tr>`;
+        });
+        html += `</tbody></table></div>`;
+    }
+    html += `</div>`;
+
+    // Панель посещений
+    html += `<div id="snapTab-attendance" class="snap-panel" style="display:none;">`;
+    if (attendance.length === 0) {
+        html += '<p class="text-center py-8 text-slate-400 text-sm">Отметок посещения за период нет</p>';
+    } else {
+        html += `
+        <div class="overflow-x-auto max-h-96 overflow-y-auto rounded-2xl border border-white/60 dark:border-slate-700">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-white/50 dark:bg-slate-800 sticky top-0 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <tr>
+                        <th class="py-2 px-3">Дата</th>
+                        <th class="py-2 px-3">Ученик</th>
+                        <th class="py-2 px-3">Предмет</th>
+                        <th class="py-2 px-3">Преподаватель</th>
+                        <th class="py-2 px-3 text-center">Статус</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-slate-700">`;
+        const attLabels = {present: 'Был', late: 'Опоздал', absent: 'Н'};
+        attendance.forEach(a => {
+            const color = a.status === 'present' ? 'bg-emerald-500/20 text-emerald-600' : a.status === 'late' ? 'bg-orange-500/20 text-orange-600' : 'bg-red-500/20 text-red-600';
+            html += `
+                <tr class="hover:bg-white/30 dark:hover:bg-slate-800/50">
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(a.date || '')}</td>
+                    <td class="py-2 px-3 font-bold text-slate-900 dark:text-white">${escapeHtml(a.student_name || '')}</td>
+                    <td class="py-2 px-3 text-slate-700 dark:text-slate-300">${escapeHtml(a.subject_name || '')}</td>
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(a.teacher_name || '')}</td>
+                    <td class="py-2 px-3 text-center"><span class="px-2 py-0.5 rounded-md font-bold text-[10px] ${color}">${attLabels[a.status] || a.status || ''}</span></td>
+                </tr>`;
+        });
+        html += `</tbody></table></div>`;
+    }
+    html += `</div>`;
+
+    // Панель расписания
+    html += `<div id="snapTab-schedule" class="snap-panel" style="display:none;">`;
+    if (scheduleBase.length === 0) {
+        html += '<p class="text-center py-8 text-slate-400 text-sm">Расписание пусто</p>';
+    } else {
+        html += `
+        <div class="overflow-x-auto max-h-96 overflow-y-auto rounded-2xl border border-white/60 dark:border-slate-700">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-white/50 dark:bg-slate-800 sticky top-0 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <tr>
+                        <th class="py-2 px-3">Группа</th>
+                        <th class="py-2 px-3">День</th>
+                        <th class="py-2 px-3 text-center">Пара</th>
+                        <th class="py-2 px-3">Предмет</th>
+                        <th class="py-2 px-3">Преподаватель</th>
+                        <th class="py-2 px-3 text-center">Кабинет</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-slate-700">`;
+        scheduleBase.forEach(s => {
+            html += `
+                <tr class="hover:bg-white/30 dark:hover:bg-slate-800/50">
+                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-600 font-bold text-[10px]">${escapeHtml(s.group_name || '')}</span></td>
+                    <td class="py-2 px-3 text-slate-700 dark:text-slate-300">${escapeHtml(s.day_of_week || '')}</td>
+                    <td class="py-2 px-3 text-center font-bold text-cyan-600">${s.para_number || ''}</td>
+                    <td class="py-2 px-3 text-slate-700 dark:text-slate-300">${escapeHtml(s.subject_name || '')}</td>
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(s.teacher_short || s.teacher_name || '')}</td>
+                    <td class="py-2 px-3 text-center text-slate-500">${escapeHtml(s.room_number || '')}</td>
+                </tr>`;
+        });
+        html += `</tbody></table></div>`;
+    }
+    html += `</div>`;
+
+    // Панель плана
+    html += `<div id="snapTab-plan" class="snap-panel" style="display:none;">`;
+    if (curriculum.length === 0) {
+        html += '<p class="text-center py-8 text-slate-400 text-sm">Учебный план пуст</p>';
+    } else {
+        html += `
+        <div class="overflow-x-auto max-h-96 overflow-y-auto rounded-2xl border border-white/60 dark:border-slate-700">
+            <table class="w-full text-left text-xs">
+                <thead class="bg-white/50 dark:bg-slate-800 sticky top-0 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <tr>
+                        <th class="py-2 px-3">Группа</th>
+                        <th class="py-2 px-3">Предмет</th>
+                        <th class="py-2 px-3">Преподаватель</th>
+                        <th class="py-2 px-3 text-center">План</th>
+                        <th class="py-2 px-3 text-center">Факт</th>
+                        <th class="py-2 px-3 text-center">Остаток</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/30 dark:divide-slate-700">`;
+        curriculum.forEach(c => {
+            html += `
+                <tr class="hover:bg-white/30 dark:hover:bg-slate-800/50">
+                    <td class="py-2 px-3"><span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-600 font-bold text-[10px]">${escapeHtml(c.group_name || '')}</span></td>
+                    <td class="py-2 px-3 text-slate-700 dark:text-slate-300">${escapeHtml(c.subject_name || '')}</td>
+                    <td class="py-2 px-3 text-slate-500">${escapeHtml(c.teacher_short || c.teacher_name || '')}</td>
+                    <td class="py-2 px-3 text-center font-bold text-slate-900 dark:text-white">${c.planned_hours || 0}</td>
+                    <td class="py-2 px-3 text-center font-bold text-emerald-600">${c.fact_hours || 0}</td>
+                    <td class="py-2 px-3 text-center font-bold ${(c.remaining_hours || 0) < 0 ? 'text-red-500' : 'text-slate-500'}">${c.remaining_hours || 0}</td>
+                </tr>`;
+        });
+        html += `</tbody></table></div>`;
+    }
+    html += `</div>`;
+
+    document.getElementById('viewModalBody').innerHTML = html;
+}
+
+function switchSnapTab(name, btn) {
+    document.querySelectorAll('.snap-panel').forEach(p => p.style.display = 'none');
+    document.querySelectorAll('.snap-tab').forEach(b => {
+        b.classList.remove('bg-gradient-to-r', 'from-cyan-500', 'to-violet-600', 'text-white', 'shadow-md');
+        b.classList.add('text-slate-500');
+    });
+    document.getElementById('snapTab-' + name).style.display = 'block';
+    btn.classList.remove('text-slate-500');
+    btn.classList.add('bg-gradient-to-r', 'from-cyan-500', 'to-violet-600', 'text-white', 'shadow-md');
+}
+
+// ==================== УДАЛЕНИЕ ====================
+async function deleteSnapshot(snapshotId, name) {
+    if (!confirm(`Удалить снимок «${name}»?\n\nЭто действие нельзя отменить.`)) return;
+    try {
+        const r = await fetch('/api/archive/delete/' + snapshotId, { method: 'POST' });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Снимок удалён', 'success');
+            setTimeout(() => location.reload(), 600);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    }
+}
+
+// ==================== ОБРАБОТЧИКИ ====================
+function attachHandlers() {
+    document.querySelectorAll('.view-snapshot-btn').forEach(btn => {
+        btn.addEventListener('click', () => viewSnapshot(parseInt(btn.dataset.id)));
+    });
+    document.querySelectorAll('.delete-snapshot-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteSnapshot(parseInt(btn.dataset.id), btn.dataset.name || ''));
+    });
+}
+
+document.addEventListener('DOMContentLoaded', attachHandlers);
+</script>
+{% endblock %}

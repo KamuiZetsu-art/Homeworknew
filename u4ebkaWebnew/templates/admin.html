@@ -1,0 +1,808 @@
+{% extends "base.html" %}
+{% block title %}Справочники{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-folder-tree"></i>
+                </span>
+                Справочники
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Управление академическими данными колледжа</p>
+        </div>
+
+        <div class="flex gap-3 flex-wrap">
+            {% if user.role == 'admin' %}
+            <button type="button" onclick="showDuplicates()" class="px-5 py-2.5 rounded-2xl bg-white/50 dark:bg-white/10 hover:bg-orange-500/20 dark:hover:bg-orange-500/20 text-orange-600 dark:text-orange-400 font-bold text-xs border border-orange-500/30 backdrop-blur-md transition-all flex items-center gap-2 shadow-sm hover:shadow-md">
+                <i class="fa-solid fa-broom"></i>
+                Очистить дубли
+                {% if duplicates_count > 0 %}
+                <span class="px-2 py-0.5 rounded-lg bg-orange-500 text-white ml-1">{{ duplicates_count }}</span>
+                {% endif %}
+            </button>
+            {% endif %}
+        </div>
+    </div>
+
+    {# ==================== МЕТРИКИ ==================== #}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-500 flex items-center justify-center text-xl font-bold border border-cyan-500/30"><i class="fa-solid fa-users"></i></div>
+            <div><div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Групп</div><div class="text-2xl font-black text-slate-900 dark:text-white">{{ groups|length }}</div></div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-violet-500/20 text-violet-500 flex items-center justify-center text-xl font-bold border border-violet-500/30"><i class="fa-solid fa-chalkboard-user"></i></div>
+            <div><div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Преподавателей</div><div class="text-2xl font-black text-slate-900 dark:text-white">{{ teachers|length }}</div></div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-orange-500/20 text-orange-500 flex items-center justify-center text-xl font-bold border border-orange-500/30"><i class="fa-solid fa-book"></i></div>
+            <div><div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Предметов</div><div class="text-2xl font-black text-slate-900 dark:text-white">{{ subjects|length }}</div></div>
+        </div>
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center text-xl font-bold border border-emerald-500/30"><i class="fa-solid fa-door-open"></i></div>
+            <div><div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">Кабинетов</div><div class="text-2xl font-black text-slate-900 dark:text-white">{{ rooms|length }}</div></div>
+        </div>
+    </div>
+
+    {# ==================== ВКЛАДКИ ==================== #}
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden p-6">
+
+        <div class="flex items-center gap-2 mb-6 p-1.5 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-white/60 dark:border-white/10 rounded-2xl overflow-x-auto">
+            <button id="tabBtnGroups" class="tab-btn active" onclick="switchTab('groups')">Группы</button>
+            <button id="tabBtnTeachers" class="tab-btn" onclick="switchTab('teachers')">Преподаватели</button>
+            <button id="tabBtnSubjects" class="tab-btn" onclick="switchTab('subjects')">Предметы</button>
+            <button id="tabBtnRooms" class="tab-btn" onclick="switchTab('rooms')">Кабинеты</button>
+        </div>
+
+        {# ==================== ГРУППЫ ==================== #}
+        <div id="tabGroups" class="tab-content">
+            <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-users text-cyan-500"></i> Управление группами</h3>
+                <button type="button" onclick="openModal('addGroupModal')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all"><i class="fa-solid fa-plus mr-1"></i> Добавить группу</button>
+            </div>
+            <div class="overflow-x-auto rounded-2xl border border-white/40 dark:border-white/10">
+                <table class="w-full text-left">
+                    <thead><tr class="bg-white/30 dark:bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-500"><th class="py-3 px-4">Название</th><th class="py-3 px-4">Специальность</th>{% if user.role == 'admin' %}<th class="py-3 px-4 w-20">Действия</th>{% endif %}</tr></thead>
+                    <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-semibold">
+                        {% for group in groups %}
+                        <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                            <td class="py-3 px-4 flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold">{{ group.name[:2]|upper }}</div>
+                                <span class="text-slate-900 dark:text-white">{{ group.name }}</span>
+                            </td>
+                            <td class="py-3 px-4 text-slate-500">{{ group.specialty or '—' }}</td>
+                            {% if user.role == 'admin' %}
+                            <td class="py-3 px-4">
+                                <button type="button" onclick="deleteGroup({{ group.id }})" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors" title="Удалить группу"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# ==================== ПРЕПОДАВАТЕЛИ ==================== #}
+        <div id="tabTeachers" class="tab-content" style="display: none;">
+            <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-chalkboard-user text-violet-500"></i> Преподаватели</h3>
+                <button type="button" onclick="openModal('addTeacherModal')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all"><i class="fa-solid fa-plus mr-1"></i> Добавить</button>
+            </div>
+            <div class="overflow-x-auto rounded-2xl border border-white/40 dark:border-white/10">
+                <table class="w-full text-left">
+                    <thead><tr class="bg-white/30 dark:bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-500"><th class="py-3 px-4">ФИО</th><th class="py-3 px-4">Связь с аккаунтом</th>{% if user.role == 'admin' %}<th class="py-3 px-4 w-20">Действия</th>{% endif %}</tr></thead>
+                    <tbody class="divide-y divide-white/30 dark:divide-white/5 text-xs font-semibold">
+                        {% for teacher in teachers %}
+                        <tr class="hover:bg-white/30 dark:hover:bg-white/5 transition-colors">
+                            <td class="py-3 px-4 text-slate-900 dark:text-white">{{ teacher.full_name }}</td>
+                            <td class="py-3 px-4">
+                                {% if teacher.user_id %}<span class="px-2 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">ID Аккаунта: {{ teacher.user_id }}</span>
+                                {% else %}<span class="text-slate-400">—</span>{% endif %}
+                            </td>
+                            {% if user.role == 'admin' %}
+                            <td class="py-3 px-4">
+                                <button type="button" onclick="deleteTeacher({{ teacher.id }})" class="p-1.5 text-slate-400 hover:text-red-500 transition-colors" title="Удалить преподавателя"><i class="fa-solid fa-trash-can"></i></button>
+                            </td>
+                            {% endif %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        {# ==================== ПРЕДМЕТЫ ==================== #}
+        <div id="tabSubjects" class="tab-content" style="display: none;">
+            <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-book text-orange-500"></i> Предметы</h3>
+                <button type="button" onclick="openModal('addSubjectModal')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all"><i class="fa-solid fa-plus mr-1"></i> Добавить</button>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-h-96 overflow-y-auto pr-2">
+                {% for subject in subjects %}
+                <div class="p-3 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 text-xs font-bold text-slate-900 dark:text-white flex items-center justify-between gap-2 shadow-sm group">
+                    <span class="flex items-center gap-2 min-w-0">
+                        <i class="fa-solid fa-cube text-slate-400 flex-shrink-0"></i>
+                        <span class="truncate">{{ subject.name }}</span>
+                    </span>
+                    <button type="button"
+                            class="delete-subject-btn opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 flex-shrink-0"
+                            data-id="{{ subject.id }}"
+                            data-name="{{ subject.name }}"
+                            title="Удалить предмет">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        {# ==================== КАБИНЕТЫ ==================== #}
+        <div id="tabRooms" class="tab-content" style="display: none;">
+            <div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2">
+                    <i class="fa-solid fa-door-open text-emerald-500"></i> Кабинеты
+                    <span class="text-[10px] font-normal text-slate-400 normal-case tracking-normal">(наведите — кнопки)</span>
+                </h3>
+                <button type="button" onclick="openModal('addRoomModal')" class="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all"><i class="fa-solid fa-plus mr-1"></i> Добавить</button>
+            </div>
+            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 max-h-[600px] overflow-y-auto pr-2">
+                {% for room in rooms %}
+                <div class="relative p-3 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 text-xs font-black text-center text-slate-900 dark:text-white shadow-sm group"
+                     data-room-id="{{ room.id }}"
+                     data-room-number="{{ room.number }}"
+                     data-room-type="{{ room.room_type or '' }}"
+                     data-room-building="{{ room.building or '' }}"
+                     data-room-capacity="{{ room.capacity or '' }}"
+                     data-room-subjects="{{ room.subjects_allowed or '' }}">
+                    <span class="block">№ {{ room.number }}</span>
+                    {% if room.room_type %}
+                    <span class="block text-[9px] font-semibold text-slate-400 mt-0.5 uppercase tracking-wider">{{ room.room_type }}</span>
+                    {% endif %}
+                    {% if room.subjects_allowed %}
+                    <span class="block text-[9px] text-cyan-500 mt-0.5" title="Разрешённых предметов: {{ room.subjects_allowed.split(',')|length }}">
+                        <i class="fa-solid fa-book"></i> {{ room.subjects_allowed.split(',')|length }}
+                    </span>
+                    {% endif %}
+
+                    <div class="absolute top-1 right-1 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button type="button"
+                                class="edit-room-btn w-6 h-6 rounded-lg text-slate-400 hover:text-cyan-500 hover:bg-cyan-500/10 flex items-center justify-center text-[10px]"
+                                data-id="{{ room.id }}"
+                                title="Редактировать кабинет">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button type="button"
+                                class="delete-room-btn w-6 h-6 rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-500/10 flex items-center justify-center text-[10px]"
+                                data-id="{{ room.id }}"
+                                data-number="{{ room.number }}"
+                                title="Удалить кабинет">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{# ==================== СТИЛИ ==================== #}
+<style>
+.tab-btn { flex: 1; padding: 10px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; color: #64748b; transition: all 0.3s; text-transform: uppercase; letter-spacing: 0.05em; text-align: center; white-space: nowrap; }
+:is(.dark) .tab-btn { color: #94a3b8; }
+.tab-btn:hover { background: rgba(255,255,255,0.4); }
+:is(.dark) .tab-btn:hover { background: rgba(255,255,255,0.05); }
+.tab-btn.active { background: linear-gradient(to right, #06b6d4, #8b5cf6); color: white; box-shadow: 0 4px 12px rgba(6, 182, 212, 0.3); }
+
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 1rem; }
+.modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1.5rem; padding: 1.5rem; width: 100%; max-width: 450px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: modalIn 0.2s forwards; }
+:is(.dark) .modal-content { background: rgba(15, 23, 42, 0.85); border-color: rgba(255, 255, 255, 0.1); }
+@keyframes modalIn { to { transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; background: none; border: none; }
+.modal-close:hover { color: #ef4444; }
+.modal-header h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: #0f172a; }
+:is(.dark) .modal-header h2 { color: white; }
+
+/* ==================== ЧЕКБОКСЫ ПРЕДМЕТОВ В КАБИНЕТЕ ==================== */
+#editRoomSubjectsList label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: left;
+    width: 100%;
+    margin: 0;
+}
+#editRoomSubjectsList label:hover {
+    background: rgba(6, 182, 212, 0.08);
+}
+#editRoomSubjectsList label span {
+    flex: 1;
+    text-align: left;
+    white-space: normal;
+    line-height: 1.3;
+    font-size: 12px;
+}
+#editRoomSubjectsList input.room-subject-cb {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px;
+    max-width: 16px;
+    padding: 0 !important;
+    margin: 0;
+    flex-shrink: 0;
+    accent-color: #06b6d4;
+    cursor: pointer;
+    border-radius: 4px;
+}
+</style>
+
+{# ==================== МОДАЛКИ ==================== #}
+<div class="modal" id="addGroupModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2>Добавить группу</h2><button class="modal-close" onclick="closeModal('addGroupModal')">&times;</button></div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Название *</label>
+        <input type="text" id="groupName" placeholder="ИС-21" class="w-full mb-4 py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Специальность</label>
+        <input type="text" id="groupSpecialty" placeholder="Информационные системы" class="w-full mb-6 py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+        <div class="flex justify-end gap-3">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('addGroupModal')">Отмена</button>
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform" onclick="addGroup()"><i class="fa-solid fa-check mr-1"></i> Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addTeacherModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2>Добавить преподавателя</h2><button class="modal-close" onclick="closeModal('addTeacherModal')">&times;</button></div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2">ФИО *</label>
+        <input type="text" id="teacherName" placeholder="Иванов Иван Иванович" class="w-full mb-6 py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+        <div class="flex justify-end gap-3">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('addTeacherModal')">Отмена</button>
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform" onclick="addTeacher()"><i class="fa-solid fa-check mr-1"></i> Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addSubjectModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2>Добавить предмет</h2><button class="modal-close" onclick="closeModal('addSubjectModal')">&times;</button></div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Название *</label>
+        <input type="text" id="subjectName" placeholder="Математика" class="w-full mb-6 py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+        <div class="flex justify-end gap-3">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('addSubjectModal')">Отмена</button>
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform" onclick="addSubject()"><i class="fa-solid fa-check mr-1"></i> Сохранить</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="addRoomModal">
+    <div class="modal-content relative">
+        <div class="modal-header"><h2>Добавить кабинет</h2><button class="modal-close" onclick="closeModal('addRoomModal')">&times;</button></div>
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Номер *</label>
+        <input type="text" id="roomNumber" placeholder="101" class="w-full mb-6 py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+        <div class="flex justify-end gap-3">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('addRoomModal')">Отмена</button>
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform" onclick="addRoom()"><i class="fa-solid fa-check mr-1"></i> Сохранить</button>
+        </div>
+    </div>
+</div>
+
+{# ==================== МОДАЛКА: РЕДАКТИРОВАНИЕ КАБИНЕТА ==================== #}
+<div class="modal" id="editRoomModal">
+    <div class="modal-content relative" style="max-width: 640px;">
+        <div class="modal-header">
+            <h2 id="editRoomTitle"><i class="fa-solid fa-pen text-cyan-500"></i> Редактирование кабинета</h2>
+            <button class="modal-close" onclick="closeModal('editRoomModal')">&times;</button>
+        </div>
+
+        <input type="hidden" id="editRoomId">
+
+        <div class="grid grid-cols-2 gap-3">
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Номер *</label>
+                <input type="text" id="editRoomNumber" class="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Тип кабинета</label>
+                <input type="text" id="editRoomType" placeholder="Лекционная, лаборатория..." class="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3 mt-3">
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Корпус</label>
+                <input type="text" id="editRoomBuilding" placeholder="Основной" class="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2">Вместимость</label>
+                <input type="number" id="editRoomCapacity" min="0" placeholder="30" class="w-full py-2.5 px-4 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-2xl text-sm focus:ring-2 focus:ring-cyan-500 outline-none">
+            </div>
+        </div>
+
+        <label class="block text-xs font-bold uppercase text-slate-500 mb-2 mt-4">
+            <i class="fa-solid fa-book text-cyan-500 mr-1"></i> Предметы, которые можно проводить
+            <span id="editRoomSubjectsCount" class="text-cyan-500 normal-case font-normal ml-1"></span>
+        </label>
+
+        <div class="mb-2">
+            <input type="text"
+                   id="editRoomSubjectSearch"
+                   placeholder="Поиск по названию..."
+                   oninput="filterEditRoomSubjects()"
+                   class="w-full py-2 px-3 bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-700 rounded-xl text-xs focus:ring-2 focus:ring-cyan-500 outline-none">
+        </div>
+
+        <div class="flex gap-2 mb-2">
+            <button type="button" onclick="selectAllRoomSubjects(true)" class="px-3 py-1 rounded-lg text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 transition-colors">
+                <i class="fa-solid fa-check-double"></i> Выбрать все
+            </button>
+            <button type="button" onclick="selectAllRoomSubjects(false)" class="px-3 py-1 rounded-lg text-[10px] font-bold bg-slate-500/10 text-slate-600 dark:text-slate-400 border border-slate-500/30 hover:bg-slate-500/20 transition-colors">
+                <i class="fa-solid fa-xmark"></i> Снять все
+            </button>
+        </div>
+
+        <div id="editRoomSubjectsList"
+             class="max-h-64 overflow-y-auto rounded-2xl border border-white/60 dark:border-slate-700 bg-white/30 dark:bg-black/20 p-2">
+            <div class="text-center text-xs text-slate-400 py-4">Загрузка...</div>
+        </div>
+
+        <div class="modal-actions">
+            <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('editRoomModal')">Отмена</button>
+            <button id="editRoomSaveBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-cyan-500 to-violet-600 hover:scale-105 transition-transform" onclick="saveRoomEdit()">
+                <i class="fa-solid fa-floppy-disk mr-1"></i> Сохранить
+            </button>
+        </div>
+    </div>
+</div>
+
+{% if user.role == 'admin' %}
+<div class="modal" id="duplicatesModal">
+    <div class="modal-content relative" style="max-width: 800px;">
+        <div class="modal-header"><h2>Дубли преподавателей</h2><button class="modal-close" onclick="closeModal('duplicatesModal')">&times;</button></div>
+
+        <div class="p-4 mb-4 rounded-2xl bg-orange-500/10 border border-orange-500/30 text-xs text-orange-700 dark:text-orange-300">
+            <strong class="text-sm"><i class="fa-solid fa-circle-info"></i> Как это работает:</strong>
+            <ul class="ml-4 mt-2 space-y-1 list-disc">
+                <li>Найдены записи с одинаковым ФИО (без учёта пробелов и регистра)</li>
+                <li><strong>Удаляются только дубли БЕЗ привязанного аккаунта</strong></li>
+                <li>Ссылки в расписании перенаправляются на «главную» запись</li>
+            </ul>
+        </div>
+
+        <div id="duplicatesLoading" class="text-center py-8 text-slate-400 font-bold"><i class="fa-solid fa-spinner fa-spin text-2xl mb-2"></i><br>Поиск дублей...</div>
+        <div id="duplicatesContent" class="max-h-[50vh] overflow-y-auto pr-2 space-y-4" style="display: none;"></div>
+
+        <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-200 dark:border-slate-700/50">
+            <button class="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-500 border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onclick="closeModal('duplicatesModal')">Отмена</button>
+            <button class="px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-orange-500 hover:bg-orange-600 shadow-md hover:shadow-lg transition-all" onclick="doCleanup()" id="cleanupBtn" style="display: none;"><i class="fa-solid fa-broom mr-1"></i> Очистить дубли</button>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+// ==================== МОДАЛКИ ====================
+function openModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; }
+function closeModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+
+// ==================== ВКЛАДКИ ====================
+function switchTab(tab) {
+    ['groups', 'teachers', 'subjects', 'rooms'].forEach(t => {
+        const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+        const content = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+        if (btn) btn.classList.remove('active');
+        if (content) content.style.display = 'none';
+    });
+    const activeBtn = document.getElementById('tabBtn' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    const activeContent = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+    if (activeBtn) activeBtn.classList.add('active');
+    if (activeContent) activeContent.style.display = 'block';
+    try { localStorage.setItem('adminTab', tab); } catch (e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    let saved = 'groups';
+    try { saved = localStorage.getItem('adminTab') || 'groups'; } catch (e) {}
+    switchTab(saved);
+});
+
+// ==================== ДОБАВЛЕНИЕ ====================
+async function addGroup() {
+    const name = document.getElementById('groupName').value.trim();
+    const specialty = document.getElementById('groupSpecialty').value.trim();
+    if (!name) { showToastSafe('Введите название', 'error'); return; }
+    try {
+        const r = await fetch('/api/admin/group', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name, specialty})
+        });
+        const res = await r.json();
+        if (res.success) { location.reload(); }
+        else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch (e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+async function addTeacher() {
+    const full_name = document.getElementById('teacherName').value.trim();
+    if (!full_name) { showToastSafe('Введите ФИО', 'error'); return; }
+    try {
+        const r = await fetch('/api/admin/teacher', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({full_name})
+        });
+        const res = await r.json();
+        if (res.success) { location.reload(); }
+        else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch (e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+async function addSubject() {
+    const name = document.getElementById('subjectName').value.trim();
+    if (!name) { showToastSafe('Введите название', 'error'); return; }
+    try {
+        const r = await fetch('/api/admin/subject', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({name})
+        });
+        const res = await r.json();
+        if (res.success) { location.reload(); }
+        else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch (e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+async function addRoom() {
+    const number = document.getElementById('roomNumber').value.trim();
+    if (!number) { showToastSafe('Введите номер', 'error'); return; }
+    try {
+        const r = await fetch('/api/admin/room', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({number})
+        });
+        const res = await r.json();
+        if (res.success) { location.reload(); }
+        else { showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error'); }
+    } catch (e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+// ==================== УДАЛЕНИЕ ====================
+async function deleteGroup(id) {
+    if (!confirm('Удалить группу?')) return;
+    try {
+        await fetch('/api/admin/group/' + id, {method: 'DELETE'});
+        location.reload();
+    } catch (e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+async function deleteTeacher(id) {
+    if (!confirm('Удалить преподавателя?')) return;
+    try {
+        await fetch('/api/admin/teacher/' + id, {method: 'DELETE'});
+        location.reload();
+    } catch (e) { showToastSafe('❌ ' + e.message, 'error'); }
+}
+
+async function deleteSubject(id, name) {
+    if (!confirm(`Удалить предмет "${name}"?\n\nЕсли он используется в расписании — удаление будет отклонено.`)) return;
+    try {
+        const r = await fetch('/api/admin/subject/' + id, { method: 'DELETE' });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Предмет удалён', 'success');
+            setTimeout(() => location.reload(), 600);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Не удалось удалить'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ Ошибка сети: ' + e.message, 'error');
+    }
+}
+
+async function deleteRoom(id, number) {
+    if (!confirm(`Удалить кабинет №${number}?\n\nЕсли он используется в расписании — удаление будет отклонено.`)) return;
+    try {
+        const r = await fetch('/api/admin/room/' + id, { method: 'DELETE' });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Кабинет удалён', 'success');
+            setTimeout(() => location.reload(), 600);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Не удалось удалить'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ Ошибка сети: ' + e.message, 'error');
+    }
+}
+
+// ==================== КАБИНЕТЫ: РЕДАКТИРОВАНИЕ ====================
+let allSubjects = [];
+
+async function loadSubjectsIfNeeded() {
+    if (allSubjects.length > 0) return;
+    try {
+        const r = await fetch('/api/subjects');
+        allSubjects = await r.json();
+    } catch (e) {
+        console.error('Не удалось загрузить предметы:', e);
+        allSubjects = [];
+    }
+}
+
+async function openRoomEditModal(roomId) {
+    await loadSubjectsIfNeeded();
+
+    const card = document.querySelector(`.edit-room-btn[data-id="${roomId}"]`)?.closest('[data-room-id]');
+    let roomData = {
+        id: roomId,
+        number: '',
+        room_type: '',
+        building: '',
+        capacity: null,
+        subjects_allowed: []
+    };
+
+    if (card) {
+        roomData.number = card.dataset.roomNumber || '';
+        roomData.room_type = card.dataset.roomType || '';
+        roomData.building = card.dataset.roomBuilding || '';
+        roomData.capacity = card.dataset.roomCapacity || null;
+        const raw = card.dataset.roomSubjects || '';
+        roomData.subjects_allowed = raw ? raw.split(',').filter(Boolean).map(x => parseInt(x)) : [];
+    }
+
+    document.getElementById('editRoomId').value = roomId;
+    document.getElementById('editRoomTitle').innerHTML = `<i class="fa-solid fa-pen text-cyan-500"></i> Кабинет №${roomData.number}`;
+    document.getElementById('editRoomNumber').value = roomData.number;
+    document.getElementById('editRoomType').value = roomData.room_type;
+    document.getElementById('editRoomBuilding').value = roomData.building;
+    document.getElementById('editRoomCapacity').value = roomData.capacity || '';
+    document.getElementById('editRoomSubjectSearch').value = '';
+
+    renderEditRoomSubjects(roomData.subjects_allowed || []);
+    openModal('editRoomModal');
+}
+
+function renderEditRoomSubjects(selectedIds, filterText = '') {
+    const container = document.getElementById('editRoomSubjectsList');
+    const selectedSet = new Set(selectedIds.map(x => parseInt(x)));
+    const filter = (filterText || '').toLowerCase().trim();
+
+    const filtered = allSubjects.filter(s =>
+        !filter || (s.name || '').toLowerCase().includes(filter)
+    );
+
+    let html = '';
+    filtered.forEach(s => {
+        const checked = selectedSet.has(s.id);
+        html += `
+            <label>
+                <input type="checkbox" class="room-subject-cb" value="${s.id}" ${checked ? 'checked' : ''}>
+                <span>${escapeHtml(s.name)}</span>
+            </label>
+        `;
+    });
+
+    if (!filtered.length) {
+        html = '<div class="text-center text-xs text-slate-400 py-4">Ничего не найдено</div>';
+    }
+
+    container.innerHTML = html;
+
+    container.querySelectorAll('.room-subject-cb').forEach(cb => {
+        cb.addEventListener('change', updateRoomSubjectsCount);
+    });
+    updateRoomSubjectsCount();
+}
+
+function filterEditRoomSubjects() {
+    const selected = Array.from(document.querySelectorAll('.room-subject-cb:checked')).map(cb => parseInt(cb.value));
+    const text = document.getElementById('editRoomSubjectSearch').value;
+    renderEditRoomSubjects(selected, text);
+}
+
+function selectAllRoomSubjects(checked) {
+    document.querySelectorAll('.room-subject-cb').forEach(cb => { cb.checked = checked; });
+    updateRoomSubjectsCount();
+}
+
+function updateRoomSubjectsCount() {
+    const count = document.querySelectorAll('.room-subject-cb:checked').length;
+    const el = document.getElementById('editRoomSubjectsCount');
+    if (el) el.textContent = `(выбрано: ${count})`;
+}
+
+async function saveRoomEdit() {
+    const id = parseInt(document.getElementById('editRoomId').value);
+    if (!id) return;
+
+    const number = document.getElementById('editRoomNumber').value.trim();
+    if (!number) { showToastSafe('Введите номер', 'error'); return; }
+
+    const subjects = Array.from(document.querySelectorAll('.room-subject-cb:checked')).map(cb => parseInt(cb.value));
+
+    const payload = {
+        number: number,
+        room_type: document.getElementById('editRoomType').value.trim(),
+        building: document.getElementById('editRoomBuilding').value.trim(),
+        capacity: document.getElementById('editRoomCapacity').value || null,
+        subjects_allowed: subjects
+    };
+
+    const btn = document.getElementById('editRoomSaveBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Сохранение...';
+
+    try {
+        const r = await fetch(`/api/admin/room/${id}/update`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Кабинет обновлён', 'success');
+            closeModal('editRoomModal');
+            setTimeout(() => location.reload(), 600);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+// ==================== ДУБЛИ ====================
+async function showDuplicates() {
+    openModal('duplicatesModal');
+    document.getElementById('duplicatesLoading').style.display = 'block';
+    document.getElementById('duplicatesContent').style.display = 'none';
+    document.getElementById('cleanupBtn').style.display = 'none';
+
+    try {
+        const response = await fetch('/api/admin/teachers/duplicates');
+        const result = await response.json();
+        if (!result.success) {
+            document.getElementById('duplicatesLoading').innerHTML = `<span class="text-red-500">❌ ${escapeHtml(result.error || 'Ошибка')}</span>`;
+            return;
+        }
+        document.getElementById('duplicatesLoading').style.display = 'none';
+
+        if (result.total_groups === 0) {
+            document.getElementById('duplicatesContent').innerHTML = `
+                <div class="text-center py-10">
+                    <div class="text-5xl mb-3">✅</div>
+                    <p class="text-lg font-bold text-emerald-500">Дублей не найдено</p>
+                </div>`;
+            document.getElementById('duplicatesContent').style.display = 'block';
+            return;
+        }
+
+        let html = `<div class="mb-2 text-xs font-bold text-slate-500">
+            Найдено групп дублей: <span class="text-slate-900 dark:text-white">${result.total_groups}</span>, всего лишних записей: <span class="text-red-500">${result.total_duplicates}</span>
+        </div>`;
+
+        result.groups.forEach((g, idx) => {
+            html += `
+            <div class="mb-4 rounded-2xl bg-white/40 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
+                <div class="px-4 py-2 bg-slate-200 dark:bg-slate-800 font-bold text-xs text-slate-700 dark:text-slate-300 border-b border-slate-300 dark:border-slate-700">
+                    ${idx + 1}. ${escapeHtml(g.main.full_name)} <span class="opacity-60 ml-2 font-normal">(Всего записей: ${g.total})</span>
+                </div>
+                <div class="p-3 space-y-2">
+                    <div class="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 border-l-4 border-l-emerald-500 flex justify-between items-center gap-3">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black uppercase text-emerald-600 dark:text-emerald-400">✅ Оставить (Оригинал)</span>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white">${escapeHtml(g.main.full_name)}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">ID: ${g.main.id}</div>
+                    </div>`;
+
+            g.duplicates.forEach(dup => {
+                const canDelete = !dup.user_id;
+                if (canDelete) {
+                    html += `
+                    <div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 border-l-4 border-l-red-500 flex justify-between items-center gap-3">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black uppercase text-red-600 dark:text-red-400">🗑 Подлежит удалению</span>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white">${escapeHtml(dup.full_name)}</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">ID: ${dup.id}</div>
+                    </div>`;
+                } else {
+                    html += `
+                    <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 border-l-4 border-l-amber-500 flex justify-between items-center gap-3">
+                        <div class="flex flex-col">
+                            <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400">⚠️ Пропустить</span>
+                            <span class="text-sm font-bold text-slate-900 dark:text-white">${escapeHtml(dup.full_name)}</span>
+                            <span class="text-[9px] text-amber-600 mt-0.5">Есть привязанный аккаунт, удаление невозможно</span>
+                        </div>
+                        <div class="text-[10px] text-slate-400 font-mono bg-slate-100 dark:bg-slate-900 px-2 py-1 rounded">ID: ${dup.id}</div>
+                    </div>`;
+                }
+            });
+            html += `</div></div>`;
+        });
+
+        document.getElementById('duplicatesContent').innerHTML = html;
+        document.getElementById('duplicatesContent').style.display = 'block';
+        document.getElementById('cleanupBtn').style.display = 'block';
+    } catch(e) {
+        document.getElementById('duplicatesLoading').innerHTML = `<span class="text-red-500 font-bold">❌ Ошибка: ${escapeHtml(e.message)}</span>`;
+    }
+}
+
+async function doCleanup() {
+    if (!confirm('Удалить дубли преподавателей? Это действие нельзя отменить.')) return;
+    const btn = document.getElementById('cleanupBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Удаление...';
+    try {
+        const r = await fetch('/api/admin/teachers/cleanup', {method: 'POST'});
+        const res = await r.json();
+        if (res.success) {
+            const msg = `✅ Успешно!\nУдалено дублей: ${res.deleted}\nПропущено: ${res.skipped}`;
+            showToastSafe(msg, 'success');
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            showToastSafe('❌ Ошибка: ' + (res.error || 'Неизвестная'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-broom mr-1"></i> Очистить дубли';
+        }
+    } catch(e) {
+        showToastSafe('❌ Ошибка сети: ' + e.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-broom mr-1"></i> Очистить дубли';
+    }
+}
+
+// ==================== УТИЛИТЫ ====================
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+// ==================== ОБРАБОТЧИКИ ====================
+function attachAdminDeleteHandlers() {
+    document.querySelectorAll('.delete-subject-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteSubject(parseInt(btn.dataset.id), btn.dataset.name || ''));
+    });
+    document.querySelectorAll('.delete-room-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteRoom(parseInt(btn.dataset.id), btn.dataset.number || ''));
+    });
+}
+
+function attachRoomEditHandlers() {
+    document.querySelectorAll('.edit-room-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openRoomEditModal(parseInt(btn.dataset.id));
+        });
+    });
+}
+
+// ==================== СТАРТ ====================
+attachAdminDeleteHandlers();
+attachRoomEditHandlers();
+</script>
+{% endblock %}

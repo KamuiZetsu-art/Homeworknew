@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+{% block title %}Календарь{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-calendar-days"></i>
+                </span>
+                Календарь
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Интерактивное расписание по дням месяца</p>
+        </div>
+    </div>
+
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-4 rounded-3xl shadow-lg flex items-center justify-between gap-3 flex-wrap">
+        <button onclick="changeMonth(-1)" class="px-5 py-2.5 rounded-2xl bg-white/50 dark:bg-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all border border-white/60 dark:border-slate-700 flex items-center gap-2 shadow-sm hover:shadow-md">
+            <i class="fa-solid fa-chevron-left"></i> Предыдущий
+        </button>
+
+        <h2 class="text-xl sm:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-600 to-violet-600 dark:from-cyan-400 dark:to-violet-400 uppercase tracking-wider drop-shadow-sm">
+            {{ month_name }} {{ year }}
+        </h2>
+
+        <button onclick="changeMonth(1)" class="px-5 py-2.5 rounded-2xl bg-white/50 dark:bg-slate-800/50 hover:bg-white/80 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all border border-white/60 dark:border-slate-700 flex items-center gap-2 shadow-sm hover:shadow-md">
+            Следующий <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+
+    {% if viewer_group %}
+    <div class="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-sm font-bold text-cyan-800 dark:text-cyan-200 flex items-center gap-3 shadow-sm">
+        <div class="w-8 h-8 rounded-xl bg-cyan-500 text-white flex items-center justify-center shadow-md"><i class="fa-solid fa-graduation-cap"></i></div>
+        Вы просматриваете расписание группы <span class="px-2 py-0.5 rounded-md bg-white/50 dark:bg-black/20 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400">{{ viewer_group }}</span>
+    </div>
+    {% endif %}
+
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-6">
+        <div id="calendar" class="grid grid-cols-7 gap-2"></div>
+    </div>
+
+    <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden p-6 min-h-[300px]">
+        <div class="flex items-center gap-3 border-b border-white/40 dark:border-white/10 pb-4 mb-4">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 flex items-center justify-center font-bold text-lg border border-cyan-500/20 shadow-sm"><i class="fa-solid fa-calendar-check"></i></div>
+            <div>
+                <h3 class="font-bold text-slate-500 uppercase tracking-wider text-[10px]">Выбранная дата</h3>
+                <div id="selectedDate" class="text-lg font-black text-slate-900 dark:text-white">Не выбрана</div>
+            </div>
+        </div>
+
+        <div id="selectedSchedule">
+            <div class="text-center py-12 text-slate-400">
+                <i class="fa-solid fa-hand-pointer text-4xl mb-4 opacity-50 block animate-bounce"></i>
+                <p class="font-medium text-sm">Кликните на дату в календаре для просмотра расписания</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/lessons.js') }}"></script>
+<script>
+let currentYear = {{ year }};
+let currentMonth = {{ month }};
+let calendarData = {{ (calendar_data or {})|tojson }};
+const viewerGroup = {{ viewer_group|tojson if viewer_group else 'null' }};
+
+const DAY_SHORT = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+
+function renderCalendar() {
+    const calendarEl = document.getElementById('calendar');
+    const firstDay = new Date(currentYear, currentMonth - 1, 1);
+    const lastDay = new Date(currentYear, currentMonth, 0);
+    const daysInMonth = lastDay.getDate();
+    const startWeekday = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+
+    let html = '';
+
+    DAY_SHORT.forEach((name, index) => {
+        let colorClass = (index >= 5) ? 'text-violet-500' : 'text-slate-500 dark:text-slate-400';
+        html += `<div class="text-center font-bold uppercase py-2 text-[10px] tracking-widest ${colorClass}">${name}</div>`;
+    });
+
+    for (let i = 0; i < startWeekday; i++) {
+        html += '<div></div>';
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${currentYear}-${String(currentMonth).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayInfo = calendarData[dateStr] || {};
+        const dayOfWeek = new Date(currentYear, currentMonth - 1, day).getDay();
+        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+        const isToday = dateStr === today;
+        const isHoliday = dayInfo.is_holiday;
+
+        let bgClass = 'bg-white/50 dark:bg-slate-800/50 text-slate-800 dark:text-white border-white/60 dark:border-slate-700 hover:bg-cyan-500/10 hover:border-cyan-500/30';
+
+        if (isHoliday) {
+            bgClass = 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30 hover:bg-red-500/20';
+        } else if (isWeekend) {
+            bgClass = 'bg-white/20 dark:bg-slate-900/30 text-slate-400 border-white/30 dark:border-slate-800 hover:bg-white/40 dark:hover:bg-slate-800';
+        }
+
+        if (isToday) {
+            bgClass += ' ring-2 ring-emerald-500 shadow-md shadow-emerald-500/20';
+        }
+
+        html += `
+        <div class="calendar-day flex flex-col items-center justify-center p-2 sm:p-3 rounded-2xl cursor-pointer min-h-[60px] sm:min-h-[70px] transition-all border shadow-sm ${bgClass}" data-date="${dateStr}" onclick="selectDate('${dateStr}', this)">
+            <div class="font-bold text-sm sm:text-lg">${day}</div>
+            ${isHoliday ? '<div class="text-[10px] mt-0.5">🎉</div>' : ''}
+        </div>`;
+    }
+
+    calendarEl.innerHTML = html;
+}
+
+async function selectDate(dateStr, el) {
+    const displayDate = dateStr.split('-').reverse().join('.');
+    document.getElementById('selectedDate').textContent = displayDate;
+
+    document.querySelectorAll('.calendar-day').forEach(cell => {
+        cell.classList.remove('!bg-cyan-500', '!text-white', '!border-cyan-400', 'shadow-lg', 'scale-[1.05]');
+    });
+
+    if (el) {
+        el.classList.add('!bg-cyan-500', '!text-white', '!border-cyan-400', 'shadow-lg', 'scale-[1.05]');
+    }
+
+    const container = document.getElementById('selectedSchedule');
+    container.innerHTML = '<div class="text-center py-16 text-slate-400"><i class="fa-solid fa-spinner fa-spin text-4xl mb-4"></i><p>Загрузка расписания...</p></div>';
+
+    try {
+        const response = await fetch('/api/schedule/date-with-overrides/' + encodeURIComponent(dateStr));
+        let data = await response.json();
+
+        if (data.holiday) {
+            container.innerHTML = `
+            <div class="p-6 rounded-3xl bg-red-500/10 border border-red-500/30 text-center shadow-inner">
+                <div class="text-6xl mb-4 drop-shadow-md">🎉</div>
+                <div class="font-bold text-xl text-red-600 dark:text-red-400 uppercase tracking-wide">${escapeHtml(data.name || 'Праздничный день')}</div>
+            </div>`;
+            return;
+        }
+
+        if (viewerGroup) {
+            if (data[viewerGroup]) {
+                data = { [viewerGroup]: data[viewerGroup] };
+            } else {
+                container.innerHTML = `
+                <div class="text-center py-16 text-slate-400">
+                    <div class="text-6xl mb-4 opacity-50 block">📭</div>
+                    <p class="font-medium">На этот день у группы <strong class="text-cyan-600 dark:text-cyan-400 px-2 py-0.5 rounded bg-cyan-500/10">${escapeHtml(viewerGroup)}</strong> занятий нет</p>
+                </div>`;
+                return;
+            }
+        }
+
+        let html = '';
+
+        if (viewerGroup) {
+            const groupData = data[viewerGroup];
+            html += '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+            for (let i = 1; i <= 6; i++) {
+                if (groupData[i]) {
+                    html += renderLessonCard(i, groupData[i]);
+                }
+            }
+            html += '</div>';
+            if (Object.keys(groupData).length === 0) {
+                html = '<div class="text-center py-16 text-slate-400"><div class="text-6xl mb-4 opacity-50 block">📭</div><p>Нет занятий</p></div>';
+            }
+        } else {
+            const groups = Object.keys(data).sort();
+            if (groups.length === 0) {
+                container.innerHTML = '<div class="text-center py-16 text-slate-400"><div class="text-6xl mb-4 opacity-50 block">📭</div><p>Нет занятий для всех групп</p></div>';
+                return;
+            }
+
+            html += '<div class="overflow-x-auto rounded-2xl border border-white/60 dark:border-slate-700 bg-white/40 dark:bg-black/20 backdrop-blur-md hidden md:block shadow-inner"><table class="w-full text-left border-collapse"><thead class="bg-white/50 dark:bg-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-slate-200 dark:border-slate-700"><tr><th class="py-3 px-4 min-w-[120px]">Группа</th>';
+            for (let i = 1; i <= 6; i++) html += `<th class="py-3 px-2 text-center min-w-[160px]">${i} пара</th>`;
+            html += '</tr></thead><tbody class="divide-y divide-slate-200/50 dark:divide-slate-700/50">';
+
+            for (const group of groups) {
+                html += `<tr class="hover:bg-white/60 dark:hover:bg-slate-800/50 transition-colors"><td class="py-3 px-4 font-bold text-slate-900 dark:text-white bg-white/30 dark:bg-white/5"><span class="px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20 shadow-sm block text-center">${escapeHtml(group)}</span></td>`;
+                for (let i = 1; i <= 6; i++) {
+                    if (data[group][i]) {
+                        html += '<td class="py-2 px-2 align-top">' + renderLessonCardSmall(data[group][i]) + '</td>';
+                    } else {
+                        html += '<td class="py-2 px-2"><div class="h-full min-h-[70px] rounded-xl border border-dashed border-slate-300/50 dark:border-slate-700/50 flex items-center justify-center text-slate-300 dark:text-slate-600 text-[10px]">ПУСТО</div></td>';
+                    }
+                }
+                html += '</tr>';
+            }
+            html += '</tbody></table></div>';
+
+            html += '<div class="md:hidden space-y-4">';
+            for (const group of groups) {
+                html += `<div class="rounded-3xl border border-white/60 dark:border-slate-700 bg-white/30 dark:bg-black/20 overflow-hidden shadow-sm">
+                    <div class="px-5 py-3 flex items-center justify-between bg-white/50 dark:bg-white/10 border-b border-white/40 dark:border-white/5 font-bold text-slate-800 dark:text-white text-sm"><span class="flex items-center gap-2"><i class="fa-solid fa-users text-cyan-500"></i> ${escapeHtml(group)}</span></div>
+                    <div class="p-3 space-y-2">`;
+                const hasAny = Object.keys(data[group]).length > 0;
+                if (!hasAny) {
+                    html += '<p class="text-center py-4 text-xs text-slate-400">📭 Нет занятий</p>';
+                } else {
+                    for (let i = 1; i <= 6; i++) {
+                        if (data[group][i]) {
+                            html += renderLessonCardMobile(i, data[group][i]);
+                        }
+                    }
+                }
+                html += '</div></div>';
+            }
+            html += '</div>';
+        }
+
+        container.innerHTML = html;
+    } catch(e) {
+        container.innerHTML = '<div class="text-center py-16 text-red-500 font-bold"><i class="fa-solid fa-circle-exclamation text-4xl mb-4"></i><p>Ошибка загрузки расписания</p></div>';
+    }
+}
+
+function changeMonth(delta) {
+    currentMonth += delta;
+    if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+    else if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+    window.location.href = `/calendar?year=${currentYear}&month=${currentMonth}`;
+}
+
+renderCalendar();
+
+const urlParams = new URLSearchParams(window.location.search);
+const dateFromUrl = urlParams.get('date');
+if (dateFromUrl) {
+    setTimeout(() => {
+        const el = document.querySelector(`[data-date="${dateFromUrl}"]`);
+        selectDate(dateFromUrl, el);
+    }, 100);
+}
+</script>
+{% endblock %}

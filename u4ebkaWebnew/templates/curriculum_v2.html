@@ -1,0 +1,430 @@
+{% extends "base.html" %}
+{% block title %}Учебный план v2{% endblock %}
+{% block content %}
+
+<div class="max-w-7xl mx-auto space-y-6 pb-12">
+
+    {# ==================== ЗАГОЛОВОК ==================== #}
+    <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 to-violet-600 flex items-center justify-center text-white text-lg shadow-md">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </span>
+                Учебный план v2
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                План по курсам и семестрам — новая структура
+            </p>
+        </div>
+    </div>
+
+    {# ==================== ВЫБОР ГРУППЫ ==================== #}
+    <div class="bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 dark:border-white/10 p-4 rounded-3xl shadow-lg">
+        <div class="flex flex-wrap gap-4 items-end">
+            <div class="flex-1 min-w-[220px]">
+                <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Группа (активные, очные)</label>
+                <select id="groupSelect" onchange="location.href='/curriculum-v2?group_id=' + this.value"
+                        class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                    <option value="">— Выберите группу —</option>
+                    {% for g in groups %}
+                    <option value="{{ g.id }}" {% if g.id == selected_group_id %}selected{% endif %}>
+                        {{ g.name }} ({{ g.current_course }} курс)
+                    </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% if selected_group %}
+            <div class="flex gap-2">
+                <button onclick="openUploadModal()"
+                        class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-violet-500 to-purple-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-file-import"></i> Загрузить УП
+                </button>
+                <button onclick="clearPlan({{ selected_group.id }}, '{{ selected_group.name }}')"
+                        class="px-5 py-2.5 rounded-2xl bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 font-bold text-xs border border-red-500/30 transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-broom"></i> Очистить план
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if not selected_group %}
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-16 text-center">
+            <i class="fa-solid fa-book-bookmark text-5xl mb-4 text-slate-300 dark:text-slate-600"></i>
+            <p class="text-slate-500 dark:text-slate-400">Выберите группу, чтобы увидеть учебный план</p>
+        </div>
+
+    {% elif summary.total_records == 0 %}
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl p-16 text-center">
+            <i class="fa-solid fa-folder-open text-5xl mb-4 text-slate-300 dark:text-slate-600"></i>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">У группы {{ selected_group.name }} ещё нет учебного плана</p>
+            <p class="text-xs text-slate-400 mt-2">Нажмите «Загрузить УП», чтобы импортировать план</p>
+        </div>
+
+    {% else %}
+
+        {# ==================== МЕТА-ИНФО О ГРУППЕ ==================== #}
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 p-5 rounded-3xl shadow-lg">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400">Группа</div>
+                    <div class="text-lg font-bold text-slate-900 dark:text-white">{{ selected_group.name }}</div>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400">Курс</div>
+                    <div class="text-lg font-bold text-slate-900 dark:text-white">{{ selected_group.current_course }}</div>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400">Уникальных дисциплин</div>
+                    <div class="text-lg font-bold text-cyan-600 dark:text-cyan-400">{{ summary.total_disciplines }}</div>
+                </div>
+                <div>
+                    <div class="text-[10px] font-bold uppercase text-slate-400">Записей (по семестрам)</div>
+                    <div class="text-lg font-bold text-violet-600 dark:text-violet-400">{{ summary.total_records }}</div>
+                </div>
+            </div>
+            {% if selected_group.specialty_name %}
+            <div class="mt-3 pt-3 border-t border-white/40 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400">
+                <i class="fa-solid fa-graduation-cap mr-1"></i>
+                {{ selected_group.specialty_code }} {{ selected_group.specialty_name }}
+            </div>
+            {% endif %}
+        </div>
+
+        {# ==================== ТАБЛИЦА ПО СЕМЕСТРАМ ==================== #}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            {% for sem in summary.by_semester %}
+            {% set course = sem.course %}
+            {% set sem_in_course = sem.semester_in_course %}
+            {% set global_sem = (course - 1) * 2 + sem_in_course %}
+            {% set sem_label = 'осень' if sem_in_course == 1 else 'весна' %}
+
+            <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden">
+                <div class="p-4 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 border-b border-white/40 dark:border-white/10 flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-violet-600 text-white flex items-center justify-center font-bold shadow-md">
+                            {{ global_sem }}
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 dark:text-white">{{ course }} курс, {{ sem_label }}</div>
+                            <div class="text-[10px] text-slate-500 dark:text-slate-400">{{ sem.disciplines }} дисциплин • {{ sem.total_hours }} часов</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto max-h-[500px] overflow-y-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-white/50 dark:bg-slate-800 sticky top-0 text-[10px] font-bold uppercase tracking-wider text-slate-500 z-10">
+                            <tr>
+                                <th class="py-2 px-3">Индекс</th>
+                                <th class="py-2 px-3">Дисциплина</th>
+                                <th class="py-2 px-3 text-center">Часов</th>
+                                <th class="py-2 px-3 text-center">Пар/нед</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-white/30 dark:divide-white/5">
+                            {% for r in plan %}
+                            {% if r.course == course and r.semester_in_course == sem_in_course %}
+                            <tr class="hover:bg-white/30 dark:hover:bg-white/5" data-row-id="{{ r.id }}">
+                                <td class="py-2 px-3">
+                                    <span class="px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 font-mono text-[10px] border border-cyan-500/20">
+                                        {{ r.index_code or '—' }}
+                                    </span>
+                                </td>
+                                <td class="py-2 px-3 text-slate-800 dark:text-slate-200">
+                                    {{ r.subject_name or '—' }}
+                                </td>
+                                <td class="py-2 px-3 text-center font-bold text-slate-700 dark:text-slate-300">
+                                    {{ r.total_hours }}
+                                </td>
+                                <td class="py-2 px-3 text-center">
+                                    <input type="number"
+                                           min="0" max="20"
+                                           value="{{ r.pairs_per_week }}"
+                                           data-row-id="{{ r.id }}"
+                                           class="pairs-input w-16 py-1 px-2 text-center bg-white/60 dark:bg-slate-900/60 border border-white/60 dark:border-slate-700 rounded-lg font-bold text-cyan-600 dark:text-cyan-400 focus:ring-2 focus:ring-cyan-500 outline-none"
+                                           onchange="updatePairs({{ r.id }}, this.value)">
+                                </td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+    {% endif %}
+
+</div>
+
+{# ==================== МОДАЛКА ЗАГРУЗКИ УП ==================== #}
+<style>
+.modal { display: none; position: fixed; inset: 0; z-index: 1000; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); padding: 1rem; }
+.modal-content { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1.5rem; padding: 1.5rem; width: 100%; max-width: 520px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.95); animation: modalIn 0.2s forwards; max-height: 90vh; overflow-y: auto; }
+:is(.dark) .modal-content { background: rgba(15, 23, 42, 0.85); border-color: rgba(255, 255, 255, 0.1); }
+@keyframes modalIn { to { transform: scale(1); } }
+.modal-close { position: absolute; top: 1rem; right: 1.25rem; font-size: 1.5rem; color: #94a3b8; cursor: pointer; transition: color 0.2s; background: none; border: none; }
+.modal-close:hover { color: #ef4444; }
+.modal-header h2 { font-size: 1.25rem; font-weight: 800; margin-bottom: 1.25rem; color: #0f172a; display: flex; align-items: center; gap: 8px;}
+:is(.dark) .modal-header h2 { color: white; }
+.form-label { display: block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; color: #64748b; margin-bottom: 0.4rem; letter-spacing: 0.05em; }
+.form-input, .form-select { width: 100%; margin-bottom: 0.9rem; padding: 0.625rem 1rem; background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 1rem; font-size: 0.875rem; outline: none; transition: box-shadow 0.2s; }
+:is(.dark) .form-input, :is(.dark) .form-select { background: rgba(15, 23, 42, 0.5); border-color: rgba(255, 255, 255, 0.1); color: white;}
+.form-input:focus, .form-select:focus { box-shadow: 0 0 0 2px #06b6d4; }
+.modal-actions { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1); }
+:is(.dark) .modal-actions { border-top-color: rgba(255,255,255,0.1); }
+</style>
+
+<div class="modal" id="uploadModal">
+    <div class="modal-content relative" style="max-width: 900px;">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-file-import text-violet-500"></i> Загрузка учебного плана</h2>
+            <button class="modal-close" onclick="closeModal('uploadModal')">&times;</button>
+        </div>
+
+        <div id="uploadStep1">
+            <div class="p-3 mb-4 rounded-xl bg-violet-500/10 border border-violet-500/30 text-[11px] text-violet-700 dark:text-violet-300">
+                <i class="fa-solid fa-circle-info mr-1"></i>
+                Загрузите файл учебного плана (<strong>.xls</strong> или <strong>.xlsx</strong>) для группы
+                <strong>{% if selected_group %}{{ selected_group.name }}{% endif %}</strong>.
+                Существующий план будет <u>заменён</u> новым.
+            </div>
+
+            <label class="form-label">Файл учебного плана *</label>
+            <input type="file" id="uploadFileInput" accept=".xls,.xlsx" class="form-input">
+
+            <div id="uploadResult" class="mt-4"></div>
+
+            <div class="modal-actions">
+                <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="closeModal('uploadModal')">Отмена</button>
+                <button id="uploadParseBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-500 to-purple-600 hover:scale-105 transition-transform flex items-center gap-2" onclick="parseUploadedFile()">
+                    <i class="fa-solid fa-magnifying-glass"></i> Разобрать файл
+                </button>
+            </div>
+        </div>
+
+        <div id="uploadStep2" style="display: none;">
+            <div id="uploadMetaBlock" class="p-3 mb-4 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-[11px] font-semibold text-cyan-800 dark:text-cyan-200"></div>
+
+            <div class="text-xs font-bold text-slate-700 dark:text-slate-300 mb-2">
+                Найдено дисциплин: <span id="uploadTotalCount">0</span>
+            </div>
+
+            <div class="overflow-y-auto max-h-[50vh] rounded-2xl border border-white/40 dark:border-slate-700">
+                <table class="w-full text-left text-xs">
+                    <thead class="sticky top-0 bg-slate-100 dark:bg-slate-800 text-[10px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/40 dark:border-slate-700">
+                        <tr>
+                            <th class="py-2 px-3">Индекс</th>
+                            <th class="py-2 px-3">Название</th>
+                            <th class="py-2 px-3 text-center">Семестры</th>
+                            <th class="py-2 px-3 text-center">Часов</th>
+                        </tr>
+                    </thead>
+                    <tbody id="uploadTableBody" class="divide-y divide-white/30 dark:divide-slate-700"></tbody>
+                </table>
+            </div>
+
+            <div class="modal-actions">
+                <button class="px-5 py-2 rounded-xl text-sm font-bold text-slate-500 bg-white/40 hover:bg-white/60 dark:bg-slate-800 dark:hover:bg-slate-700 transition-all border border-slate-200 dark:border-slate-700" onclick="backToUploadStep1()">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Назад
+                </button>
+                <button id="uploadApplyBtn" class="px-5 py-2 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:scale-105 transition-transform flex items-center gap-2" onclick="applyUploadedFile()">
+                    <i class="fa-solid fa-floppy-disk"></i> Применить (заменит старый план)
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+function openModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'flex'; }
+function closeModal(id) { const m = document.getElementById(id); if (m) m.style.display = 'none'; }
+
+function showToastSafe(msg, type) {
+    if (typeof showToast === 'function') showToast(msg, type || 'info');
+    else alert(msg);
+}
+
+async function updatePairs(rowId, value) {
+    try {
+        const r = await fetch('/api/curriculum-v2/update-pairs', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ id: rowId, pairs_per_week: value })
+        });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe('✅ Сохранено', 'success');
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    }
+}
+
+async function clearPlan(groupId, groupName) {
+    if (!confirm(`Удалить весь учебный план группы «${groupName}»?\n\nЭто действие нельзя отменить.`)) return;
+
+    try {
+        const r = await fetch('/api/curriculum-v2/clear/' + groupId, { method: 'POST' });
+        const res = await r.json();
+        if (res.success) {
+            showToastSafe(`✅ Удалено: ${res.deleted} записей`, 'success');
+            setTimeout(() => location.reload(), 800);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+    }
+}
+
+// ==================== ЗАГРУЗКА УП ====================
+let uploadedParsed = null;
+
+function openUploadModal() {
+    document.getElementById('uploadStep1').style.display = 'block';
+    document.getElementById('uploadStep2').style.display = 'none';
+    document.getElementById('uploadResult').innerHTML = '';
+    document.getElementById('uploadFileInput').value = '';
+    uploadedParsed = null;
+    openModal('uploadModal');
+}
+
+function backToUploadStep1() {
+    document.getElementById('uploadStep1').style.display = 'block';
+    document.getElementById('uploadStep2').style.display = 'none';
+    uploadedParsed = null;
+}
+
+async function parseUploadedFile() {
+    const fileInput = document.getElementById('uploadFileInput');
+    const resultEl = document.getElementById('uploadResult');
+
+    if (!fileInput.files || fileInput.files.length === 0) {
+        showToastSafe('Выберите файл', 'error');
+        return;
+    }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const btn = document.getElementById('uploadParseBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Разбор...';
+    resultEl.innerHTML = '<div class="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-[11px] text-cyan-700 dark:text-cyan-300"><i class="fa-solid fa-spinner fa-spin mr-1"></i> Читаем файл...</div>';
+
+    try {
+        const r = await fetch('/api/curriculum-v2/upload/preview', {
+            method: 'POST',
+            body: formData
+        });
+        const res = await r.json();
+
+        if (!res.success) {
+            resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(res.error || 'Ошибка')}</div>`;
+            btn.disabled = false;
+            btn.innerHTML = orig;
+            return;
+        }
+
+        uploadedParsed = res.raw;
+        showUploadPreview(res);
+        resultEl.innerHTML = '';
+    } catch (e) {
+        resultEl.innerHTML = `<div class="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-[11px] text-red-600">❌ ${escapeHtml(e.message)}</div>`;
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+
+function showUploadPreview(res) {
+    document.getElementById('uploadStep1').style.display = 'none';
+    document.getElementById('uploadStep2').style.display = 'block';
+
+    let meta = `<div class="flex flex-wrap gap-x-4 gap-y-1">
+        <span>📄 Дисциплин: <strong>${res.total_disciplines}</strong></span>`;
+    if (res.direction) meta += `<span>🎓 ${escapeHtml(res.direction.slice(0, 80))}</span>`;
+    if (res.education_form) meta += `<span>📋 ${escapeHtml(res.education_form.slice(0, 60))}</span>`;
+    meta += `</div>`;
+
+    if (res.by_semester && Object.keys(res.by_semester).length > 0) {
+        meta += `<div class="mt-2 flex flex-wrap gap-2">`;
+        for (let sem = 1; sem <= 8; sem++) {
+            if (res.by_semester[sem]) {
+                meta += `<span class="px-2 py-0.5 rounded-md bg-white/40 dark:bg-black/30 text-[10px]">сем ${sem}: ${res.by_semester[sem]}</span>`;
+            }
+        }
+        meta += `</div>`;
+    }
+
+    document.getElementById('uploadMetaBlock').innerHTML = meta;
+    document.getElementById('uploadTotalCount').textContent = res.total_disciplines;
+
+    const tbody = document.getElementById('uploadTableBody');
+    let html = '';
+    res.disciplines.forEach(d => {
+        const sems = (d.semesters || []).join(', ') || '—';
+        html += `
+            <tr class="hover:bg-white/40 dark:hover:bg-slate-800/50">
+                <td class="py-2 px-3 font-mono font-bold text-slate-700 dark:text-slate-300">${escapeHtml(d.index)}</td>
+                <td class="py-2 px-3 text-slate-900 dark:text-white">${escapeHtml(d.name)}</td>
+                <td class="py-2 px-3 text-center text-slate-500">${escapeHtml(sems)}</td>
+                <td class="py-2 px-3 text-center font-bold text-cyan-600 dark:text-cyan-400">${d.total_hours}</td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+async function applyUploadedFile() {
+    if (!uploadedParsed) {
+        showToastSafe('Сначала разберите файл', 'error');
+        return;
+    }
+
+    if (!confirm(`Применить учебный план?\n\nСтарый план группы будет УДАЛЁН и заменён новым.`)) return;
+
+    const btn = document.getElementById('uploadApplyBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Сохранение...';
+
+    try {
+        const r = await fetch('/api/curriculum-v2/upload/apply', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                group_id: {% if selected_group %}{{ selected_group.id }}{% else %}null{% endif %},
+                parsed: uploadedParsed,
+            })
+        });
+        const res = await r.json();
+
+        if (res.success) {
+            showToastSafe(`✅ Импортировано записей: ${res.created}`, 'success');
+            setTimeout(() => location.reload(), 1200);
+        } else {
+            showToastSafe('❌ ' + (res.error || 'Ошибка'), 'error');
+            btn.disabled = false;
+            btn.innerHTML = orig;
+        }
+    } catch (e) {
+        showToastSafe('❌ ' + e.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+}
+</script>
+{% endblock %}

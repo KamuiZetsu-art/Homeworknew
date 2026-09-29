@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Рейтинг{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-8 pb-12">
+
+    <!-- Заголовок + переключатель вкладок -->
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white/40 dark:bg-black/40 backdrop-blur-xl border border-white/60 dark:border-white/10 p-6 rounded-3xl shadow-xl">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <span class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center text-white text-lg shadow-md shadow-amber-500/30">
+                    <i class="fa-solid fa-trophy"></i>
+                </span>
+                Рейтинг успеваемости
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                {% if tab == 'teachers' %}Лучшие преподаватели по среднему баллу{% else %}Лучшие студенты по среднему баллу{% endif %}
+            </p>
+        </div>
+
+        {% if can_view_teachers %}
+        <div class="flex items-center gap-1 p-1 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md border border-white/60 dark:border-white/10 rounded-2xl shadow-sm">
+            <a href="/rating?tab=students{% if date_from %}&from={{ date_from }}{% endif %}{% if date_to %}&to={{ date_to }}{% endif %}{% if min_grades %}&min_grades={{ min_grades }}{% endif %}"
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2
+                      {% if tab != 'teachers' %}bg-gradient-to-r from-cyan-500 to-violet-600 text-white shadow-md{% else %}text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white{% endif %}">
+                <i class="fa-solid fa-graduation-cap"></i> Студенты
+            </a>
+            <a href="/rating?tab=teachers{% if date_from %}&from={{ date_from }}{% endif %}{% if date_to %}&to={{ date_to }}{% endif %}{% if min_grades %}&min_grades={{ min_grades }}{% endif %}"
+               class="px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2
+                      {% if tab == 'teachers' %}bg-gradient-to-r from-cyan-500 to-violet-600 text-white shadow-md{% else %}text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white{% endif %}">
+                <i class="fa-solid fa-chalkboard-user"></i> Преподаватели
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    {# ==================== ФИЛЬТРЫ ==================== #}
+    <form method="GET" action="/rating" class="bg-white/30 dark:bg-black/30 backdrop-blur-xl border border-white/50 dark:border-white/10 p-4 rounded-3xl shadow-lg flex flex-wrap gap-4 items-end">
+        <input type="hidden" name="tab" value="{{ tab }}">
+
+        <div class="flex-1 min-w-[160px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">С даты</label>
+            <input type="date" name="from" value="{{ date_from }}"
+                   class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+        </div>
+        <div class="flex-1 min-w-[160px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">По дату</label>
+            <input type="date" name="to" value="{{ date_to }}"
+                   class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+        </div>
+
+        {% if tab != 'teachers' %}
+        <div class="flex-1 min-w-[160px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Группа</label>
+            <select name="group"
+                    class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+                <option value="">Все группы</option>
+                {% for g in groups %}
+                <option value="{{ g.name }}" {% if g.name == selected_group %}selected{% endif %}>{{ g.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        {% endif %}
+
+        <div class="min-w-[120px]">
+            <label class="block text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1 ml-1">Мин. оценок</label>
+            <input type="number" name="min_grades" min="0" value="{{ min_grades }}"
+                   class="w-full py-2.5 px-4 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md border border-white/60 dark:border-slate-800 rounded-2xl text-xs font-semibold text-slate-800 dark:text-white focus:ring-2 focus:ring-cyan-500 outline-none">
+        </div>
+
+        <button type="submit"
+                class="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-violet-600 text-white font-bold text-xs shadow-md hover:scale-105 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-filter"></i> Применить
+        </button>
+        <a href="/rating?tab={{ tab }}"
+           class="px-4 py-2.5 rounded-2xl bg-white/50 dark:bg-slate-800/50 text-slate-600 dark:text-slate-300 font-bold text-xs shadow-sm hover:shadow border border-slate-300 dark:border-slate-700 transition-all">
+            Сброс
+        </a>
+    </form>
+
+    {# ==================================================================
+       ВКЛАДКА «СТУДЕНТЫ»
+       ================================================================== #}
+    {% if tab != 'teachers' %}
+        {% set top_students = students_rating %}
+
+        {% if top_students and top_students|length >= 3 %}
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 items-end pt-6 max-w-3xl mx-auto">
+
+            {# 2 МЕСТО #}
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-slate-300 to-slate-400 flex items-center justify-center text-white font-black text-xl shadow-lg border-2 border-white/60">
+                        {{ top_students[1].full_name[:1] }}
+                    </div>
+                    <div class="absolute -top-3 -right-2 w-7 h-7 rounded-full bg-slate-300 border-2 border-white text-slate-800 font-black text-xs flex items-center justify-center shadow-md">2</div>
+                </div>
+                <div class="text-center mt-3">
+                    <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[140px]">{{ top_students[1].full_name }}</div>
+                    <div class="text-[11px] font-extrabold text-cyan-600 dark:text-cyan-400 mt-0.5">{{ "%.2f"|format(top_students[1].avg_grade) }}</div>
+                </div>
+                <div class="w-full h-24 sm:h-32 mt-3 bg-gradient-to-t from-slate-300/40 to-slate-200/20 backdrop-blur-md rounded-t-3xl border-t border-x border-white/50 flex items-center justify-center">
+                    <i class="fa-solid fa-medal text-slate-400 text-2xl"></i>
+                </div>
+            </div>
+
+            {# 1 МЕСТО #}
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="absolute -inset-2 bg-amber-400/50 rounded-full blur-xl animate-pulse"></div>
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-amber-500/40 border-2 border-amber-200 relative z-10">
+                        {{ top_students[0].full_name[:1] }}
+                    </div>
+                    <div class="absolute -top-4 -right-2 w-8 h-8 rounded-full bg-amber-400 border-2 border-white text-slate-900 font-black text-sm flex items-center justify-center shadow-md z-20">1</div>
+                </div>
+                <div class="text-center mt-3 relative z-10">
+                    <div class="font-black text-sm sm:text-base text-slate-900 dark:text-white truncate max-w-[120px] sm:max-w-[160px]">{{ top_students[0].full_name }}</div>
+                    <div class="text-xs sm:text-sm font-extrabold text-amber-500 mt-0.5">{{ "%.2f"|format(top_students[0].avg_grade) }}</div>
+                </div>
+                <div class="w-full h-32 sm:h-44 mt-3 bg-gradient-to-t from-amber-400/30 to-amber-300/10 backdrop-blur-md rounded-t-3xl border-t border-x border-amber-300/50 flex items-center justify-center">
+                    <i class="fa-solid fa-crown text-amber-400 text-3xl sm:text-4xl drop-shadow-md"></i>
+                </div>
+            </div>
+
+            {# 3 МЕСТО #}
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-amber-700 to-amber-800 flex items-center justify-center text-white font-black text-xl shadow-lg border-2 border-white/60">
+                        {{ top_students[2].full_name[:1] }}
+                    </div>
+                    <div class="absolute -top-3 -right-2 w-7 h-7 rounded-full bg-amber-700 border-2 border-white text-white font-black text-xs flex items-center justify-center shadow-md">3</div>
+                </div>
+                <div class="text-center mt-3">
+                    <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[140px]">{{ top_students[2].full_name }}</div>
+                    <div class="text-[11px] font-extrabold text-cyan-600 dark:text-cyan-400 mt-0.5">{{ "%.2f"|format(top_students[2].avg_grade) }}</div>
+                </div>
+                <div class="w-full h-20 sm:h-24 mt-3 bg-gradient-to-t from-amber-800/30 to-amber-700/10 backdrop-blur-md rounded-t-3xl border-t border-x border-white/50 flex items-center justify-center">
+                    <i class="fa-solid fa-award text-amber-700 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden p-6 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Общий список студентов</h3>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                    Всего: {{ top_students|length }}
+                </span>
+            </div>
+
+            <div class="space-y-2">
+                {% if top_students %}
+                    {% for student in top_students %}
+                    <div class="p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 flex items-center justify-between gap-4 hover:scale-[1.005] transition-all shadow-sm">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs
+                                {% if loop.index == 1 %}bg-amber-400 text-slate-900 shadow-md shadow-amber-400/30
+                                {% elif loop.index == 2 %}bg-slate-300 text-slate-900
+                                {% elif loop.index == 3 %}bg-amber-700 text-white
+                                {% else %}bg-slate-100 dark:bg-slate-800 text-slate-500{% endif %}">
+                                {{ loop.index }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-bold text-slate-900 dark:text-white text-sm truncate">{{ student.full_name }}</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">
+                                    Группа {{ student.group_name or '—' }}
+                                    {% if student.grades_count %}• {{ student.grades_count }} оценок{% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 sm:gap-5">
+                            <div class="hidden sm:flex items-center gap-1.5 text-[10px] font-bold">
+                                {% if student.g5 %}<span class="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">{{ student.g5 }}×5</span>{% endif %}
+                                {% if student.g4 %}<span class="px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">{{ student.g4 }}×4</span>{% endif %}
+                                {% if student.g3 %}<span class="px-2 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">{{ student.g3 }}×3</span>{% endif %}
+                                {% if student.g2 %}<span class="px-2 py-1 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">{{ student.g2 }}×2</span>{% endif %}
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">Средняя</div>
+                                <div class="text-sm font-black text-cyan-600 dark:text-cyan-400">{{ "%.2f"|format(student.avg_grade) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        <i class="fa-solid fa-graduation-cap text-3xl mb-3 text-slate-300 dark:text-slate-600 block"></i>
+                        Данные рейтинга ещё не сформированы
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+    {# ==================================================================
+       ВКЛАДКА «ПРЕПОДАВАТЕЛИ» (только admin/editor)
+       ================================================================== #}
+    {% if tab == 'teachers' and can_view_teachers %}
+        {% set top_teachers = teachers_rating %}
+
+        {% if top_teachers and top_teachers|length >= 3 %}
+        <div class="grid grid-cols-3 gap-3 sm:gap-6 items-end pt-6 max-w-3xl mx-auto">
+
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-slate-300 to-slate-400 flex items-center justify-center text-white font-black text-xl shadow-lg border-2 border-white/60">
+                        {{ top_teachers[1].full_name[:1] }}
+                    </div>
+                    <div class="absolute -top-3 -right-2 w-7 h-7 rounded-full bg-slate-300 border-2 border-white text-slate-800 font-black text-xs flex items-center justify-center shadow-md">2</div>
+                </div>
+                <div class="text-center mt-3">
+                    <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[140px]">{{ top_teachers[1].full_name }}</div>
+                    <div class="text-[11px] font-extrabold text-cyan-600 dark:text-cyan-400 mt-0.5">{{ "%.2f"|format(top_teachers[1].avg_grade) }}</div>
+                </div>
+                <div class="w-full h-24 sm:h-32 mt-3 bg-gradient-to-t from-slate-300/40 to-slate-200/20 backdrop-blur-md rounded-t-3xl border-t border-x border-white/50 flex items-center justify-center">
+                    <i class="fa-solid fa-medal text-slate-400 text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="absolute -inset-2 bg-amber-400/50 rounded-full blur-xl animate-pulse"></div>
+                    <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-gradient-to-tr from-amber-400 to-amber-600 flex items-center justify-center text-white font-black text-2xl shadow-xl shadow-amber-500/40 border-2 border-amber-200 relative z-10">
+                        {{ top_teachers[0].full_name[:1] }}
+                    </div>
+                    <div class="absolute -top-4 -right-2 w-8 h-8 rounded-full bg-amber-400 border-2 border-white text-slate-900 font-black text-sm flex items-center justify-center shadow-md z-20">1</div>
+                </div>
+                <div class="text-center mt-3 relative z-10">
+                    <div class="font-black text-sm sm:text-base text-slate-900 dark:text-white truncate max-w-[120px] sm:max-w-[160px]">{{ top_teachers[0].full_name }}</div>
+                    <div class="text-xs sm:text-sm font-extrabold text-amber-500 mt-0.5">{{ "%.2f"|format(top_teachers[0].avg_grade) }}</div>
+                </div>
+                <div class="w-full h-32 sm:h-44 mt-3 bg-gradient-to-t from-amber-400/30 to-amber-300/10 backdrop-blur-md rounded-t-3xl border-t border-x border-amber-300/50 flex items-center justify-center">
+                    <i class="fa-solid fa-crown text-amber-400 text-3xl sm:text-4xl drop-shadow-md"></i>
+                </div>
+            </div>
+
+            <div class="flex flex-col items-center">
+                <div class="relative group">
+                    <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-3xl bg-gradient-to-tr from-amber-700 to-amber-800 flex items-center justify-center text-white font-black text-xl shadow-lg border-2 border-white/60">
+                        {{ top_teachers[2].full_name[:1] }}
+                    </div>
+                    <div class="absolute -top-3 -right-2 w-7 h-7 rounded-full bg-amber-700 border-2 border-white text-white font-black text-xs flex items-center justify-center shadow-md">3</div>
+                </div>
+                <div class="text-center mt-3">
+                    <div class="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate max-w-[100px] sm:max-w-[140px]">{{ top_teachers[2].full_name }}</div>
+                    <div class="text-[11px] font-extrabold text-cyan-600 dark:text-cyan-400 mt-0.5">{{ "%.2f"|format(top_teachers[2].avg_grade) }}</div>
+                </div>
+                <div class="w-full h-20 sm:h-24 mt-3 bg-gradient-to-t from-amber-800/30 to-amber-700/10 backdrop-blur-md rounded-t-3xl border-t border-x border-white/50 flex items-center justify-center">
+                    <i class="fa-solid fa-award text-amber-700 text-2xl"></i>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="bg-white/40 dark:bg-black/40 backdrop-blur-2xl border border-white/60 dark:border-white/10 rounded-3xl shadow-xl overflow-hidden p-6 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Общий список преподавателей</h3>
+                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-lg bg-violet-500/10 text-violet-600 dark:text-violet-400 border border-violet-500/20">
+                    Всего: {{ top_teachers|length }}
+                </span>
+            </div>
+
+            <div class="space-y-2">
+                {% if top_teachers %}
+                    {% for teacher in top_teachers %}
+                    <div class="p-4 rounded-2xl bg-white/50 dark:bg-slate-900/50 border border-white/60 dark:border-slate-800 flex items-center justify-between gap-4 hover:scale-[1.005] transition-all shadow-sm">
+                        <div class="flex items-center gap-4 min-w-0">
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs
+                                {% if loop.index == 1 %}bg-amber-400 text-slate-900 shadow-md shadow-amber-400/30
+                                {% elif loop.index == 2 %}bg-slate-300 text-slate-900
+                                {% elif loop.index == 3 %}bg-amber-700 text-white
+                                {% else %}bg-slate-100 dark:bg-slate-800 text-slate-500{% endif %}">
+                                {{ loop.index }}
+                            </div>
+                            <div class="min-w-0">
+                                <div class="font-bold text-slate-900 dark:text-white text-sm truncate">{{ teacher.full_name }}</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">
+                                    {% if teacher.lessons_count %}{{ teacher.lessons_count }} пар{% endif %}
+                                    {% if teacher.groups_count %}• {{ teacher.groups_count }} групп{% endif %}
+                                    {% if teacher.grades_count %}• {{ teacher.grades_count }} оценок{% endif %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 sm:gap-5">
+                            <div class="hidden sm:flex items-center gap-1.5 text-[10px] font-bold">
+                                {% if teacher.g5 %}<span class="px-2 py-1 rounded-md bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">{{ teacher.g5 }}×5</span>{% endif %}
+                                {% if teacher.g4 %}<span class="px-2 py-1 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">{{ teacher.g4 }}×4</span>{% endif %}
+                                {% if teacher.g3 %}<span class="px-2 py-1 rounded-md bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">{{ teacher.g3 }}×3</span>{% endif %}
+                                {% if teacher.g2 %}<span class="px-2 py-1 rounded-md bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20">{{ teacher.g2 }}×2</span>{% endif %}
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] uppercase font-bold text-slate-400">Средняя</div>
+                                <div class="text-sm font-black text-violet-600 dark:text-violet-400">{{ "%.2f"|format(teacher.avg_grade) }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-8 text-slate-400 text-xs">
+                        <i class="fa-solid fa-chalkboard-user text-3xl mb-3 text-slate-300 dark:text-slate-600 block"></i>
+                        Данные рейтинга ещё не сформированы
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock %}
